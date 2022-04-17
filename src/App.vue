@@ -1,6 +1,7 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+  <!-- <HelloWorld msg="Hello Vue 3 + Vite" /> -->
+  <p class="test">test PostCSS</p>
 </template>
 
 <script setup>
@@ -18,5 +19,11 @@ import HelloWorld from './components/HelloWorld.vue'
 }
 img {
   width: 80px;
+}
+.test {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  font-size: 36px;
 }
 </style>
