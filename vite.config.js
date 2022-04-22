@@ -13,7 +13,8 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@mixin': path.resolve(__dirname, 'src/mixin'),
       '@store': path.resolve(__dirname, 'src/store'),
-      '@router': path.resolve(__dirname, 'src/router')
+      '@router': path.resolve(__dirname, 'src/router'),
+      '@view': path.resolve(__dirname, 'src/views'),
     }
   },
   css: {
@@ -49,6 +50,7 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     port: 8000,
+    open: true,
     proxy: {
       '/test': {
         target: 'http://127.0.0.1:3000',

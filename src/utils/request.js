@@ -3,7 +3,6 @@ import axios from "axios"
 let loading = false
 let requestCount = 0
 let redirecturi = ''
-const baseURL = 'http://127.0.0.1:3000'
 const host = window.location.origin
 
 const showLoading = () => {
@@ -25,7 +24,6 @@ const hideLoading = () => {
 }
 
 const service = axios.create({
-  // baseURL: baseURL,
   timeout: 5000
 })
 
