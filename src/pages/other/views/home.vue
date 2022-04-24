@@ -1,10 +1,10 @@
 <template>
-  <img alt="Vue logo" src="../assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <img alt="Vue logo" src="@/assets/logo.png" />
+  <!-- <HelloWorld msg="Hello Vue 3 + Vite" /> -->
 </template>
 
 <script setup>
-import HelloWorld from '../components/HelloWorld.vue'
+import HelloWorld from '@/components/HelloWorld.vue'
 </script>
 
 <style>

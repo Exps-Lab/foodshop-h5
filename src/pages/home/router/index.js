@@ -3,11 +3,11 @@ import { createRouter, createWebHashHistory } from "vue-router";
 const routes = [
   {
     path: '/',
-    component: () => import('@view/home.vue')
+    component: () => import('../views/home.vue')
   },
   {
     path: '/test',
-    component: () => import('@view/test.vue')
+    component: () => import('../views/test.vue')
   },
 ]
 
