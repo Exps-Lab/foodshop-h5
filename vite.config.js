@@ -4,7 +4,7 @@ import path from 'path'
 import { cssConf, bundleConf } from './viteConf'
 
 export default defineConfig({
-  root: './src',
+  root: './',
   base: '/',
   resolve: {
     alias: {
