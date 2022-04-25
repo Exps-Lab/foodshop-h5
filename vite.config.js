@@ -4,6 +4,8 @@ import path from 'path'
 import { cssConf, bundleConf } from './viteConf'
 
 export default defineConfig({
+  root: './src',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
