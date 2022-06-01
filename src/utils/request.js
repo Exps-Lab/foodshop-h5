@@ -1,15 +1,14 @@
 import axios from "axios"
+import Loading from "@common/components/Loading/index.js"
 
-let loading = false
+// let loading = false
 let requestCount = 0
 let redirecturi = ''
 const host = window.location.origin
 
 const showLoading = () => {
-  if (requestCount === 0 && !loading) {
-    // TODO: 显示loading组件
-    loading = true
-    console.log('Loading Start...', Date.now())
+  if (requestCount === 0) {
+    Loading.show()
   }
   requestCount++
 }
@@ -17,9 +16,7 @@ const showLoading = () => {
 const hideLoading = () => {
   requestCount--
   if (requestCount == 0) {
-    // TODO: 隐藏loading组件
-    loading = false
-    console.log('Loading End...', Date.now())
+    Loading.hide()
   }
 }
 

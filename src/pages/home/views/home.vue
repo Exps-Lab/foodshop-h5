@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from '@common/components/HelloWorld/index.vue'
 </script>
 
 <style>

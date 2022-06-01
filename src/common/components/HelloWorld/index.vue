@@ -29,7 +29,7 @@ const reqApi = () => {
   test({ name: 'test' })
     .then(res => {
       console.log('req success')
-      reqData.voteNum = res.data?.voteNum
+      reqData.voteNum += res.data?.voteNum
     })
     .catch(err => {
       console.log('req failed')

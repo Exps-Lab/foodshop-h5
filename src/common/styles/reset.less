@@ -64,56 +64,43 @@ input {
     border: none;
 }
 a {
-  text-decoration: none;
-  background-color: transparent;
-  color: inherit;
+    text-decoration: none;
+    background-color: transparent;
+    color: inherit;
 }
 
-#kc-loading-box{
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  background-color: #F6F6F6;
-  .loading-img-box {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+#ele-loading-box{
+    position: fixed;
     width: 100%;
-    text-align: center;
-    font-size: .28rem;
-    line-height: .34rem;
-    color: #6D6D6D;
-  }
-  .loading-img{
-    width: 3rem;
-    height: 3rem;
-    display: block;
-    margin: 0 auto .1rem;
-    //-webkit-animation: rotate 1s linear infinite;
-    //        animation: rotate 1s linear infinite;
-  }
-  //@-webkit-keyframes rotate {
-  //  0% {
-  //    -webkit-transform: translate(-50%, -50%) rotateZ(0);
-  //            transform: translate(-50%, -50%) rotateZ(0);
-  //  }
-  //  100% {
-  //    -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
-  //            transform: translate(-50%, -50%) rotateZ(360deg);
-  //  }
-  //}
-  //@keyframes rotate {
-  //  0% {
-  //    -webkit-transform: translate(-50%, -50%) rotateZ(0);
-  //            transform: translate(-50%, -50%) rotateZ(0);
-  //  }
-  //  100% {
-  //    -webkit-transform: translate(-50%, -50%) rotateZ(360deg);
-  //            transform: translate(-50%, -50%) rotateZ(360deg);
-  //  }
-  //}
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    // background-color: #F6F6F6;
+    .loading-img-box {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        text-align: center;
+        font-size: .28rem;
+        line-height: .34rem;
+        color: #6D6D6D;
+    }
+    .loading-img{
+        width: 0.6rem;
+        height: 0.6rem;
+        display: block;
+        margin: 0 auto .1rem;
+        animation: rotate 1s linear infinite;
+    }
+    @keyframes rotate {
+        0% {
+            transform: rotateZ(0);
+        }
+        100% {
+            transform: rotateZ(360deg);
+        }
+    }
 }
