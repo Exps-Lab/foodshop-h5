@@ -1,0 +1,106 @@
+/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, input , button{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: normal;
+    border: 0;
+    vertical-align: baseline;
+    outline: none;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Arial, "PingFang SC", "Microsoft YaHei", SimSun, sans-serif;
+    font-size: 12px;
+    -webkit-font-smoothing: antialiased;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+li {
+    list-style: none;
+}
+
+i {
+    font-style: normal;
+}
+
+input {
+    border: none;
+}
+a {
+    text-decoration: none;
+    background-color: transparent;
+    color: inherit;
+}
+
+#ele-loading-box{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    // background-color: #F6F6F6;
+    .loading-img-box {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        text-align: center;
+        font-size: .28rem;
+        line-height: .34rem;
+        color: #6D6D6D;
+    }
+    .loading-img{
+        width: 0.6rem;
+        height: 0.6rem;
+        display: block;
+        margin: 0 auto .1rem;
+        animation: rotate 1s linear infinite;
+    }
+    @keyframes rotate {
+        0% {
+            transform: rotateZ(0);
+        }
+        100% {
+            transform: rotateZ(360deg);
+        }
+    }
+}
