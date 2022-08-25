@@ -12,8 +12,6 @@ export default defineConfig({
       '@api': path.resolve(__dirname, 'src/api'),
       '@common': path.resolve(__dirname, 'src/common'),
       '@utils': path.resolve(__dirname, 'src/utils'),
-      '@mixin': path.resolve(__dirname, 'src/mixin'),
-      '@store': path.resolve(__dirname, 'src/store'),
       '@pages': path.resolve(__dirname, 'src/pages'),
     }
   },

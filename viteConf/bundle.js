@@ -36,6 +36,9 @@ function generateInput() {
 export default {
   outDir: resolve(__dirname, '../dist'),
   rollupOptions: {
-    input: generateInput()
+    input: {
+      ...generateInput(),
+      jump: '../index.html'
+    }
   }
 }
