@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite serve --mode development",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "vant": "^3.6.1",
     "vue": "^3.2.25",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
@@ -20,6 +21,7 @@
     "eslint-plugin-vue": "^8.6.0",
     "less": "^4.1.2",
     "postcss-pxtorem": "^6.0.0",
+    "unplugin-vue-components": "^0.22.4",
     "vite": "^2.9.0"
   }
 }
