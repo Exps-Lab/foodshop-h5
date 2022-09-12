@@ -14,20 +14,13 @@ function generateInput() {
   allEntry.forEach((entry) => {
     const templateFile = fs.readFileSync(templateURl).toString();
     const index = templateFile.indexOf('</body>');
-    let content = '';
-    if (index !== -1) {
-      content = templateFile.slice(0, index) +
-        `<script type="module" src="./main.js"></script>` +
-        templateFile.slice(index);
-    }
+
     const pad = entry.split('/');
     const name = pad[pad.length - 2];
     const indexPage = pad.slice(0, pad.length - 1).join('/')  + '/index.html';
-    if (fs.existsSync(indexPage)) {
-      fs.rmSync(indexPage)
-    }
-    fs.writeFileSync(indexPage, content, { flag: 'as+' });
+    const mainHtml = `<script type="module" src="./main.js"></script>`
 
+    padFileAndWrite(templateFile, index, mainHtml, indexPage)
     // 命名input配置列表
     pageEntry[name] = indexPage;
   });
@@ -62,8 +55,8 @@ function getFileList (mutiFileObj = {}) {
     const fileDir = mutiFileObj[fileName].slice(fileDirPos)
     let boxHtml =
       '<li style="margin: 15px 0;">' +
-        `<span>${fileName}：</span>` +
-        `<a href="${fileDir}">${fileDir}</a>` +
+      `<span>${fileName}：</span>` +
+      `<a href="${fileDir}">${fileDir}</a>` +
       '</li>'
     listHtmlText += boxHtml
   }
@@ -71,15 +64,26 @@ function getFileList (mutiFileObj = {}) {
 
   // 在index的<div id="app">插入变量，如有好点的参照可替换~
   const index = templateFile.indexOf('</div>');
-  let content = '';
-  if (index !== -1) {
-    content = (templateFile.slice(0, index) + listHtmlText + templateFile.slice(index))
-  }
 
-  if (fs.existsSync(rootPathIndex)) {
-    fs.rmSync(rootPathIndex)
+  padFileAndWrite(templateFile, index, listHtmlText, rootPathIndex)
+}
+
+/**
+ * 公共模板插入自定义html并回写
+ * @param template   要截取的模板
+ * @param sliceIndex 截取的index
+ * @param padHtml    要插入的自定义html
+ * @param filePath   文件所在路径
+ */
+function padFileAndWrite (template, sliceIndex, padHtml, filePath) {
+  if (sliceIndex === -1) {
+    throw new Error('未找到插入html的标识位，项目配置有误!')
   }
-  fs.writeFileSync(rootPathIndex, content, { flag: 'as+' });
+  let content = (template.slice(0, sliceIndex) + padHtml + template.slice(sliceIndex))
+  if (fs.existsSync(filePath)) {
+    fs.rmSync(filePath)
+  }
+  fs.writeFileSync(filePath, content, {flag: 'as+'});
 }
 
 export default {

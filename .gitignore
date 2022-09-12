@@ -26,4 +26,4 @@ dist-ssr
 *.sw?
 
 # 项目自动生成
-./index.html
+index.html

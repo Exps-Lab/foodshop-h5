@@ -3,12 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta name="format-detection" content="telephone=no, email=no, adress=no">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
     <title>Vite App</title>
     <script type="text/javascript" lang="javascript">
       (function fit (global) {
        var window = global || this,
-         width = 750,
+         width = 375,
          docEl = window.document.documentElement,
          resizeEvt = 'resize';
        var resizeCall = function () {
@@ -31,9 +35,9 @@
        dpr = dpr >= 3 ? 3 : dpr >= 2 ? 2 : 1;
        docEl.setAttribute('data-dpr', dpr);
        window.addEventListener && window.addEventListener(resizeEvt, resizeCall, false);
+       window.addEventListener && window.addEventListener('load', resizeCall, false);
      })(this);
    </script>
- 
   </head>
   <body>
     <div id="app"></div>

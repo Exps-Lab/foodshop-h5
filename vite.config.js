@@ -32,6 +32,10 @@ export default (params => {
       port: env.VITE_DEV_PORT,
       open: true,
       proxy: {
+        '/h5/user': {
+          target: 'http://127.0.0.1:3000',
+          changeOrigin: true
+        },
         '/test': {
           target: 'http://127.0.0.1:3000',
           changeOrigin: true
