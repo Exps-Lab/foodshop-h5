@@ -48,10 +48,10 @@
 </template>
 
 <script setup>
+  import { Toast } from 'vant'
   import { getQuery } from '@utils'
   import { getCapture, loginSubmit } from '@api/login'
-  import { ref, onMounted, getCurrentInstance } from 'vue'
-  const { proxy: { $toast:Toast } } = getCurrentInstance()
+  import { ref, onMounted } from 'vue'
 
   const username = ref('');
   const password = ref('');

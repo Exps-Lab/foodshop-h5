@@ -4,8 +4,6 @@
    在使用函数组件时，unplugin-vue-components 无法自动引入对应的样式，因此需要手动引入样式。
  */
 
-import { Toast, Dialog, Notify, ImagePreview } from 'vant';
-
 // Toast
 import 'vant/es/toast/style';
 // Dialog
@@ -14,10 +12,3 @@ import 'vant/es/dialog/style';
 import 'vant/es/notify/style';
 // ImagePreview
 import 'vant/es/image-preview/style';
-
-export function bindFunctionComponents (app) {
-  const componentsArr = [ Toast, Dialog, Notify, ImagePreview ]
-  componentsArr.forEach(component => {
-    app.config.globalProperties['$' + component.name.toLowerCase()] = component
-  })
-}
