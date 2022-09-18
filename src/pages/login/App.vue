@@ -62,6 +62,7 @@
     window.history.back()
   }
   const formSubmit = (values) => {
+    values.password = window.btoa(values.password)
     loginSubmit(values).then(res => {
       Toast.success('登录/注册成功')
       backPrev()
