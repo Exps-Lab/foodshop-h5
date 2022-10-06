@@ -54,7 +54,7 @@ service.interceptors.response.use(
         return Promise.reject(response)
       }
     } else {
-      return response.data
+      return res
     }
   },
   error => {
