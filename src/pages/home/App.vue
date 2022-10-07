@@ -21,6 +21,7 @@
 <script setup>
   import { Toast } from 'vant'
   import { getPosByTX } from '@utils/getAccuratePos'
+  import { searchWithRange } from '@api/pos'
   import { reactive, onMounted } from 'vue'
 
   const constData = reactive({
@@ -29,13 +30,30 @@
     pos: ''
   })
 
-  onMounted (() => {
+  const getPos = () => {
     getPosByTX().then(data => {
       const { city, district, addr } = data
       constData.pos = city + district + addr
     }).finally(() => {
       constData.isPosing = false
     })
+  }
+
+  const searchPlace = () => {
+    searchWithRange({
+      city_name: '北京',
+      keyword: '十里堡北区',
+      current_pos: '39.929986, 116.503839'
+    }).then(data => {
+      console.log(data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  onMounted (() => {
+    getPos()
+    searchPlace()
   });
 </script>
  

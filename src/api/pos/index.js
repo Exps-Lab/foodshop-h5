@@ -6,3 +6,11 @@ export function getPosByIp () {
     method: 'get'
   })
 }
+
+export function searchWithRange (params) {
+  return request({
+    url: '/h5/common/noauth/place/searchWithRange',
+    method: 'get',
+    params
+  })
+}
