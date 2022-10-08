@@ -22,6 +22,7 @@
   import { Toast } from 'vant'
   import { getPosByTX } from '@utils/getAccuratePos'
   import { searchWithRange } from '@api/pos'
+  import { getShopList, getGlobalSearch } from '@api/home'
   import { reactive, onMounted } from 'vue'
 
   const constData = reactive({
@@ -42,7 +43,28 @@
   const searchPlace = () => {
     searchWithRange({
       city_name: '北京',
-      keyword: '十里堡北区',
+      keyword: '新龙城',
+      current_pos: '39.929986, 116.503839'
+    }).then(data => {
+      console.log(data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  const shopList = () => {
+    getShopList({
+      current_pos: '39.929986, 116.503839'
+    }).then(data => {
+      console.log(data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  const globalSearch = () => {
+    getGlobalSearch({
+      name: '店',
       current_pos: '39.929986, 116.503839'
     }).then(data => {
       console.log(data)
@@ -54,6 +76,8 @@
   onMounted (() => {
     getPos()
     searchPlace()
+    shopList()
+    globalSearch()
   });
 </script>
  
