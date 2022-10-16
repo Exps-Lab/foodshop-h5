@@ -15,3 +15,11 @@ export function getGlobalSearch (params) {
     params
   })
 }
+
+export function getKingKongSuggest (params) {
+  return request({
+    url: '/h5/common/noauth/shop/getCategory',
+    method: 'get',
+    params
+  })
+}
