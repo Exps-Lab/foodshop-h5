@@ -5,6 +5,7 @@
     <SuggestList />
     <Tabbar />
   </div>
+  <Tabbar />
 </template>
 
 <script setup>
