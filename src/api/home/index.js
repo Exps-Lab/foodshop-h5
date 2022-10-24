@@ -23,3 +23,11 @@ export function getKingKongSuggest (params) {
     params
   })
 }
+
+export function getPosCostTime (params) {
+  return request({
+    url: '/h5/common/noauth/getPosCostTime',
+    method: 'get',
+    params
+  })
+}

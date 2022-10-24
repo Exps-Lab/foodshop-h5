@@ -15,7 +15,7 @@ const showLoading = () => {
 
 const hideLoading = () => {
   requestCount--
-  if (requestCount == 0) {
+  if (requestCount === 0) {
     Loading.hide()
   }
 }

@@ -42,8 +42,8 @@
   }
 
   onMounted (() => {
-    searchPlace()
-    globalSearch()
+    // searchPlace()
+    // globalSearch()
   });
 </script>
  

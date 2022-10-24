@@ -13,7 +13,7 @@
           <span class="info-text">配送 ￥{{props.goodsData.delivery_fee}}</span>
         </p>
         <p class="inner-info-box">
-          <span class="info-text right-6">20分钟</span>
+          <span class="info-text right-6">{{costTime}}</span>
           <span class="info-text">{{posInfo}}</span>
         </p>
       </section>
@@ -29,11 +29,22 @@
       type: Object,
       default: () => {}
     },
+    costTime: {
+      type: [String, Number],
+      default: '...'
+    }
   })
 
   const posInfo = computed(() => {
     const { distance } = props.goodsData
     return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
+  })
+
+  const costTime = computed(() => {
+    const { costTime } = props
+    return costTime
+      ? costTime >= 24 * 60 ? '大于1天' : `${costTime}分钟`
+      : '暂无'
   })
 
   const goods = reactive({
