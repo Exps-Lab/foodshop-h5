@@ -30,7 +30,7 @@ export default {
         rootValue: 100, // 1rem的大小
         propList: ['*'],
         unitPrecision: 3,
-        minPixelValue: 12,
+        minPixelValue: 2,
       })
     ]
   }

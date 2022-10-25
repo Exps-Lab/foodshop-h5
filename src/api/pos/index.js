@@ -14,3 +14,11 @@ export function searchWithRange (params) {
     params
   })
 }
+
+export function searchWithoutKeyword (params) {
+  return request({
+    url: '/h5/common/noauth/place/searchWithoutKeyword',
+    method: 'get',
+    params
+  })
+}

@@ -1,4 +1,5 @@
 <template>
+  <section class="list-box__header">附近商家</section>
   <van-list
     class="self-list-box"
     v-model:loading="loading"

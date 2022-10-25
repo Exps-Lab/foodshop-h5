@@ -42,6 +42,7 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    min-height: 150px;
     .box {
       display: flex;
       flex-direction: column;

@@ -1,6 +1,6 @@
 <template>
   <div class="self-header">
-    <section :class="['pos-text', constData.minsizePos && 'minsize']">
+    <section :class="['pos-text', constData.minsizePos && 'minsize']" @click="toPOIPickerPage">
       <van-icon class="location-icon font-bold-weight" name="location-o" />
       <span class="font-bold-weight" v-if="constData.isPosing">定位中...</span>
       <span class="font-bold-weight" v-else>{{constData.pos}} ></span>
@@ -17,7 +17,9 @@
 <script setup>
   import { getPosByTX } from '@utils/getAccuratePos'
   import { reactive, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
 
+  const router = useRouter()
   const brandMain = 'rgb(2, 182, 253)'
   const constData = reactive({
     isPosing: true,
@@ -27,8 +29,8 @@
 
   const getPos = () => {
     getPosByTX().then(data => {
-      const { city, district, addr } = data
-      constData.pos = city + district + addr
+      const { district, addr } = data
+      constData.pos = addr || district
     }).finally(() => {
       constData.isPosing = false
     })
@@ -42,6 +44,12 @@
     window.addEventListener('scroll', (e) => {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
       constData.minsizePos = scrollTop > 5
+    })
+  }
+
+  const toPOIPickerPage = () => {
+    router.push({
+      path: "/roiPicker"
     })
   }
 
