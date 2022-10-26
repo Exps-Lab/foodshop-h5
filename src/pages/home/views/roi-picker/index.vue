@@ -54,7 +54,7 @@
           <section class="com_list__li" v-for="(item, index) in search.list" :key="index" @click="setChoseAddress(item)">
             <p class="item-top__main">
               {{item.title}}
-              <span class="item-top__right">{{item.distance}}m</span>
+              <span class="item-top__right">{{item.distance < 1 ? `${item.distance*100}m` : `${item.distance}km` }}</span>
             </p>
             <p class="item-top__sub">{{item.address}}</p>
           </section>
@@ -98,7 +98,9 @@
   // 重新定位
   const handleRePos = () => {
     pos.isPosing = true
-    getPosByTX().then(data => {
+    getPosByTX({
+      forceUpdate: true
+    }).then(data => {
       getLocation(data)
     }).finally(() => {
       pos.isPosing = false
@@ -201,6 +203,7 @@
       box-sizing: border-box;
       font-size: 14px;
       .now-city {
+        min-width: 75px;
         .city {
           &.yellow {
             color: @yellow-6;

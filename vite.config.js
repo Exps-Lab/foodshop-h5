@@ -29,6 +29,7 @@ export default (params => {
       }),
     ],
     server: {
+      host: '0.0.0.0',
       port: env.VITE_DEV_PORT,
       open: true,
       proxy: {

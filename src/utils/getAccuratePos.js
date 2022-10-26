@@ -4,9 +4,11 @@ const TXKey = 'AWNBZ-OCV6D-CLP4I-PEOVK-42YGJ-EIBXD'
 const AppName = 'hiUser'
 const storageName = 'appPos'
 let retryAccuratePos = false
+let forceUpdatePos = false
 
 // 处理定位入口
-const getPosByTX = () => {
+const getPosByTX = (options) => {
+  forceUpdatePos = options?.forceUpdate || false
   return new Promise(async (resolve, reject) => {
     // 从storage缓存取
     const posData = await handlePosStorage()
@@ -79,10 +81,9 @@ const handlePosStorage = async (type = 'check', data) => {
       if (historyPos) {
         const objectPos = JSON.parse(historyPos)
         const { addr = '' } = objectPos
-        if (addr || retryAccuratePos) {
+        if (!forceUpdatePos && (addr || retryAccuratePos)) {
           return objectPos
-        }
-        else {
+        } else {
           // 没有具体街道信息，重试一次
           retryAccuratePos = true
           let tempPos = {}
