@@ -31,3 +31,11 @@ export function getPosCostTime (params) {
     params
   })
 }
+
+export function getAllCity (params) {
+  return request({
+    url: '/h5/common/noauth/getAllCity',
+    method: 'get',
+    params
+  })
+}

@@ -18,9 +18,11 @@
 
 <script setup>
   import { reactive, ref, watch } from 'vue'
+  import { useStore } from 'vuex'
   import { getShopList, getPosCostTime } from '@api/home'
   import GoodsCard from './goods-card.vue'
 
+  const { getters } = useStore()
   const loading = ref(false);
   const finished = ref(false);
   const nowPosStr = ref('')
@@ -93,7 +95,10 @@
   // 获取当前定位
   const getPosNow = () => {
     return new Promise((resolve) => {
-      const { lat, lng } = JSON.parse(window.localStorage.getItem('appPos') || '{}')
+      const originData = getters.getChosePos.lat
+        ? getters.getChosePos
+        : JSON.parse(localStorage.getItem('appPos') || '{}')
+      const { lat, lng } = originData
       nowPosStr.value = `${lat},${lng}`
       resolve(nowPosStr)
     })

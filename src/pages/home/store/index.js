@@ -1,10 +1,15 @@
 import { createStore } from "vuex"
+import getters from './getters'
+import UserChosePos from './user-chose-pos'
 
 const store = createStore({
+  modules: {
+    userPos: UserChosePos
+  },
+  getters,
   state() {
     return {
       name: 'hello vite',
-      age: 2
     }
   },
 

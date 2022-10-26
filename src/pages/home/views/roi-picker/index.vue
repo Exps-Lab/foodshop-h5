@@ -38,7 +38,7 @@
             class="com_list__li big-padding"
             v-for="(item, index) in explore.list"
             :key="index"
-            @click="chooseNearbyAddress(item)">
+            @click="setChoseAddress(item)">
             {{item.title}}
           </p>
         </div>
@@ -51,7 +51,7 @@
         :finished="search.finished"
         :immediate-check="false">
         <div class="com_list__ul">
-          <section class="com_list__li" v-for="(item, index) in search.list" :key="index">
+          <section class="com_list__li" v-for="(item, index) in search.list" :key="index" @click="setChoseAddress(item)">
             <p class="item-top__main">
               {{item.title}}
               <span class="item-top__right">{{item.distance}}m</span>
@@ -61,21 +61,24 @@
         </div>
       </van-list>
     </div>
-
   </div>
 </template>
 
 <script setup>
   import { Toast } from 'vant'
-  import { ref, reactive } from 'vue'
+  import { useStore } from 'vuex'
+  import { ref, reactive, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { searchWithRange, searchWithoutKeyword } from '@api/pos'
   import { getPosByTX } from '@utils/getAccuratePos'
 
+  const { state, commit } = useStore()
   const router = useRouter()
   // 页面展示模式
   // pos: 选择地址；search：搜索附近
   const pageMode = ref('pos')
+  // 当前选择城市
+  const cityNow = computed(() => state.userPos.city)
 
   // 定位
   const pos = reactive({
@@ -88,7 +91,7 @@
   const getLocation = (data) => {
     const roiData = data || JSON.parse(localStorage.getItem('appPos') || '{}')
     const { city, district, lat, lng, addr = '' } = roiData
-    pos.city = city
+    pos.city = cityNow.value || city
     pos.accurate = addr || district
     pos.roi = `${lat},${lng}`
   }
@@ -103,7 +106,10 @@
   }
   const chooseCity = () => {
     router.push({
-      path: '/chooseCity'
+      path: '/chooseCity',
+      query: {
+        city: pos.city
+      }
     })
   }
 
@@ -118,10 +124,6 @@
     }).then(res => {
       explore.list = res.data.place
     })
-  }
-  const chooseNearbyAddress = (choseAddress) => {
-    const { lat, lng } = choseAddress.location
-    console.log(lat, lng)
   }
 
   // 根据keyword搜索附近
@@ -157,6 +159,17 @@
       search.loading = false
       search.finished = true
     })
+  }
+
+  // 记录用户选择的位置
+  const setChoseAddress = (choseAddress) => {
+    const { location: { lat, lng }, address, title } = choseAddress
+    commit('userPos/setAllInfo', { lat, lng, address, title })
+    backHome()
+  }
+
+  const backHome = () => {
+    router.push('/home')
   }
 
   const init = async () => {
@@ -238,8 +251,6 @@
         font-size: 14px;
         color: @yellow-6;
       }
-    }
-    .search-result-box {
     }
   }
 </style>

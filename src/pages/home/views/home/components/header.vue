@@ -17,8 +17,10 @@
 <script setup>
   import { getPosByTX } from '@utils/getAccuratePos'
   import { reactive, onMounted } from 'vue'
+  import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'
 
+  const { getters } = useStore()
   const router = useRouter()
   const brandMain = 'rgb(2, 182, 253)'
   const constData = reactive({
@@ -28,9 +30,10 @@
   })
 
   const getPos = () => {
+    const userChosePos = getters.getChosePos.title
     getPosByTX().then(data => {
       const { district, addr } = data
-      constData.pos = addr || district
+      constData.pos = userChosePos || addr || district
     }).finally(() => {
       constData.isPosing = false
     })
@@ -53,10 +56,10 @@
     })
   }
 
+  getPos()
   onMounted (() => {
-    getPos()
     handleScroll()
-  });
+  })
 </script>
 
 <style lang="less" scoped>
