@@ -1,24 +1,24 @@
 import axios from "axios"
-import Loading from "@common/components/Loading/index.js"
+// import Loading from "@common/components/Loading/index.js"
 
 // let loading = false
 let requestCount = 0
 let redirecturi = ''
 const host = window.location.origin
 
-const showLoading = () => {
-  if (requestCount === 0) {
-    Loading.show()
-  }
-  requestCount++
-}
+// const showLoading = () => {
+//   if (requestCount === 0) {
+//     Loading.show()
+//   }
+//   requestCount++
+// }
 
-const hideLoading = () => {
-  requestCount--
-  if (requestCount === 0) {
-    Loading.hide()
-  }
-}
+// const hideLoading = () => {
+//   requestCount--
+//   if (requestCount === 0) {
+//     Loading.hide()
+//   }
+// }
 
 const service = axios.create({
   timeout: 5000
@@ -27,21 +27,21 @@ const service = axios.create({
 // Sign in the request interceptors.
 service.interceptors.request.use(
   config => {
-    showLoading()
+    // showLoading()
     return config
   },
   error => {
     // Do something with request error
     // for debug
     console.log(error)
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 )
 
 // Sign in the response interceptors.
 service.interceptors.response.use(
   response => {
-    hideLoading()
+    // hideLoading()
     const res = response.data
     if (res.code !== 1) {
       // 30004    "token格式错误"
@@ -58,7 +58,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    hideLoading()
+    // hideLoading()
     console.log("Error:" + error)
     return Promise.reject(error)
   }

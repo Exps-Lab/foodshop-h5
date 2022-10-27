@@ -22,11 +22,13 @@
 
 <script setup>
   import { Toast } from 'vant'
-  import { reactive } from 'vue'
+  import { reactive, onMounted } from 'vue'
   import { useStore } from 'vuex'
   import { useRouter, useRoute } from 'vue-router'
   import { getAllCity } from '@api/home'
+  import Loading from '@common/components/Loading'
 
+  let loadingIns = null
   const { commit } = useStore()
   const router = useRouter()
   const route = useRoute()
@@ -47,6 +49,7 @@
     }
     // 取出热门城市数据
     city.hotList = data.hotCities
+    loadingIns.hide()
   }
 
   const choseCity = (city) => {
@@ -64,6 +67,14 @@
   }
 
   init()
+
+  onMounted(() => {
+    loadingIns = new Loading({
+      fixed: false,
+      teleport: '.index-bar-box'
+    })
+    loadingIns.show()
+  })
 </script>
  
 <style lang="less" scoped>
@@ -97,6 +108,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
       padding: 15px;
+      min-height: 105px;
       .city-item {
         color: @text-4;
         flex-basis: 23%;
@@ -111,6 +123,7 @@
     }
   }
   .index-bar-box {
+    min-height: 50vh;
     &:deep(.van-index-anchor) {
       padding-right: 20px;
       background-color: @fill-2;
