@@ -3,26 +3,26 @@ import { reactive, createApp } from 'vue'
 import template from './index.vue'
 
 const defaultOptions = {
+  fixed: false,
   title: '',
   teleport: ''
 }
+let appInstance = null
 
-class Loading {
-  constructor(options = {}) {
-    this.option = reactive(Object.assign({}, defaultOptions, options))
-    this.app = null
-    this.createLoading()
-  }
-  createLoading () {
-    this.app = createApp(template, this.option)
-    this.app.mount(document.createElement('div'))
-  }
-  show () {
-    this.app._instance.exposed.showLoading()
-  }
+const Loading = {
+  initLoading (options) {
+    const option = reactive(Object.assign({}, defaultOptions, options))
+    appInstance = createApp(template, option)
+    appInstance.mount(document.createElement('div'))
+  },
+  show (options) {
+    !appInstance && this.initLoading(options)
+    appInstance._instance.exposed.showLoading()
+  },
   hide () {
-    this.app._instance.exposed.hideLoading()
-  }
+    appInstance._instance.exposed.hideLoading()
+    appInstance = null
+  },
 }
 
 export default Loading

@@ -28,7 +28,6 @@
   import { getAllCity } from '@api/home'
   import Loading from '@common/components/Loading'
 
-  let loadingIns = null
   const { commit } = useStore()
   const router = useRouter()
   const route = useRoute()
@@ -49,7 +48,7 @@
     }
     // 取出热门城市数据
     city.hotList = data.hotCities
-    loadingIns.hide()
+    Loading.hide()
   }
 
   const choseCity = (city) => {
@@ -69,11 +68,9 @@
   init()
 
   onMounted(() => {
-    loadingIns = new Loading({
-      fixed: false,
+    Loading.show({
       teleport: '.index-bar-box'
     })
-    loadingIns.show()
   })
 </script>
  
