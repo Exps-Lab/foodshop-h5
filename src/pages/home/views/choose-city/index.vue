@@ -67,7 +67,7 @@
   init()
 
   onMounted(() => {
-    Loading.show({ teleport: '.index-bar-box', needBgColor: false })
+    Loading.show({ teleport: '.index-bar-box' })
   })
 </script>
  
@@ -102,7 +102,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
       padding: 15px;
-      min-height: 105px;
+      min-height: 75px;
       .city-item {
         color: @text-4;
         flex-basis: 23%;

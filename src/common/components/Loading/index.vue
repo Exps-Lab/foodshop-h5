@@ -6,13 +6,13 @@
       :style="{ height: loadingBoxHeight }"
       v-if="show" >
       <img class='loading__img' src="./imgs/loading.png" alt="loading" />
-      <p class="loading_text">{{props.text}}</p>
+      <p class="loading_text" v-if="props.needText">{{props.text}}</p>
     </section>
   </Teleport>
 </template>
 
 <script setup>
-  import { ref, defineExpose, onMounted, nextTick } from 'vue'
+  import { ref, onMounted, nextTick } from 'vue'
 
   const props = defineProps({
     fixed: {
@@ -28,8 +28,12 @@
     },
     needBgColor: {
       type: Boolean,
-      default: true
-    }
+      default: false
+    },
+    needText: {
+      type: Boolean,
+      default: false
+    },
   })
 
   // 控制loading显隐

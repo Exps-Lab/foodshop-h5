@@ -32,7 +32,7 @@ const defaultOptions = {
   fixed: false,
   text: '加载中...',
   teleport: 'body',
-  needBgColor: true,
+  needBgColor: false,
   needText: false,
 }
 let appInstance = null
