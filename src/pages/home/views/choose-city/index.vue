@@ -64,13 +64,10 @@
   const init = async () => {
     await getCities()
   }
-
   init()
 
   onMounted(() => {
-    Loading.show({
-      teleport: '.index-bar-box'
-    })
+    Loading.show({ teleport: '.index-bar-box', needBgColor: false })
   })
 </script>
  
@@ -120,7 +117,6 @@
     }
   }
   .index-bar-box {
-    min-height: 50vh;
     &:deep(.van-index-anchor) {
       padding-right: 20px;
       background-color: @fill-2;
