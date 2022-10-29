@@ -33,7 +33,7 @@
       <section class="divider"></section>
       <section class="com-box__list nearby-explore">
         <p class="list-box__header yellow">附近地址</p>
-        <div class="com_list__ul explore-list">
+        <div class="com_list__ul explore-list" v-loading="explore.loading">
           <p
             class="com_list__li big-padding"
             v-for="(item, index) in explore.list"
@@ -67,11 +67,10 @@
 <script setup>
   import { Toast } from 'vant'
   import { useStore } from 'vuex'
-  import { ref, reactive, computed, onMounted } from 'vue'
+  import { ref, reactive, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { searchWithRange, searchWithoutKeyword } from '@api/pos'
   import { getPosByTX } from '@utils/getAccuratePos'
-  import Loading from '@common/components/Loading'
 
   const { state, commit } = useStore()
   const router = useRouter()
@@ -118,16 +117,18 @@
 
   // 附近推荐地址
   const explore = reactive({
+    loading: false,
     list: []
   })
   const getNearbyExplore = () => {
+    explore.loading = true
     searchWithoutKeyword({
       current_pos: pos.roi,
       page_size: 5
     }).then(res => {
       explore.list = res.data.place
     }).finally(() => {
-      Loading.hide()
+      explore.loading = false
     })
   }
 
@@ -182,10 +183,6 @@
     await getNearbyExplore()
   }
   init()
-
-  onMounted(() => {
-    Loading.show({ teleport: '.explore-list' })
-  })
 </script>
  
 <style lang="less" scoped>

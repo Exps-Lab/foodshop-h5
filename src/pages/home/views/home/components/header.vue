@@ -32,8 +32,8 @@
   const getPos = () => {
     const userChosePos = getters.getChosePos.title
     getPosByTX().then(data => {
-      const { district, addr } = data
-      constData.pos = userChosePos || addr || district
+      const { district, addr, city } = data
+      constData.pos = userChosePos || addr || district || city
     }).finally(() => {
       constData.isPosing = false
     })

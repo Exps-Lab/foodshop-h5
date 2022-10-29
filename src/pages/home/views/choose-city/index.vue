@@ -12,7 +12,7 @@
       <p class="city-item" v-for="(city, index) in city.hotList" :key="index" @click="choseCity(city)">{{city.name}}</p>
     </section>
   </section>
-  <van-index-bar class="index-bar-box" :index-list="city.keyGroup" :sticky="false" highlight-color="#ffb000">
+  <van-index-bar class="index-bar-box" :index-list="city.keyGroup" :sticky="false" highlight-color="#ffb000" v-loading="city.loading">
     <section v-for="(cities, cityKey) in city.list" :key="cityKey">
       <van-index-anchor :index="cityKey">{{cityKey}}</van-index-anchor>
       <van-cell v-for="item in cities" :title="item.name" @click="choseCity(item)" />
@@ -26,17 +26,18 @@
   import { useStore } from 'vuex'
   import { useRouter, useRoute } from 'vue-router'
   import { getAllCity } from '@api/home'
-  import Loading from '@common/components/Loading'
 
   const { commit } = useStore()
   const router = useRouter()
   const route = useRoute()
   const city = reactive({
+    loading: false,
     keyGroup: [],
     hotList: [],
     list: {},
   })
   const getCities = async () => {
+    city.loading = true
     const { data } = await getAllCity()
     // 取出A-Z的城市数据
     for (let i = 65; i <= 90; i++) {
@@ -48,7 +49,7 @@
     }
     // 取出热门城市数据
     city.hotList = data.hotCities
-    Loading.hide()
+    city.loading = false
   }
 
   const choseCity = (city) => {
@@ -65,10 +66,6 @@
     await getCities()
   }
   init()
-
-  onMounted(() => {
-    Loading.show({ teleport: '.index-bar-box' })
-  })
 </script>
  
 <style lang="less" scoped>
