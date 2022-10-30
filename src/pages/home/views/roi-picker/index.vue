@@ -67,10 +67,11 @@
 <script setup>
   import { Toast } from 'vant'
   import { useStore } from 'vuex'
-  import { ref, reactive, computed } from 'vue'
+  import { ref, reactive, computed, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { searchWithRange, searchWithoutKeyword } from '@api/pos'
   import { getPosByTX } from '@utils/getAccuratePos'
+  import Loading from '@common/components/Loading'
 
   const { state, commit } = useStore()
   const router = useRouter()

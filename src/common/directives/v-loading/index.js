@@ -21,17 +21,17 @@ const defaultOptions = {
 }
 
 const appendEl = (el) =>{
-  el?.appendChild(el.instance.$el);
+  el?.appendChild(el.instance.$el)
 };
 const removeEl = (el) =>{
-  el?.removeChild(el.instance.$el);
+  el?.removeChild(el.instance.$el)
 };
 
 // 收集loading参数
 const getAttrOptions = (el) => {
   const booleanMap = ['true', 'false']
   return Object.keys(defaultOptions).reduce((obj, key) => {
-    const val = el.getAttribute(`loading-${key}`)
+    const val = el.getAttribute(`loading-${key}`) || defaultOptions[key]
     obj[key] = booleanMap.includes(val) ? JSON.parse(val) : val
     return obj
   }, {})

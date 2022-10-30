@@ -2,14 +2,12 @@
 //处理用户选择的位置Store
 const UserChosePosStore = {
   namespaced: true,
-  state() {
-    return {
-      lat: '',
-      lng: '',
-      city: '', // 城市
-      title: '', // 具体地标
-      address: '' // 具体街道地址
-    }
+  state: {
+    lat: '',
+    lng: '',
+    city: '', // 城市
+    title: '', // 具体地标
+    address: '' // 具体街道地址
   },
   mutations: {
     setLatLng (state, value) {

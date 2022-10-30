@@ -7,10 +7,8 @@ const store = createStore({
     userPos: UserChosePos
   },
   getters,
-  state() {
-    return {
-      name: 'hello vite',
-    }
+  state: {
+    name: 'hello vite',
   },
 
   mutations: {
