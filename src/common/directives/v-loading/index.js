@@ -36,14 +36,21 @@ const getAttrOptions = (el) => {
     return obj
   }, {})
 }
+// [note] 为了让loading撑满父元素空间，帮挂载的父元素添加relative属性
+const preHandlePosition = (el) => {
+  const positionMap = ['relative', 'absolute', 'fixed', 'sticky']
+  const elPositionStyle = window.getComputedStyle(el)['position']
+  if (!positionMap.includes(elPositionStyle)) {
+    el.style.position = 'relative'
+  }
+}
 
 const Loading = {
   mounted (el, binding){
     const options = reactive(Object.assign({}, defaultOptions, getAttrOptions(el)))
     const app = createApp(template, options)
     el.instance = app.mount(document.createElement('div'))
-    // [note] 为了让loading撑满父元素空间，强行帮挂载的父元素添加relative属性
-    el.style.position = 'relative'
+    preHandlePosition(el)
     if (binding.value) {
       appendEl(el)
     }
