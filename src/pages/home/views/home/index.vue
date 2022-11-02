@@ -2,35 +2,21 @@
   <div class="main-content">
     <MainHeader />
     <KingKongSuggest />
-    <SuggestList />
+    <SuggestList :filter="suggestListFilter" />
     <Tabbar />
   </div>
   <Tabbar />
 </template>
 
 <script setup>
-  import { Toast } from 'vant'
-  import { getGlobalSearch } from '@api/home'
-  import { reactive, onMounted } from 'vue'
   import MainHeader from './components/header.vue'
   import Tabbar from './components/tabbar.vue'
-  import SuggestList from './components/suggest-list.vue'
-  import KingKongSuggest from './components/king-kong-suggest.vue'
+  import KingKongSuggest from './components/king_kong_suggest.vue'
+  import SuggestList from '@common/components/Suggest_List/index.vue'
 
-  const globalSearch = () => {
-    getGlobalSearch({
-      name: '广场',
-      current_pos: '39.929986, 116.503839'
-    }).then(data => {
-      console.log(data)
-    }).catch((err) => {
-      console.log(err)
-    })
+  const suggestListFilter = {
+    distance: 1
   }
-
-  onMounted (() => {
-    // globalSearch()
-  });
 </script>
  
 <style lang="less" scoped>

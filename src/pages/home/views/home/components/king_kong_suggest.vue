@@ -1,5 +1,5 @@
 <template>
-  <div class="category-container">
+  <div class="category-container" v-loading="data.loading">
     <section
       class="box"
       v-for="item in data.suggestData"
@@ -8,32 +8,42 @@
       <img class="img" :src="item.image_url" alt="categoryAvatar">
       <span class="name">{{item.name}}</span>
     </section>
+    <section v-if="!data.suggestData.length && !data.loading" class="box no-data">暂无分类</section>
   </div>
 </template>
 
 <script setup>
-  import { reactive, onMounted } from 'vue'
+  import { reactive } from 'vue'
+  import { useRouter } from 'vue-router'
   import { getKingKongSuggest } from '@api/home'
 
+  const router = useRouter()
   const data = reactive({
+    loading: false,
     suggestData: [],
   })
 
   const getSuggestData = () => {
+    data.loading = true
     getKingKongSuggest().then(res => {
       data.suggestData = res.data
-    }).catch(err => {
-      console.log(err)
+    }).finally(err => {
+      data.loading = false
     })
   }
 
   const toCategoryPage = (data) => {
-    console.log(data)
+    const { name, id } = data
+    router.push({
+      path: '/shopTopic',
+      query: {
+        categoryId: id,
+        categoryName: name,
+      }
+    })
   }
 
-  onMounted (() => {
-    getSuggestData()
-  });
+  getSuggestData()
 </script>
 
 <style lang="less" scoped>
@@ -51,13 +61,18 @@
       width: 54px;
       padding: 8px 0;
       flex-basis: 25%;
+      font-family: PingFangSC-Regular, PingFang SC;
+      &.no-data {
+        font-size: 14px;
+        color: @text-3;
+        flex-basis: 100%;
+      }
       .img {
         width: 36px;
         margin-bottom: 4px;
       }
       .name {
         font-size: 12px;
-        font-family: PingFangSC-Regular, PingFang SC;
       }
     }
   }

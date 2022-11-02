@@ -10,6 +10,7 @@ export default (params => {
   const env = loadEnv(params.mode, __dirname)
   return defineConfig({
     root: './',
+    // [note] 生成环境部署Nginx时需要改成nginx对应路由的base
     base: '/',
     resolve: {
       alias: {

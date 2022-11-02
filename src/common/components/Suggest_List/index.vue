@@ -1,5 +1,5 @@
 <template>
-  <section class="list-box__header">附近商家</section>
+  <section class="list-box__header" v-if="props.needTitle">附近商家</section>
   <van-list
     class="self-list-box"
     v-model:loading="loading"
@@ -11,21 +11,33 @@
       v-for="(goodsData, index) in listShop.showData"
       :key="goodsData._id"
       :goods-data="goodsData"
-      :costTime="listShop.costTime[index]"
-    />
+      :costTime="listShop.costTime[index]"/>
   </van-list>
 </template>
 
 <script setup>
-  import { reactive, ref, watch } from 'vue'
+  import { reactive, ref, watch, defineProps, computed } from 'vue'
   import { useStore } from 'vuex'
   import { getShopList, getPosCostTime } from '@api/home'
-  import GoodsCard from './goods-card.vue'
+  import GoodsCard from '@common/components/Goods_Card/index.vue'
 
   const { getters } = useStore()
   const loading = ref(false);
   const finished = ref(false);
   const nowPosStr = ref('')
+  const props = defineProps({
+    needTitle: {
+      type: Boolean,
+      default: true
+    },
+    // 筛选条件
+    // distance  根据距离远近排序 (正序1/倒序-1)
+    // shop_type 根据商品的类型名称筛选
+    filter: {
+      type: Object,
+      default: () => {}
+    }
+  })
 
   // 前端分页，区分展示和源数据
   const listShop = reactive({
@@ -43,11 +55,29 @@
     hasNext: false,
     endText: '没有更多了'
   })
-
+  const resetFilterData = () => {
+    listShop.resData = []
+    listShop.showData = []
+    listShop.sliceData = []
+    listShop.costTime = []
+    pagination.pageNum = 0
+    pagination.total = 0
+    pagination.hasNext = false
+  }
+  const handleFilterParams = () => {
+    return Object.keys(props.filter).reduce((params, key) => {
+      const value = props.filter[key]
+      if (key === 'distance') {
+        params.current_pos = nowPosStr.value
+      }
+      params[key] = value
+      return params
+    }, {})
+  }
   const preGetShopList = () => {
-    return getShopList({
-      current_pos: nowPosStr.value
-    }).then(res => {
+    resetFilterData()
+    const filter = handleFilterParams()
+    return getShopList(filter).then(res => {
       const { data } = res
       pagination.total = data.length
       pagination.hasNext = Boolean(data.length > pagination.pageSize)
@@ -83,12 +113,24 @@
   watch(
     () => listShop.sliceData,
     async (newPageData) => {
-      const endPosArr = newPageData.reduce((res, now) => {
-        const { lat, lng } = now.pos
-        res.push({ lat, lng })
-        return res
-      }, [])
-      listShop.costTime = listShop.costTime.concat(await getCostTime(nowPosStr.value, endPosArr))
+      if (newPageData.length) {
+        const endPosArr = newPageData.reduce((res, now) => {
+          const {lat, lng} = now.pos
+          res.push({lat, lng})
+          return res
+        }, [])
+        listShop.costTime = listShop.costTime.concat(await getCostTime(nowPosStr.value, endPosArr))
+      }
+    }
+  )
+  // 计算配送路线所需时间
+  watch(
+    () => props.filter,
+    async (now, pre) => {
+      await preGetShopList()
+      await onLoad()
+    }, {
+      deep: true
     }
   )
 

@@ -13,12 +13,17 @@ const routes = [
   {
     path: '/roiPicker',
     name: 'roiPicker',
-    component: () => import('../views/roi-picker/index.vue')
+    component: () => import('../views/roi_picker/index.vue')
   },
   {
     path: '/chooseCity',
     name: 'chooseCity',
-    component: () => import('../views/choose-city/index.vue')
+    component: () => import('../views/choose_city/index.vue')
+  },
+  {
+    path: '/shopTopic',
+    name: 'shopTopic',
+    component: () => import('../views/shop_topic/index.vue')
   }
 ]
 

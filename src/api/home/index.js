@@ -24,6 +24,14 @@ export function getKingKongSuggest (params) {
   })
 }
 
+export function getSubCategory (params) {
+  return request({
+    url: '/h5/common/noauth/shop/getSubCategory',
+    method: 'get',
+    params
+  })
+}
+
 export function getPosCostTime (params) {
   return request({
     url: '/h5/common/noauth/getPosCostTime',
