@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-  import { reactive, ref, watch, defineProps, computed } from 'vue'
+  import { reactive, ref, watch } from 'vue'
   import { useStore } from 'vuex'
   import { getShopList, getPosCostTime } from '@api/home'
   import GoodsCard from '@common/components/Goods_Card/index.vue'
