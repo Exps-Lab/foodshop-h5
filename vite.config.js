@@ -38,7 +38,7 @@ export default (params => {
           target: 'http://127.0.0.1:3000',
           changeOrigin: true
         },
-        '/h5/common': {
+        '/h5/sale': {
           target: 'http://127.0.0.1:3000',
           changeOrigin: true
         },

@@ -1,18 +1,20 @@
 <template>
   <div class="topic-content">
-    <van-search readonly shape="round" :background="brandMain" placeholder="请输入商家或商品名称" @focus="toGlobalSearchPage"/>
-    <section class="slide-sub-category">
-      <div class="slide-box">
-        <div
-          v-for="item in subCategory.data"
-          :key="item.id"
-          @click="changeActive(item)"
-          :class="['slide-item', item.name === subCategory.activeName && 'active']">
-          <img class="slide-img" :src="item.image_url" alt="categoryImg" />
-          <p class="slide-text">{{item.name}}</p>
+    <div class="stick-box">
+      <van-search readonly shape="round" :background="brandMain" placeholder="请输入商家或商品名称" @focus="toGlobalSearchPage"/>
+      <section class="slide-sub-category">
+        <div class="slide-box">
+          <div
+            v-for="item in subCategory.data"
+            :key="item.id"
+            @click="changeActive(item)"
+            :class="['slide-item', item.name === subCategory.activeName && 'active']">
+            <img class="slide-img" :src="item.image_url" alt="categoryImg" />
+            <p class="slide-text">{{item.name}}</p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
     <SuggestList :needTitle="false" :filter="suggestListFilter" />
   </div>
 </template>
@@ -64,34 +66,44 @@
   .topic-content {
     background-color: rgb(245, 245, 246);
     min-height: 100vh;
-    .slide-sub-category {
-      .slide-box {
-        display: flex;
-        align-items: center;
-        overflow: auto;
-        padding: 12px;
-        .slide-item {
-          min-width: 72px;
-          text-align: center;
-          &.active {
+    .stick-box {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      background: @fill-1;
+      box-shadow: 0 0.02rem 0.1rem -0.02rem @fill-8;
+      .slide-sub-category {
+        .slide-box {
+          display: flex;
+          align-items: center;
+          overflow: auto;
+          padding: 12px 12px 0 12px;
+          &::-webkit-scrollbar {
+            width: 0;
+          }
+          .slide-item {
+            min-width: 72px;
+            text-align: center;
+            &.active {
+              .slide-img {
+                background-image: linear-gradient(180deg, #FFD9B3 0%, rgba(255, 217, 179, 0) 100%);
+              }
+              .slide-text {
+                color: @brand1-6;
+              }
+            }
             .slide-img {
-              background-image: linear-gradient(180deg, #FFD9B3 0%, rgba(255, 217, 179, 0) 100%);
+              margin: 0 auto;
+              height: 45px;
+              width: 45px;
+              border-radius: 50%;
+              overflow: hidden;
+              background-image: linear-gradient(180deg, #FFFFFF 0%, @fill-5 100%);
             }
             .slide-text {
-              color: @brand1-6;
+              font-size: 12px;
+              line-height: 20px;
             }
-          }
-          .slide-img {
-            margin: 0 auto;
-            height: 45px;
-            width: 45px;
-            border-radius: 50%;
-            overflow: hidden;
-            background-image: linear-gradient(180deg, #FFFFFF 0%, #F5F5F6 100%);
-          }
-          .slide-text {
-            font-size: 12px;
-            line-height: 20px;
           }
         }
       }

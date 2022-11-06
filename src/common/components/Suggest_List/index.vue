@@ -22,7 +22,7 @@
   import GoodsCard from '@common/components/Goods_Card/index.vue'
 
   const { getters } = useStore()
-  const loading = ref(false);
+  const loading = ref(true);
   const finished = ref(false);
   const nowPosStr = ref('')
   const props = defineProps({

@@ -1,4 +1,14 @@
-
+{
+  food_category_id: [{
+    id: '',
+    name: '',
+    measure: '',
+    image_path: '',
+    price: '', // 原价以及库存信息等需从specfoods的第一位中取数据,
+    is_discount: '',
+    discount_val: ''
+  }]
+}
 /**
  * 获取url中参数
  * @param  {String} query 要获取的参数，对大小写敏感

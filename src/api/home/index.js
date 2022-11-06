@@ -2,7 +2,7 @@ import request from '@utils/request.js'
 
 export function getShopList (params) {
   return request({
-    url: '/h5/common/noauth/shop/list',
+    url: '/h5/sale/noauth/shop/list',
     method: 'get',
     params
   })
@@ -10,7 +10,7 @@ export function getShopList (params) {
 
 export function getGlobalSearch (params) {
   return request({
-    url: '/h5/common/noauth/global/search',
+    url: '/h5/sale/noauth/global/search',
     method: 'get',
     params
   })
@@ -18,7 +18,7 @@ export function getGlobalSearch (params) {
 
 export function getKingKongSuggest (params) {
   return request({
-    url: '/h5/common/noauth/shop/getCategory',
+    url: '/h5/sale/noauth/shop/getCategory',
     method: 'get',
     params
   })
@@ -26,7 +26,7 @@ export function getKingKongSuggest (params) {
 
 export function getSubCategory (params) {
   return request({
-    url: '/h5/common/noauth/shop/getSubCategory',
+    url: '/h5/sale/noauth/shop/getSubCategory',
     method: 'get',
     params
   })
@@ -34,7 +34,7 @@ export function getSubCategory (params) {
 
 export function getPosCostTime (params) {
   return request({
-    url: '/h5/common/noauth/getPosCostTime',
+    url: '/h5/sale/noauth/getPosCostTime',
     method: 'get',
     params
   })
@@ -42,7 +42,7 @@ export function getPosCostTime (params) {
 
 export function getAllCity (params) {
   return request({
-    url: '/h5/common/noauth/getAllCity',
+    url: '/h5/sale/noauth/getAllCity',
     method: 'get',
     params
   })
