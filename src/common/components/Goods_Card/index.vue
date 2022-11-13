@@ -1,5 +1,6 @@
 <template>
   <van-card
+    @click="toDetail(props.goodsData)"
     :title="props.goodsData.name"
     thumb="https://fastly.jsdelivr.net/npm/@vant/assets/ipad.jpeg">
     <template #desc>
@@ -22,8 +23,10 @@
 </template>
 
 <script setup>
-  import { reactive, onMounted, computed } from 'vue'
+  import { computed } from 'vue'
+  import { useRouter } from 'vue-router'
 
+  const router = useRouter()
   const props = defineProps({
     goodsData: {
       type: Object,
@@ -39,7 +42,6 @@
     const { distance } = props.goodsData
     return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
   })
-
   const costTime = computed(() => {
     const { costTime } = props
     return costTime
@@ -47,11 +49,16 @@
       : '暂无'
   })
 
-  const goods = reactive({
-  })
-
-  onMounted (() => {
-  });
+  const toDetail = (data) => {
+    const { id: shop_id, pos } = data
+    router.push({
+      path: '/shopDetail',
+      query: {
+        shop_id,
+        current_pos: `${pos.lat},${pos.lng}`
+      }
+    })
+  }
 </script>
 
 <style lang="less" scoped>

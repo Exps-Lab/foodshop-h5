@@ -24,7 +24,22 @@ const routes = [
     path: '/shopTopic',
     name: 'shopTopic',
     component: () => import('../views/shop_topic/index.vue')
-  }
+  },
+  {
+    path: '/shopDetail',
+    name: 'shopDetail',
+    component: () => import('../views/shop_detail/index.vue'),
+  },
+  {
+    path: '/shopDetail/map',
+    name: 'shopDetailMap',
+    component: () => import('../views/shop_detail/show_in_map.vue')
+  },
+  {
+    path: '/shopDetail/safeDoc',
+    name: 'safeDoc',
+    component: () => import('../views/shop_detail/safe_doc.vue')
+  },
 ]
 
 export default createRouter({
