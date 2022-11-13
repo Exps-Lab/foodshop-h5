@@ -3,11 +3,11 @@
 <template>
   <div class="store-box">
     <section class="com-box">
-      <p class="box-title font-bold-weight-4">商铺地址</p>
+      <p class="box-title font-bold-weight-4">商铺信息</p>
       <div class="box-main">
         <section class="box-left" @click="showAddressInMap">
           <van-icon class="box-icon" name="location-o" />
-          <p class="box-text">{{props.shopInfo.address}}</p>
+          <p class="box-text">{{props.shopInfo.address}} ></p>
         </section>
         <p class="box-right phone" @click="phoneShop"><van-icon class="icon" name="phone" /></p>
       </div>
@@ -21,12 +21,12 @@
 
     <section class="com-box">
       <p class="box-title font-bold-weight-4">商家承诺</p>
-      <div class="box-main">
+      <div class="box-main" @click="showSafeDoc">
         <section class="box-left">
           <van-icon class="box-icon" name="shield-o" />
           <p class="box-text">查看食品档案</p>
         </section>
-        <p class="box-right arrow" @click="phoneShop"><van-icon class="icon" name="arrow" /></p>
+        <p class="box-right arrow"><van-icon class="icon" name="arrow" /></p>
       </div>
       <div class="box-main">
         <section class="box-left">
@@ -41,12 +41,14 @@
         </section>
       </div>
     </section>
+    <SafeDoc ref="shopImageModal" :shopImage="shopImage"/>
   </div>
 </template>
 
 <script setup>
-  import { computed } from 'vue'
+  import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import SafeDoc from './safe_doc_modal.vue'
 
   const router = useRouter()
   const props = defineProps({
@@ -60,6 +62,10 @@
   const openTime = computed(() => {
     const [ open, close ] = props.shopInfo.open_time || []
     return `${open} - ${close}`
+  })
+  // 店铺图片
+  const shopImage = computed(() => {
+    return props.shopInfo.shop_image
   })
 
   // 拨打商家电话
@@ -77,6 +83,12 @@
         shop_address: props.shopInfo.address,
       }
     })
+  }
+
+  const shopImageModal = ref()
+  // 展示视频档案modal
+  const showSafeDoc = () => {
+    shopImageModal.value.showModal()
   }
 
 </script>

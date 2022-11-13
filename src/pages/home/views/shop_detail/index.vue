@@ -11,9 +11,12 @@
         <p class="note-box text-ellipsis">公告：{{shopBaseInfo.intro_text}}</p>
       </section>
       <section class="shop-content-nav">
-        <van-tabs shrink sticky border swipeable
+        <van-tabs
+          shrink sticky border
           line-width="20px" line-height="2px" @click-tab="menuTabClick" v-model:active="activeMenuName">
-          <van-tab title="点餐" name="order">内容 1</van-tab>
+          <van-tab title="点餐" name="order">
+            <ShopMenu :shopId="shop_id" />
+          </van-tab>
           <van-tab title="商家" name="store">
             <StoreInfo :shopInfo="shopBaseInfo" />
           </van-tab>
@@ -33,7 +36,8 @@
   import { useRoute, useRouter } from 'vue-router'
   import InfoDetailModal from './components/info_detail_modal.vue'
   import StoreInfo from './components/store_info.vue'
-  import { getShopDetail, getShopGoods, searchShopGoods } from '@api/shop'
+  import ShopMenu from './components/menu_info.vue'
+  import { getShopDetail, searchShopGoods } from '@api/shop'
 
   const router = useRouter()
   const route = useRoute()
@@ -104,7 +108,7 @@
           }
         }
         .note-box {
-          margin-top: 8px;
+          margin-top: 20px;
           color: @text-4;
           font-weight: 500;
         }
