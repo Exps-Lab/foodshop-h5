@@ -1,14 +1,3 @@
-{
-  food_category_id: [{
-    id: '',
-    name: '',
-    measure: '',
-    image_path: '',
-    price: '', // 原价以及库存信息等需从specfoods的第一位中取数据,
-    is_discount: '',
-    discount_val: ''
-  }]
-}
 /**
  * 获取url中参数
  * @param  {String} query 要获取的参数，对大小写敏感
@@ -451,6 +440,18 @@ export function flatten (array) {
   return [].concat(...array.map(item => Array.isArray(item) ? flatten(item) : item))
 }
 
+/**
+ * 保留固定位数的数字
+ * @param value 数字值
+ * @param len   保留位数
+ * @returns {string} 返回处理数字的string
+ */
+export function roundNum(value, len = 0) {
+  const val = Math.round(value * Math.pow(10, len)) / Math.pow(10, len)
+  const [ onesVal, pointsVal = '' ] = String(val).split('.')
+  return len ? `${onesVal}.${pointsVal.padEnd(len, '0')}` : String(onesVal)
+}
+
 export default {
   getQuery,
   delQuery,
@@ -474,5 +475,6 @@ export default {
   urlToObj,
   objToUrl,
   getPreSubmitData,
-  flatten
+  flatten,
+  roundNum
 }

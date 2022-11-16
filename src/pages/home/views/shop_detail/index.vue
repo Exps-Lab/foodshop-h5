@@ -44,9 +44,10 @@
   const brandMain = 'rgb(2, 182, 253)'
   const { shop_id, current_pos } = route.query
 
+  const { lat, lng } = JSON.parse(localStorage.getItem('appPos') || '{}')
   const shopBaseInfo = reactive({})
   const getShopInfo = async () => {
-    const { data } = await getShopDetail({ shop_id, current_pos })
+    const { data } = await getShopDetail({ shop_id, current_pos: `${lat},${lng}` })
     Object.assign(shopBaseInfo, data)
   }
   // 商铺顶部背景
@@ -63,7 +64,7 @@
   }
 
   // 控制菜单切换
-  const activeMenuName = ref('store')
+  const activeMenuName = ref('menu')
   const menuTabClick = ({ title, name }) => {
     console.log(name)
   }
