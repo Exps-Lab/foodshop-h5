@@ -10,8 +10,8 @@
       </section>
       <section class="info-box flex-box top-4">
         <p class="inner-info-box">
-          <span class="info-text right-6">起送 ￥{{props.goodsData.mini_delivery_price}}</span>
-          <span class="info-text">配送 ￥{{props.goodsData.delivery_fee}}</span>
+          <span class="info-text right-6">起送 ¥{{props.goodsData.mini_delivery_price}}</span>
+          <span class="info-text">配送 ¥{{props.goodsData.delivery_fee}}</span>
         </p>
         <p class="inner-info-box">
           <span class="info-text right-6">{{costTime}}</span>

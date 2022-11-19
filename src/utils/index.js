@@ -452,6 +452,22 @@ export function roundNum(value, len = 0) {
   return len ? `${onesVal}.${pointsVal.padEnd(len, '0')}` : String(onesVal)
 }
 
+// 价格处理
+export function priceHandle (price) {
+  if(!price){
+    return 0
+  }
+  let priceString = String(price.toFixed(2))
+  let [pre, sub] = priceString.split('.')
+  if (Number(sub) === 0) {
+    return pre
+  }
+  if (Number(sub.substr(1, 1)) === 0) {
+    return pre + '.' + sub.substr(0, 1)
+  }
+  return priceString
+}
+
 export default {
   getQuery,
   delQuery,
@@ -476,5 +492,6 @@ export default {
   objToUrl,
   getPreSubmitData,
   flatten,
-  roundNum
+  roundNum,
+  priceHandle
 }

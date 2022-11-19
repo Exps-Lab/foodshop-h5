@@ -27,18 +27,20 @@
       <p class="spec-tips"><span class="text">满30减10</span></p>
       <div class="shopping-bag">
         <section class="bag-left">
-          <p class="icon-box">
-            <van-icon class="icon" name="cart-o" />
-          </p>
+          <van-badge :content="totalChoseCount">
+            <p class="icon-box">
+              <van-icon :class="['icon', totalNeedPay > 0 && 'active']" :name="totalNeedPay > 0 ? 'cart' : 'cart-o'" />
+            </p>
+          </van-badge>
           <section class="price-info">
             <p class="pay-price">
-              <i class="symbol font-bold-weight">￥</i>
+              <i class="symbol font-bold-weight">¥</i>
               <span class="discount-price font-bold-weight">{{totalNeedPay}}</span>
             </p>
             <p class="delivery-fee">{{deliveryFee}}</p>
           </section>
         </section>
-        <button class="bag-right pay-btn font-bold-weight active">￥20起送</button>
+        <button :class="['bag-right', 'pay-btn', 'font-bold-weight', canDeliver && 'active']">{{deliverText}}</button>
       </div>
     </section>
 
@@ -54,6 +56,7 @@
   import StoreInfo from './components/store_info.vue'
   import ShopMenu from './components/menu_info.vue'
   import { getShopDetail, searchShopGoods } from '@api/shop'
+  import { priceHandle } from '@utils'
 
   const router = useRouter()
   const route = useRoute()
@@ -88,21 +91,53 @@
 
   /* 用户选择商品和计算金额部分 */
   let choseGoods = reactive({})
+  // 选择的商品总数
+  const totalChoseCount = computed(() => {
+    let count = Object.values(choseGoods).reduce((totalCount, category) => {
+      totalCount += category.reduce((categoryCount, goods) => {
+        categoryCount += goods.count
+        return categoryCount
+      }, 0)
+      return totalCount
+    }, 0)
+    return count > 0 ? count : undefined
+  })
   // 配送费
   const deliveryFee = computed(() => {
     const delivery = shopBaseInfo.delivery_fee || 0
-    return delivery > 0 ? `配送费约￥${delivery}` : '免配送费'
+    return delivery > 0 ? `另需配送费约¥${delivery}` : '免配送费'
   })
   // 本次共选择需要支付金额
   const totalNeedPay = computed(() => {
-    return Object.values(choseGoods).reduce((totalPrice, category) => {
+    let price = Object.values(choseGoods).reduce((totalPrice, category) => {
       totalPrice += category.reduce((categoryPrice, goods) => {
-        const { specfoods, choseSpecIndex, count } = goods
-        categoryPrice += specfoods[choseSpecIndex].price * count
+        const { specfoods, choseSpecIndex, count, is_discount, discount_val } = goods
+        const { price, packing_fee } = specfoods[choseSpecIndex]
+        // [todo] 待确认是否需要包装费
+        const defaultSpecPrice = price + packing_fee
+        categoryPrice += is_discount
+          ? defaultSpecPrice * count * (discount_val / 10)
+          : defaultSpecPrice * count
         return categoryPrice
       }, 0)
       return totalPrice
     }, 0)
+    return priceHandle(price)
+  })
+  // 是否达到最低配送价格
+  const canDeliver = computed(() => {
+    return totalNeedPay.value >= shopBaseInfo.mini_delivery_price
+  })
+  // 结算按钮文案
+  const deliverText = computed(() => {
+    const { mini_delivery_price } = shopBaseInfo
+    const nowPrice = totalNeedPay.value
+    if (nowPrice=== 0) {
+      return `¥${mini_delivery_price}起送`
+    }
+    return canDeliver.value
+      ? '去结算'
+      : `差¥${priceHandle(mini_delivery_price - nowPrice)}起送`
   })
 
 </script>
@@ -203,9 +238,9 @@
               padding: 6px;
               border-radius: 10px;
               background-color: @fill-4;
-              transition: all 0.3s linear;
+              transition: all 0.1s linear;
               &.active {
-                background-color: @brand1-6;
+                background-color: rgba(2, 182, 253, 0.4);
               }
             }
           }
@@ -239,6 +274,7 @@
           color: @fill-1;
           font-size: 14px;
           background-color: @fill-9;
+          transition: all 0.1s linear;
           &.active {
             background-color: @brand1-6;
           }

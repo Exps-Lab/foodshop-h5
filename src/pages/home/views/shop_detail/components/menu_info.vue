@@ -36,11 +36,11 @@
               <div class="price-box" v-if="getShowPrice('showPrice', food) !== '0'">
                 <div class="price">
                   <p class="price-item red">
-                    <i class="symbol">￥</i>
+                    <i class="symbol">¥</i>
                     <span class="discount-price">{{getShowPrice('showPrice', food)}}</span>
                   </p>
                   <p class="price-item del gray" v-if="food.is_discount">
-                    <i class="symbol">￥</i>
+                    <i class="symbol">¥</i>
                     <span class="discount-price">{{getShowPrice('originPrice', food)}}</span>
                   </p>
                 </div>
@@ -53,16 +53,18 @@
               <div class="count-box">
                 <!--  当前商品选中之后才显示  -->
                 <div v-if="props.choseGoods[food.food_category_id]?.find(item => item.id === food.id)">
-                  <span class="count-item border" @click="deleteGoods(food)">-</span>
+                  <span class="count-item border font-bold-weight" @click="deleteGoods(food)">-</span>
                   <span class="count-num">{{getGoodsCount(food)}}</span>
                 </div>
-                <p class="count-item bg" @click="addGoods(food)">{{food.specfoods.length === 1 ? '+' : '选规格'}}</p>
+                <p class="count-item bg font-bold-weight" @click="preAddGoods(food)">{{food.specfoods.length === 1 ? '+' : '选规格'}}</p>
               </div>
             </section>
           </div>
         </div>
       </section>
     </div>
+
+    <GoodsSpec ref="goodsSpecModal" :activeGoods="activeGoods" />
   </div>
   <van-empty description="暂无菜单" v-else />
 </template>
@@ -70,7 +72,8 @@
 <script setup>
   import { ref, reactive, computed } from 'vue'
   import { getShopGoods } from '@api/shop'
-  import { roundNum } from '@utils'
+  import { priceHandle } from '@utils'
+  import GoodsSpec from './goods_spec.vue'
 
   const props = defineProps({
     // 当前商铺id
@@ -98,6 +101,14 @@
   const activeCategoryData = computed(() => {
     return menuData[activeIndex.value] || {}
   })
+  // 选中商品
+  const activeGoods = ref({})
+  const goodsSpecModal = ref()
+  // 展示选择规格弹窗
+  const showGoodsModal = (nowGoods) => {
+    activeGoods.value = nowGoods
+    goodsSpecModal.value.showModal()
+  }
   // 左侧菜单change
   const activeChange = () => {
   }
@@ -124,18 +135,26 @@
     const { packing_fee = 0, price } = defaultSpec
     // [todo] 待确认是否需要包装费
     const defaultSpecPrice = price + packing_fee
-    // const defaultSpecPrice = price
     let resPrice = 0
     if (type === 'showPrice') {
       resPrice = is_discount
-        ? discount_val > 0 ? roundNum(defaultSpecPrice * (discount_val/10), 1) : '0'
-        : roundNum(defaultSpecPrice)
+        ? discount_val > 0 ? priceHandle(defaultSpecPrice * (discount_val / 10)) : '0'
+        : priceHandle(defaultSpecPrice)
     } else if (type === 'originPrice') {
-      resPrice = roundNum(defaultSpecPrice)
+      resPrice = priceHandle(defaultSpecPrice)
     }
     return resPrice
   }
 
+  // 添加商品前 处理
+  const preAddGoods = (food) => {
+    const { specfoods } = food
+    if (specfoods.length > 1) {
+      showGoodsModal(food)
+    } else {
+      addGoods(food)
+    }
+  }
   // 处理商品新增
   const addGoods = (food) => {
     const { food_category_id: c_id, id } = food
@@ -256,10 +275,10 @@
               top: -6px;
               padding: 5px 9px;
               background-color: @brand1-6;
-              color: @text-4;
+              color: @text-1;
               border-radius: 3px;
               font-size: 12px;
-              transform: scale(0.65);
+              transform: scale(0.7);
               letter-spacing: 1px;
               &.hot {
                 right: -10px;
@@ -353,7 +372,7 @@
                 display: flex;
                 align-items: center;
                 .count-item {
-                  color: @text-5;
+                  color: @text-1;
                   font-size: 12px;
                   border-radius: 4px;
                   &.bg {
@@ -363,6 +382,7 @@
                   &.border {
                     display: inline-block;
                     padding: 2px 5px;
+                    color: @brand1-6;
                     border: 1px solid @brand1-6;
                   }
                 }
