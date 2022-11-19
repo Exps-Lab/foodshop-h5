@@ -15,16 +15,32 @@
           shrink sticky border
           line-width="20px" line-height="2px" @click-tab="menuTabClick" v-model:active="activeMenuName">
           <van-tab title="点餐" name="order">
-            <ShopMenu :shopId="shop_id" />
+            <ShopMenu :shopId="shop_id" :choseGoods="choseGoods" />
           </van-tab>
           <van-tab title="商家" name="store">
             <StoreInfo :shopInfo="shopBaseInfo" />
           </van-tab>
         </van-tabs>
       </section>
-      <section class="menu-box"></section>
     </div>
-    <section class="shopping-bag-box"></section>
+    <section class="shopping-bag-area">
+      <p class="spec-tips"><span class="text">满30减10</span></p>
+      <div class="shopping-bag">
+        <section class="bag-left">
+          <p class="icon-box">
+            <van-icon class="icon" name="cart-o" />
+          </p>
+          <section class="price-info">
+            <p class="pay-price">
+              <i class="symbol font-bold-weight">￥</i>
+              <span class="discount-price font-bold-weight">{{totalNeedPay}}</span>
+            </p>
+            <p class="delivery-fee">{{deliveryFee}}</p>
+          </section>
+        </section>
+        <button class="bag-right pay-btn font-bold-weight active">￥20起送</button>
+      </div>
+    </section>
 
     <!--  商铺基本信息弹窗  -->
     <InfoDetailModal ref="infoModal" :shopInfo="shopBaseInfo" />
@@ -44,6 +60,7 @@
   const brandMain = 'rgb(2, 182, 253)'
   const { shop_id, current_pos } = route.query
 
+  /* 商铺详情部分 */
   const { lat, lng } = JSON.parse(localStorage.getItem('appPos') || '{}')
   const shopBaseInfo = reactive({})
   const getShopInfo = async () => {
@@ -57,18 +74,36 @@
   })
   getShopInfo()
 
-  // 控制店铺详情modal
+  /* 控制店铺详情modal */
   const infoModal = ref()
   const showDetailInfo = () => {
     infoModal.value.showModal()
   }
 
-  // 控制菜单切换
+  /* 控制菜单切换 */
   const activeMenuName = ref('menu')
   const menuTabClick = ({ title, name }) => {
     console.log(name)
   }
 
+  /* 用户选择商品和计算金额部分 */
+  let choseGoods = reactive({})
+  // 配送费
+  const deliveryFee = computed(() => {
+    const delivery = shopBaseInfo.delivery_fee || 0
+    return delivery > 0 ? `配送费约￥${delivery}` : '免配送费'
+  })
+  // 本次共选择需要支付金额
+  const totalNeedPay = computed(() => {
+    return Object.values(choseGoods).reduce((totalPrice, category) => {
+      totalPrice += category.reduce((categoryPrice, goods) => {
+        const { specfoods, choseSpecIndex, count } = goods
+        categoryPrice += specfoods[choseSpecIndex].price * count
+        return categoryPrice
+      }, 0)
+      return totalPrice
+    }, 0)
+  })
 
 </script>
  
@@ -84,6 +119,7 @@
       background-color: #fff;
       margin-top: -30px;
       border-radius: 12px 12px 0 0;
+      padding-bottom: 70px;
       .shop-main-info {
         padding: 14px 16px;
         position: relative;
@@ -129,6 +165,81 @@
             }
           }
           .van-tabs__line {
+            background-color: @brand1-6;
+          }
+        }
+      }
+    }
+    .shopping-bag-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: @fill-1;
+      .spec-tips {
+        padding: 3px 0;
+        text-align: center;
+        background-color: @yellow-1;
+        color: @error-6;
+        border-bottom: 1px solid @line-0;
+        .text {
+          display: inline-block;
+          font-size: 12px;
+          transform: scale(0.9);
+        }
+      }
+      .shopping-bag {
+        min-height: 40px;
+        padding: 5px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .bag-left {
+          display: flex;
+          align-items: center;
+          .icon-box {
+            .icon {
+              font-size: 30px;
+              padding: 6px;
+              border-radius: 10px;
+              background-color: @fill-4;
+              transition: all 0.3s linear;
+              &.active {
+                background-color: @brand1-6;
+              }
+            }
+          }
+          .price-info {
+            margin-left: 10px;
+            .pay-price {
+              display: flex;
+              align-items: flex-end;
+              .symbol {
+                font-size: 12px;
+              }
+              .discount-price {
+                font-size: 16px;
+              }
+            }
+            .delivery-fee {
+              margin-top: 5px;
+              color: @text-3;
+              font-size: 12px;
+              transform: scale(0.9) translateX(-2px);
+            }
+          }
+        }
+        .pay-btn {
+          min-width: 100px;
+          height: 35px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 20px;
+          color: @fill-1;
+          font-size: 14px;
+          background-color: @fill-9;
+          &.active {
             background-color: @brand1-6;
           }
         }

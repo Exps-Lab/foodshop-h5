@@ -5,7 +5,9 @@
     <!--  菜单分类列表  -->
     <van-sidebar class="sidebar-box" v-model="activeIndex" @change="activeChange">
       <section class="menu-list" v-for="(menu, index) in menuData" :key="index">
-        <van-sidebar-item :title="menu.name" />
+        <van-badge :content="getMenuCount(menu.id)">
+          <van-sidebar-item :title="menu.name" />
+        </van-badge>
       </section>
     </van-sidebar>
 
@@ -32,7 +34,6 @@
             </div>
             <section class="price-buy">
               <div class="price-box" v-if="getShowPrice('showPrice', food) !== '0'">
-                <!--  当前商品选中之后才显示  -->
                 <div class="price">
                   <p class="price-item red">
                     <i class="symbol">￥</i>
@@ -50,12 +51,12 @@
               </div>
               <p class="price-free red" v-else>免费</p>
               <div class="count-box">
-                <!-- 选择反馈 -->
-                <div>
-                  <span class="count-item border">-</span>
-                  <span class="count-num">11</span>
+                <!--  当前商品选中之后才显示  -->
+                <div v-if="props.choseGoods[food.food_category_id]?.find(item => item.id === food.id)">
+                  <span class="count-item border" @click="deleteGoods(food)">-</span>
+                  <span class="count-num">{{getGoodsCount(food)}}</span>
                 </div>
-                <p class="count-item bg">{{food.specfoods.length === 1 ? '+' : '选规格'}}</p>
+                <p class="count-item bg" @click="addGoods(food)">{{food.specfoods.length === 1 ? '+' : '选规格'}}</p>
               </div>
             </section>
           </div>
@@ -72,9 +73,15 @@
   import { roundNum } from '@utils'
 
   const props = defineProps({
+    // 当前商铺id
     shopId: {
       type: String,
       default: ''
+    },
+    // 当前购物袋选择商品
+    choseGoods: {
+      type: Object,
+      default: () => {}
     }
   })
 
@@ -86,13 +93,30 @@
   }
   getMenuData()
 
-  // 选中菜单
+  // 选中菜单种类
   const activeIndex = ref(0)
   const activeCategoryData = computed(() => {
     return menuData[activeIndex.value] || {}
   })
   // 左侧菜单change
   const activeChange = () => {
+  }
+  // 获取当前 菜单 点餐count
+  const getMenuCount = (id) => {
+    let count = props.choseGoods[id]?.reduce((count, goods) => {
+      count += goods.count
+      return count
+    }, 0)
+    return count > 0 ? count : undefined
+  }
+  // 获取当前 商品 点餐count
+  const getGoodsCount = (goods) => {
+    const { food_category_id: c_id, id } = goods
+    for (const goodsItem of props.choseGoods[c_id]) {
+      if (goodsItem.id === id) {
+        return goodsItem.count
+      }
+    }
   }
   // 处理商品卡片的价格展示
   const getShowPrice = (type, food) => {
@@ -111,6 +135,48 @@
     }
     return resPrice
   }
+
+  // 处理商品新增
+  const addGoods = (food) => {
+    const { food_category_id: c_id, id } = food
+    // 初始化
+    if (props.choseGoods[c_id] === undefined) {
+      props.choseGoods[c_id] = []
+    }
+    // 更新数量
+    let hasNowCategoryGoods = props.choseGoods[c_id].filter(item => item.id === id)
+    if (hasNowCategoryGoods.length) {
+      for (let choseItem of props.choseGoods[c_id]) {
+        choseItem.id === id && choseItem.count++
+      }
+    } else {
+      let tempGoods = {
+        ...food,
+        count: 0,
+        // 选择的商品规格
+        choseSpecIndex: 0
+      }
+      tempGoods.count++
+      props.choseGoods[c_id].push(tempGoods)
+    }
+  }
+  // 处理商品删除
+  const deleteGoods = (food) => {
+    const { food_category_id: c_id, id } = food
+    // 更新数量
+    for (let choseIndex = 0; choseIndex < props.choseGoods[c_id].length; choseIndex++) {
+      let choseItem = props.choseGoods[c_id][choseIndex]
+      if (choseItem.id === id) {
+        if (choseItem.count > 1) {
+          choseItem.count--
+        } else {
+          props.choseGoods[c_id].splice(choseIndex, 1)
+        }
+        break
+      }
+    }
+  }
+
 </script>
  
 <style lang="less" scoped>
@@ -120,7 +186,17 @@
     .sidebar-box {
       background: @fill-3;
       flex-shrink: 0;
+      &::-webkit-scrollbar {
+        width: 0;
+      }
       .menu-list {
+        border-bottom: 1px solid #eee;
+        :deep(.van-badge__wrapper) {
+          width: 100%;
+          .van-badge {
+            transform: none;
+          }
+        }
         :deep(.van-sidebar-item) {
           color: @text-4;
           font-size: 13px;
@@ -140,6 +216,9 @@
       flex-grow: 1;
       box-sizing: border-box;
       max-width: calc(100% - 0.8rem);
+      &::-webkit-scrollbar {
+        width: 0;
+      }
       .category-info {
         height: 30px;
         line-height: 30px;
