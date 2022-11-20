@@ -53,10 +53,12 @@
               <div class="count-box">
                 <!--  当前商品选中之后才显示  -->
                 <div v-if="props.choseGoods[food.food_category_id]?.find(item => item.id === food.id)">
-                  <span class="count-item border font-bold-weight" @click="deleteGoods(food)">-</span>
+                  <span class="count-item border font-bold-weight" @click="preDeleteGoods(food)">-</span>
                   <span class="count-num">{{getGoodsCount(food)}}</span>
                 </div>
-                <p class="count-item bg font-bold-weight" @click="preAddGoods(food)">{{food.specfoods.length === 1 ? '+' : '选规格'}}</p>
+                <p class="count-item bg font-bold-weight" @click="preAddGoods(food)">
+                  {{food.specfoods.length === 1 ? '+' : '选规格'}}
+                </p>
               </div>
             </section>
           </div>
@@ -64,7 +66,7 @@
       </section>
     </div>
 
-    <GoodsSpec ref="goodsSpecModal" :activeGoods="activeGoods" />
+    <GoodsSpec ref="goodsSpecModal" :activeGoods="activeGoods" @addGoods="addGoods"/>
   </div>
   <van-empty description="暂无菜单" v-else />
 </template>
@@ -74,6 +76,7 @@
   import { getShopGoods } from '@api/shop'
   import { priceHandle } from '@utils'
   import GoodsSpec from './goods_spec.vue'
+  import { Toast } from 'vant'
 
   const props = defineProps({
     // 当前商铺id
@@ -95,24 +98,15 @@
     Object.assign(menuData, data)
   }
   getMenuData()
-
   // 选中菜单种类
   const activeIndex = ref(0)
   const activeCategoryData = computed(() => {
     return menuData[activeIndex.value] || {}
   })
-  // 选中商品
-  const activeGoods = ref({})
-  const goodsSpecModal = ref()
-  // 展示选择规格弹窗
-  const showGoodsModal = (nowGoods) => {
-    activeGoods.value = nowGoods
-    goodsSpecModal.value.showModal()
-  }
   // 左侧菜单change
   const activeChange = () => {
   }
-  // 获取当前 菜单 点餐count
+  // 获取当前 菜单分类 的点餐count
   const getMenuCount = (id) => {
     let count = props.choseGoods[id]?.reduce((count, goods) => {
       count += goods.count
@@ -120,14 +114,17 @@
     }, 0)
     return count > 0 ? count : undefined
   }
-  // 获取当前 商品 点餐count
+
+  // 获取当前 商品 的点餐count
   const getGoodsCount = (goods) => {
     const { food_category_id: c_id, id } = goods
-    for (const goodsItem of props.choseGoods[c_id]) {
+    return props.choseGoods[c_id].reduce((count, goodsItem) => {
+      // [note] 计算当前商品的 选择数
       if (goodsItem.id === id) {
-        return goodsItem.count
+        count += goodsItem.count
       }
-    }
+      return count
+    }, 0)
   }
   // 处理商品卡片的价格展示
   const getShowPrice = (type, food) => {
@@ -146,18 +143,44 @@
     return resPrice
   }
 
+  // 当前选中商品
+  const activeGoods = ref({})
+  const goodsSpecModal = ref()
+  // 展示选择规格弹窗
+  const showGoodsModal = (nowGoods) => {
+    activeGoods.value = nowGoods
+    goodsSpecModal.value.showModal()
+  }
   // 添加商品前 处理
   const preAddGoods = (food) => {
     const { specfoods } = food
     if (specfoods.length > 1) {
-      showGoodsModal(food)
+      showGoodsModal(createGoodsData(food))
     } else {
       addGoods(food)
     }
   }
+  // 删除商品前 处理
+  const preDeleteGoods = (food) => {
+    const { specfoods } = food
+    if (specfoods.length > 1) {
+      Toast('多规格商品只能去购物车删除哦')
+    } else {
+      deleteGoods(food)
+    }
+  }
+  // 初始化新增商品数据
+  const createGoodsData = (food) => {
+    return {
+      ...food,
+      count: 1,
+      // 选择的商品规格，默认的是 “默认规格”
+      choseSpecIndex: food.choseSpecIndex || 0
+    }
+  }
   // 处理商品新增
   const addGoods = (food) => {
-    const { food_category_id: c_id, id } = food
+    const { food_category_id: c_id, id, choseSpecIndex } = food
     // 初始化
     if (props.choseGoods[c_id] === undefined) {
       props.choseGoods[c_id] = []
@@ -166,16 +189,20 @@
     let hasNowCategoryGoods = props.choseGoods[c_id].filter(item => item.id === id)
     if (hasNowCategoryGoods.length) {
       for (let choseItem of props.choseGoods[c_id]) {
-        choseItem.id === id && choseItem.count++
+        // [note] 判断是否是同一 商品
+        if (choseItem.id === id) {
+          // [note] 判断是否是同一 规格
+          if (choseItem.choseSpecIndex === choseSpecIndex) {
+            choseItem.count++
+          } else {
+            const tempGoods = createGoodsData(food)
+            props.choseGoods[c_id].push(tempGoods)
+          }
+          break
+        }
       }
     } else {
-      let tempGoods = {
-        ...food,
-        count: 0,
-        // 选择的商品规格
-        choseSpecIndex: 0
-      }
-      tempGoods.count++
+      const tempGoods = createGoodsData(food)
       props.choseGoods[c_id].push(tempGoods)
     }
   }
@@ -195,7 +222,6 @@
       }
     }
   }
-
 </script>
  
 <style lang="less" scoped>
