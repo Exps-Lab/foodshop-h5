@@ -23,10 +23,12 @@
         </van-tabs>
       </section>
     </div>
+
+    <!-- 购物车 -->
     <section class="shopping-bag-area">
-      <p class="spec-tips"><span class="text">满30减10</span></p>
+      <p class="spec-tips" v-show="!shoppingListModal?.show"><span class="text">满30减10</span></p>
       <div class="shopping-bag">
-        <section class="bag-left">
+        <section class="bag-left" @click="showShoppingCartModal">
           <van-badge :content="totalChoseCount">
             <p class="icon-box">
               <van-icon :class="['icon', totalNeedPay > 0 && 'active']" :name="totalNeedPay > 0 ? 'cart' : 'cart-o'" />
@@ -44,6 +46,9 @@
       </div>
     </section>
 
+    <!-- 购物车列表详情 -->
+    <ShoppingCartModal ref="shoppingListModal" :choseGoods="choseGoods" :totalBagFee="totalBagFee" @clearShoppingCart="clearShoppingCart" />
+
     <!--  商铺基本信息弹窗  -->
     <InfoDetailModal ref="infoModal" :shopInfo="shopBaseInfo" />
   </div>
@@ -53,6 +58,7 @@
   import { ref, reactive, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import InfoDetailModal from './components/info_detail_modal.vue'
+  import ShoppingCartModal from './components/shopping_bag_modal.vue'
   import StoreInfo from './components/store_info.vue'
   import ShopMenu from './components/menu_info.vue'
   import { getShopDetail, searchShopGoods } from '@api/shop'
@@ -82,6 +88,20 @@
   const showDetailInfo = () => {
     infoModal.value.showModal()
   }
+  // 展示购物车列表
+  const shoppingListModal = ref()
+  const showShoppingCartModal = () => {
+    if (Object.keys(choseGoods).length) {
+      shoppingListModal.value.showModal()
+    }
+  }
+  // 删除购物车列表
+  const clearShoppingCart = () => {
+    Object.keys(choseGoods).forEach(key => {
+      delete choseGoods[key]
+    })
+    shoppingListModal.value.hideModal()
+  }
 
   /* 控制菜单切换 */
   const activeMenuName = ref('menu')
@@ -107,22 +127,31 @@
     const delivery = shopBaseInfo.delivery_fee || 0
     return delivery > 0 ? `另需配送费约¥${delivery}` : '免配送费'
   })
+  // 所有选择商品包装费用
+  const totalBagFee = computed(() => {
+    return Object.values(choseGoods).reduce((totalFee, category) => {
+      totalFee += category.reduce((total, goods) => {
+        const { specfoods, choseSpecIndex } = goods
+        total += specfoods[choseSpecIndex].packing_fee
+        return total
+      }, 0)
+      return totalFee
+    }, 0)
+  })
   // 本次共选择需要支付金额
   const totalNeedPay = computed(() => {
     let price = Object.values(choseGoods).reduce((totalPrice, category) => {
       totalPrice += category.reduce((categoryPrice, goods) => {
         const { specfoods, choseSpecIndex, count, is_discount, discount_val } = goods
-        const { price, packing_fee } = specfoods[choseSpecIndex]
-        // [todo] 待确认是否需要包装费
-        const defaultSpecPrice = price + packing_fee
+        const { price } = specfoods[choseSpecIndex]
         categoryPrice += is_discount
-          ? defaultSpecPrice * count * (discount_val / 10)
-          : defaultSpecPrice * count
+          ? price * count * (discount_val / 10)
+          : price * count
         return categoryPrice
       }, 0)
       return totalPrice
     }, 0)
-    return priceHandle(price)
+    return priceHandle(price + totalBagFee.value)
   })
   // 是否达到最低配送价格
   const canDeliver = computed(() => {
@@ -130,7 +159,7 @@
   })
   // 结算按钮文案
   const deliverText = computed(() => {
-    const { mini_delivery_price } = shopBaseInfo
+    const { mini_delivery_price = 0 } = shopBaseInfo
     const nowPrice = totalNeedPay.value
     if (nowPrice=== 0) {
       return `¥${mini_delivery_price}起送`
@@ -139,7 +168,6 @@
       ? '去结算'
       : `差¥${priceHandle(mini_delivery_price - nowPrice)}起送`
   })
-
 </script>
  
 <style lang="less" scoped>
@@ -209,6 +237,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
+      z-index: 2010;
       width: 100%;
       background-color: @fill-1;
       .spec-tips {

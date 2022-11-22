@@ -1,0 +1,260 @@
+<!-- 购物车列表详情弹窗 -->
+
+<template>
+  <van-popup
+    round
+    position="bottom"
+    class="info-modal"
+    v-model:show="show"
+    :style="{ minHeight: '30%' }">
+    <!--  modal内容  -->
+    <p class="spec-tips"><span class="text">满30减10</span></p>
+    <section class="modal-title">
+      <p class="align-left font-bold-weight">
+        已选商品
+        <span class="bag-fee" v-if="totalBagFee">包装费<i class="red">{{totalBagFee}}元</i></span>
+      </p>
+      <span class="clear-box" @click="clearChoseGoods">
+        <van-icon class="clear-icon" name="delete-o" />清空
+      </span>
+    </section>
+    <div class="modal-mes-box">
+      <section class="goods-list" v-for="(goods, index) in choseGoodsList" :key="goods.id + goods.choseSpecIndex">
+        <img class="goods-img" :src="goods.image_path" alt="goodsImg" />
+        <div class="info-box">
+          <p class="mes-title font-bold-weight text-ellipsis">{{goods.name}}</p>
+          <p class="spec-detail text-ellipsis" v-if="goods.specfoods.length > 1">{{goods.specfoods[goods.choseSpecIndex].name}}</p>
+          <div class="price-box">
+            <div class="price">
+              <p class="price-item red">
+                <i class="symbol">¥</i>
+                <span class="discount-price">{{getShowPrice('showPrice', goods)}}</span>
+              </p>
+              <p class="price-item del gray" v-if="goods.is_discount">
+                <i class="symbol">¥</i>
+                <span class="discount-price">{{getShowPrice('originPrice', goods)}}</span>
+              </p>
+            </div>
+            <div class=" count-box">
+              <span class="count-item border font-bold-weight" @click="deleteGoods(goods)">-</span>
+              <span class="count-num">{{goods.count}}</span>
+              <p class="count-item bg font-bold-weight" @click="addGoods(goods)">+</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </van-popup>
+</template>
+
+<script setup>
+  import { ref, reactive, computed } from 'vue'
+  import { priceHandle } from '@utils'
+
+  const show = ref(false)
+  const props = defineProps({
+    choseGoods: {
+      type: Object,
+      default: () => {}
+    },
+    totalBagFee: {
+      type: Number,
+      default: 0
+    }
+  })
+
+  // 数组化选择商品
+  const choseGoodsList = computed(() => {
+    let resArr = []
+    Object.values(props.choseGoods).forEach((category) => {
+      category.forEach(goods => {
+        resArr.push(goods)
+      })
+    })
+    return resArr
+  })
+
+  // 处理商品卡片的价格展示
+  const getShowPrice = (type, food) => {
+    const { discount_val, is_discount, choseSpecIndex, specfoods } = food
+    const { price } = specfoods[choseSpecIndex]
+    let resPrice = 0
+    if (type === 'showPrice') {
+      resPrice = is_discount
+        ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
+        : priceHandle(price)
+    } else if (type === 'originPrice') {
+      resPrice = priceHandle(price)
+    }
+    return resPrice
+  }
+
+  // 删除所有选择
+  const emit= defineEmits(['clearShoppingCart'])
+  const clearChoseGoods = () => {
+    emit('clearShoppingCart')
+  }
+
+  // 添加商品
+  const addGoods = (goods) => {
+    goods.count++
+  }
+
+  // 删除商品
+  const deleteGoods = (goods) => {
+    const { count, food_category_id: c_id, id, choseSpecIndex } = goods
+    if (count > 1) {
+      goods.count--
+    } else {
+      for (let i=0; i<props.choseGoods[c_id].length; i++) {
+        const goods = props.choseGoods[c_id][i]
+        if (goods.id === id && goods.choseSpecIndex === choseSpecIndex) {
+          props.choseGoods[c_id].splice(i, 1)
+          // [note] 删除完当前分类的最后一个时，也要删除当前分类
+          if (!props.choseGoods[c_id].length) {
+            delete props.choseGoods[c_id]
+          }
+          // 删除完modal最后一个隐藏modal
+          if (!choseGoodsList.value.length) {
+            hideModal()
+          }
+          break
+        }
+      }
+    }
+  }
+
+  // 控制modal显隐
+  const showModal = () => {
+    show.value = true
+  }
+  // 控制modal显隐
+  const hideModal = () => {
+    show.value = false
+  }
+  defineExpose({
+    show,
+    showModal,
+    hideModal,
+  })
+</script>
+ 
+<style lang="less" scoped>
+  .red {
+    color: @error-6;
+  }
+  .info-modal {
+    .spec-tips {
+      padding: 5px 0;
+      text-align: center;
+      background-color: @yellow-1;
+      color: @error-6;
+      border-bottom: 1px solid @line-0;
+    }
+    .modal-title {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .align-left {
+        font-size: 14px;
+        .bag-fee {
+          margin-left: 4px;
+          font-size: 12px;
+          color: @text-3;
+        }
+      }
+      .clear-box {
+        font-size: 12px;
+        color: @text-3;
+        .clear-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+    .modal-mes-box {
+      padding: 10px 20px 70px;
+      .goods-list {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        .goods-img {
+          display: block;
+          height: 60px;
+          width: 60px;
+          margin-right: 10px;
+          object-fit: cover;
+          border-radius: 6px;
+          background-color: @fill-3;
+        }
+        .info-box {
+          min-height: 60px;
+          font-size: 13px;
+          width: calc(100% - 110px);
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          .spec-detail {
+            font-size: 12px;
+            color: @text-3;
+          }
+          .price-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .gray {
+              color: @text-3;
+            }
+            .price {
+              .price-item {
+                display: inline-block;
+                vertical-align: baseline;
+                .symbol {
+                  font-size: 13px;
+                }
+                .discount-price {
+                  font-size: 16px;
+                }
+                &.del {
+                  margin-left: 4px;
+                  text-decoration: line-through;
+                  .symbol {
+                    font-size: 12px;
+                  }
+                  .discount-price {
+                    font-size: 12px;
+                  }
+                }
+              }
+            }
+            .count-box {
+              display: flex;
+              align-items: center;
+              .count-item {
+                color: @text-1;
+                font-size: 12px;
+                border-radius: 4px;
+                &.bg {
+                  padding: 3px 5px;
+                  background-color: @brand1-6;
+                }
+                &.border {
+                  display: inline-block;
+                  padding: 2px 5px;
+                  color: @brand1-6;
+                  border: 1px solid @brand1-6;
+                }
+              }
+              .count-num {
+                display: inline-block;
+                min-width: 23px;
+                text-align: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+</style>

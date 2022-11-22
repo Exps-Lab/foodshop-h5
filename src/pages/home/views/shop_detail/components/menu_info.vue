@@ -129,16 +129,14 @@
   // 处理商品卡片的价格展示
   const getShowPrice = (type, food) => {
     const { discount_val, is_discount, specfoods: [ defaultSpec ] } = food
-    const { packing_fee = 0, price } = defaultSpec
-    // [todo] 待确认是否需要包装费
-    const defaultSpecPrice = price + packing_fee
+    const { price } = defaultSpec
     let resPrice = 0
     if (type === 'showPrice') {
       resPrice = is_discount
-        ? discount_val > 0 ? priceHandle(defaultSpecPrice * (discount_val / 10)) : '0'
-        : priceHandle(defaultSpecPrice)
+        ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
+        : priceHandle(price)
     } else if (type === 'originPrice') {
-      resPrice = priceHandle(defaultSpecPrice)
+      resPrice = priceHandle(price)
     }
     return resPrice
   }
@@ -157,7 +155,7 @@
     if (specfoods.length > 1) {
       showGoodsModal(createGoodsData(food))
     } else {
-      addGoods(food)
+      addGoods(createGoodsData(food))
     }
   }
   // 删除商品前 处理
@@ -188,18 +186,15 @@
     // 更新数量
     let hasNowCategoryGoods = props.choseGoods[c_id].filter(item => item.id === id)
     if (hasNowCategoryGoods.length) {
-      for (let choseItem of props.choseGoods[c_id]) {
-        // [note] 判断是否是同一 商品
-        if (choseItem.id === id) {
-          // [note] 判断是否是同一 规格
-          if (choseItem.choseSpecIndex === choseSpecIndex) {
-            choseItem.count++
-          } else {
-            const tempGoods = createGoodsData(food)
-            props.choseGoods[c_id].push(tempGoods)
-          }
-          break
-        }
+      // 是否有相同的规格 spec
+      const sameSpec = hasNowCategoryGoods.find(item => {
+        return item.id === id && item.choseSpecIndex === choseSpecIndex
+      })
+      if (sameSpec !== undefined) {
+        sameSpec.count++
+      } else {
+        const tempGoods = createGoodsData(food)
+        props.choseGoods[c_id].push(tempGoods)
       }
     } else {
       const tempGoods = createGoodsData(food)
@@ -217,6 +212,10 @@
           choseItem.count--
         } else {
           props.choseGoods[c_id].splice(choseIndex, 1)
+          // [note] 删除完当前分类的最后一个时，也要删除当前分类
+          if (!props.choseGoods[c_id].length) {
+            delete props.choseGoods[c_id]
+          }
         }
         break
       }

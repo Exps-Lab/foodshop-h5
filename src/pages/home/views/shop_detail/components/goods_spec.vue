@@ -62,13 +62,11 @@
   })
   // 选中的规格属性
   const choseSpecAttr = computed(() => {
-    const { name, packing_fee, price } = allSpec.value[choseSpecIndex.value]
+    const { name, price } = allSpec.value[choseSpecIndex.value]
     const { discount_val, is_discount } = props.activeGoods
-    // [todo] 待确认是否需要包装费
-    const defaultSpecPrice = price + packing_fee
     const payPrice = is_discount
-      ? discount_val > 0 ? priceHandle(defaultSpecPrice * (discount_val / 10)) : '0'
-      : priceHandle(defaultSpecPrice)
+      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
+      : priceHandle(price)
     return {
       name,
       payPrice,
