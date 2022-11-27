@@ -23,3 +23,12 @@ export function searchShopGoods (params) {
     params
   })
 }
+
+// 创建购物袋
+export function addShoppingBag (data) {
+  return request({
+    url: '/h5/sale/auth/shop/shoppingBag/add',
+    method: 'post',
+    data
+  })
+}

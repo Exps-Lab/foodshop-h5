@@ -51,7 +51,7 @@
   import { Toast } from 'vant'
   import { getQuery } from '@utils'
   import { getCapture, loginSubmit } from '@api/login'
-  import { ref, onMounted } from 'vue'
+  import { ref } from 'vue'
 
   const username = ref('');
   const password = ref('');
@@ -74,7 +74,7 @@
   const backPrev = () => {
     const redirecturi = getQuery('redirecturi')
     if (redirecturi) {
-      window.location.href = redirecturi
+      window.location.href = decodeURIComponent(redirecturi)
     } else {
       history.back()
     }
@@ -89,7 +89,7 @@
   const init = () => {
     capture()
   }
-  onMounted(init)
+  init()
 </script>
 
 <style lang="less" scoped>

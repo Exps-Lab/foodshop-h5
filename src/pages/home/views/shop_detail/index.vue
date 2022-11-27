@@ -42,7 +42,8 @@
             <p class="delivery-fee">{{deliveryFee}}</p>
           </section>
         </section>
-        <button :class="['bag-right', 'pay-btn', 'font-bold-weight', canDeliver && 'active']">{{deliverText}}</button>
+        <!--  提交结算按钮  -->
+        <button :class="['bag-right', 'pay-btn', 'font-bold-weight', canDeliver && 'active']" @click="submitChose">{{deliverText}}</button>
       </div>
     </section>
 
@@ -61,7 +62,7 @@
   import ShoppingCartModal from './components/shopping_bag_modal.vue'
   import StoreInfo from './components/store_info.vue'
   import ShopMenu from './components/menu_info.vue'
-  import { getShopDetail, searchShopGoods } from '@api/shop'
+  import { getShopDetail, searchShopGoods, addShoppingBag } from '@api/shop'
   import { priceHandle } from '@utils'
 
   const router = useRouter()
@@ -91,7 +92,7 @@
   // 展示购物车列表
   const shoppingListModal = ref()
   const showShoppingCartModal = () => {
-    if (Object.keys(choseGoods).length) {
+    if (hasMoreThanOneGoods.value) {
       shoppingListModal.value.showModal()
     }
   }
@@ -157,6 +158,10 @@
   const canDeliver = computed(() => {
     return totalNeedPay.value >= shopBaseInfo.mini_delivery_price
   })
+  // 是否选择了商品
+  const hasMoreThanOneGoods = computed(() => {
+    return Boolean(Object.keys(choseGoods).length)
+  })
   // 结算按钮文案
   const deliverText = computed(() => {
     const { mini_delivery_price = 0 } = shopBaseInfo
@@ -168,6 +173,23 @@
       ? '去结算'
       : `差¥${priceHandle(mini_delivery_price - nowPrice)}起送`
   })
+
+  // 提交结算
+  const submitChose = async () => {
+    if (!hasMoreThanOneGoods.value || !canDeliver.value) {
+      return false
+    }
+    // 选择对象转为数组
+    const choseDataArr = Object.values(choseGoods).reduce((choseArr, category) => {
+      category.forEach(goods => { choseArr.push(goods) })
+      return choseArr
+    }, [])
+    const { data } = await addShoppingBag({
+      shop_id,
+      chose_goods_list: choseDataArr
+    })
+    console.dir(data)
+  }
 </script>
  
 <style lang="less" scoped>

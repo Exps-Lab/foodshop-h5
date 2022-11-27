@@ -44,13 +44,12 @@ service.interceptors.response.use(
     // hideLoading()
     const res = response.data
     if (res.code !== 1) {
-      // 30004    "token格式错误"
-      // 30005    "token过期"
-      if ([30004, 30005].includes(res.code)) {
+      // 10002    "没有token或token格式错误"
+      if ([10002].includes(res.code)) {
         redirecturi = redirecturi || window.location.href
-        window.location.href = host + '/login.html?redirecturi=' + encodeURIComponent(redirecturi)
+        window.location.href = host + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
+        // window.location.href = host + '/login.html?redirecturi=' + encodeURIComponent(redirecturi)
       } else {
-        // TODO: 组件提示用户错误信息
         return Promise.reject(response)
       }
     } else {
