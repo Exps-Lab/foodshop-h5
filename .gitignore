@@ -11,6 +11,7 @@ node_modules
 package-lock.json
 yarn.lock
 dist
+hi-user
 dist-ssr
 *.local
 

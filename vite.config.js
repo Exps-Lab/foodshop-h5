@@ -1,5 +1,5 @@
 import path from 'path'
-import { defineConfig, loadEnv} from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { cssConf, bundleConf } from './viteConf'
 import Components from "unplugin-vue-components/vite";
@@ -8,10 +8,11 @@ import { VantResolver } from "unplugin-vue-components/resolvers";
 export default (params => {
   // 配置文件中加载环境变量
   const env = loadEnv(params.mode, __dirname)
+  const { mode } = params
   return defineConfig({
     root: './',
     // [note] 生成环境部署Nginx时需要改成nginx对应路由的base
-    base: '/',
+    base: mode === 'production' ? path.resolve(__dirname, '/hi-user') + '/' : './',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
@@ -31,19 +32,19 @@ export default (params => {
     ],
     server: {
       host: '0.0.0.0',
-      port: env.VITE_DEV_PORT,
+      port: env.VITE_PORT,
       open: true,
       proxy: {
         '/h5/user': {
-          target: 'http://127.0.0.1:3000',
+          target: env.VITE_HOST_URL,
           changeOrigin: true
         },
         '/h5/sale': {
-          target: 'http://127.0.0.1:3000',
+          target: env.VITE_HOST_URL,
           changeOrigin: true
         },
         '/test': {
-          target: 'http://127.0.0.1:3000',
+          target: env.VITE_HOST_URL,
           changeOrigin: true
         },
       }

@@ -1,10 +1,11 @@
-import { resolve, basename } from 'path'
+import { resolve } from 'path'
 import glob from 'glob'
 import fs from 'fs'
 
 // 公共的index模板
 const templateURl = resolve(__dirname, '../public/index.html')
 const pageURl = resolve(__dirname, '../src/pages/**/main.js')
+const { NODE_ENV: mode } = process.env
 
 // 获取所有的多页文件路径
 function generateInput() {
@@ -48,11 +49,12 @@ function getFileList (mutiFileObj = {}) {
   // 输出的路径(root)和文件名(index)
   let rootPath = resolve(__dirname, '../')
   const rootPathIndex = rootPath + '/index.html'
+  const preRootStr = mode === 'production' ? '/hi-user' : ''
 
   let listHtmlText = '<ul style="font-size: 16px;"> # 所有资源列表，点击跳转到对应页面 #'
   for (let fileName of fileNameArr) {
     const fileDirPos = mutiFileObj[fileName].indexOf('/src')
-    const fileDir = mutiFileObj[fileName].slice(fileDirPos)
+    const fileDir = preRootStr + mutiFileObj[fileName].slice(fileDirPos)
     let boxHtml =
       '<li style="margin: 15px 0;">' +
       `<span>${fileName}：</span>` +
@@ -87,7 +89,7 @@ function padFileAndWrite (template, sliceIndex, padHtml, filePath) {
 }
 
 export default {
-  outDir: resolve(__dirname, '../dist'),
+  outDir: resolve(__dirname, '../hi-user'),
   rollupOptions: {
     input: {
       ...generateInput(),
