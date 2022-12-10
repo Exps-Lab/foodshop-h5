@@ -6,10 +6,12 @@
     "dev": "vite serve --mode development",
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "sh build/build.sh"
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "chalk": "^2.4.2",
     "vant": "^3.6.1",
     "vue": "^3.2.25",
     "vue-router": "^4.0.14",
@@ -22,6 +24,7 @@
     "eslint-plugin-vue": "^8.6.0",
     "less": "^4.1.2",
     "postcss-pxtorem": "^6.0.0",
+    "ssh2": "^1.11.0",
     "unplugin-vue-components": "^0.22.4",
     "vite": "^2.9.0"
   }
