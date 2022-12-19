@@ -30,14 +30,14 @@ const getPosByTX = (options) => {
 const getAccuratePos = () => {
   return new Promise((resolve, reject) => {
     const geolocation = new qq.maps.Geolocation(TXKey, AppName);
-    geolocation.getLocation(function (position) {
-      handlePosStorage('add', position)
+    geolocation.getLocation(async (position) => {
+      await handlePosStorage('add', position)
       resolve(position)
     }, function () {
       console.log('尝试ip定位')
       getPosByTXIP()
-        .then(data => {
-          handlePosStorage('add', data)
+        .then(async data => {
+          await handlePosStorage('add', data)
           resolve(data)
         })
         .catch(errData => {
@@ -70,34 +70,36 @@ const getPosByTXIP = () => {
 }
 
 // 处理storage存储
-const handlePosStorage = async (type = 'check', data) => {
-  switch (type) {
-    case 'add': {
-      localStorage.setItem(storageName, JSON.stringify(data))
-      break
-    }
-    case "check": {
-      const historyPos = localStorage.getItem('appPos')
-      if (historyPos) {
-        const objectPos = JSON.parse(historyPos)
-        const { addr = '' } = objectPos
-        if (!forceUpdatePos && (addr || retryAccuratePos)) {
-          return objectPos
-        } else {
-          // 没有具体街道信息，重试一次
-          retryAccuratePos = true
-          let tempPos = {}
-          await getAccuratePos().then(data => {
-            tempPos = data
-          })
-          return tempPos.addr ? tempPos : objectPos
-        }
-      } else {
-        return null
+const handlePosStorage = (type = 'check', data) => {
+  return Promise.resolve().then(async () => {
+    switch (type) {
+      case 'add': {
+        localStorage.setItem(storageName, JSON.stringify(data))
+        break
       }
+      case "check": {
+        const historyPos = localStorage.getItem('appPos')
+        if (historyPos) {
+          const objectPos = JSON.parse(historyPos)
+          const { addr = '' } = objectPos
+          if (!forceUpdatePos && (addr || retryAccuratePos)) {
+            return objectPos
+          } else {
+            // 没有具体街道信息，重试一次
+            retryAccuratePos = true
+            let tempPos = {}
+            await getAccuratePos().then(data => {
+              tempPos = data
+            })
+            return tempPos.addr ? tempPos : objectPos
+          }
+        } else {
+          return null
+        }
+      }
+      default: {}
     }
-    default: {}
-  }
+  })
 }
 
 export {
