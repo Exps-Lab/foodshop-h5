@@ -3,6 +3,9 @@
 </template>
 
 <script setup>
+  var aa = "asdf"
+  var aa = "asdf"
+  var aa = "asdf"
 </script>
  
 <style lang="less">
