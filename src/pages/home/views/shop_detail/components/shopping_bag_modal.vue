@@ -19,7 +19,7 @@
       </span>
     </section>
     <div class="modal-mes-box">
-      <section class="goods-list" v-for="(goods, index) in choseGoodsList" :key="goods.id + goods.choseSpecIndex">
+      <section class="goods-list" v-for="goods in choseGoodsList" :key="goods.id + goods.choseSpecIndex">
         <img class="goods-img" :src="goods.image_path" alt="goodsImg" />
         <div class="info-box">
           <p class="mes-title font-bold-weight text-ellipsis">{{goods.name}}</p>
@@ -48,97 +48,97 @@
 </template>
 
 <script setup>
-  import { ref, reactive, computed } from 'vue'
-  import { priceHandle } from '@utils'
+import { ref, computed } from 'vue'
+import { priceHandle } from '@utils'
 
-  const show = ref(false)
-  const props = defineProps({
-    choseGoods: {
-      type: Object,
-      default: () => {}
-    },
-    totalBagFee: {
-      type: Number,
-      default: 0
-    }
-  })
+const show = ref(false)
+const props = defineProps({
+  choseGoods: {
+    type: Object,
+    default: () => {}
+  },
+  totalBagFee: {
+    type: Number,
+    default: 0
+  }
+})
 
-  // 数组化选择商品
-  const choseGoodsList = computed(() => {
-    let resArr = []
-    Object.values(props.choseGoods).forEach((category) => {
-      category.forEach(goods => {
-        resArr.push(goods)
-      })
+// 数组化选择商品
+const choseGoodsList = computed(() => {
+  const resArr = []
+  Object.values(props.choseGoods).forEach((category) => {
+    category.forEach(goods => {
+      resArr.push(goods)
     })
-    return resArr
   })
+  return resArr
+})
 
-  // 处理商品卡片的价格展示
-  const getShowPrice = (type, food) => {
-    const { discount_val, is_discount, choseSpecIndex, specfoods } = food
-    const { price } = specfoods[choseSpecIndex]
-    let resPrice = 0
-    if (type === 'showPrice') {
-      resPrice = is_discount
-        ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-        : priceHandle(price)
-    } else if (type === 'originPrice') {
-      resPrice = priceHandle(price)
-    }
-    return resPrice
+// 处理商品卡片的价格展示
+const getShowPrice = (type, food) => {
+  const { discount_val, is_discount, choseSpecIndex, specfoods } = food
+  const { price } = specfoods[choseSpecIndex]
+  let resPrice = 0
+  if (type === 'showPrice') {
+    resPrice = is_discount
+      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
+      : priceHandle(price)
+  } else if (type === 'originPrice') {
+    resPrice = priceHandle(price)
   }
+  return resPrice
+}
 
-  // 删除所有选择
-  const emit= defineEmits(['clearShoppingCart'])
-  const clearChoseGoods = () => {
-    emit('clearShoppingCart')
-  }
+// 删除所有选择
+const emit = defineEmits(['clearShoppingCart'])
+const clearChoseGoods = () => {
+  emit('clearShoppingCart')
+}
 
-  // 添加商品
-  const addGoods = (goods) => {
-    goods.count++
-  }
+// 添加商品
+const addGoods = (goods) => {
+  goods.count++
+}
 
-  // 删除商品
-  const deleteGoods = (goods) => {
-    const { count, food_category_id: c_id, id, choseSpecIndex } = goods
-    if (count > 1) {
-      goods.count--
-    } else {
-      for (let i=0; i<props.choseGoods[c_id].length; i++) {
-        const goods = props.choseGoods[c_id][i]
-        if (goods.id === id && goods.choseSpecIndex === choseSpecIndex) {
-          props.choseGoods[c_id].splice(i, 1)
-          // [note] 删除完当前分类的最后一个时，也要删除当前分类
-          if (!props.choseGoods[c_id].length) {
-            delete props.choseGoods[c_id]
-          }
-          // 删除完modal最后一个隐藏modal
-          if (!choseGoodsList.value.length) {
-            hideModal()
-          }
-          break
+// 删除商品
+const deleteGoods = (goods) => {
+  const { count, food_category_id: c_id, id, choseSpecIndex } = goods
+  if (count > 1) {
+    goods.count--
+  } else {
+    for (let i = 0; i < props.choseGoods[c_id].length; i++) {
+      const goods = props.choseGoods[c_id][i]
+      if (goods.id === id && goods.choseSpecIndex === choseSpecIndex) {
+        props.choseGoods[c_id].splice(i, 1)
+        // [note] 删除完当前分类的最后一个时，也要删除当前分类
+        if (!props.choseGoods[c_id].length) {
+          delete props.choseGoods[c_id]
         }
+        // 删除完modal最后一个隐藏modal
+        if (!choseGoodsList.value.length) {
+          hideModal()
+        }
+        break
       }
     }
   }
+}
 
-  // 控制modal显隐
-  const showModal = () => {
-    show.value = true
-  }
-  // 控制modal显隐
-  const hideModal = () => {
-    show.value = false
-  }
-  defineExpose({
-    show,
-    showModal,
-    hideModal,
-  })
+// 控制modal显隐
+const showModal = () => {
+  show.value = true
+}
+// 控制modal显隐
+const hideModal = () => {
+  show.value = false
+}
+defineExpose({
+  show,
+  showModal,
+  hideModal
+})
 </script>
- 
+
 <style lang="less" scoped>
   .red {
     color: @error-6;

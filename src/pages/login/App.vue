@@ -48,48 +48,48 @@
 </template>
 
 <script setup>
-  import { Toast } from 'vant'
-  import { getQuery } from '@utils'
-  import { getCapture, loginSubmit } from '@api/login'
-  import { ref } from 'vue'
+import { Toast } from 'vant'
+import { getQuery } from '@utils'
+import { getCapture, loginSubmit } from '@api/login'
+import { ref } from 'vue'
 
-  const username = ref('');
-  const password = ref('');
-  const code = ref('');
-  const captureSvg = ref('<svg></svg>');
+const username = ref('')
+const password = ref('')
+const code = ref('')
+const captureSvg = ref('<svg></svg>')
 
-  const headerBackClick = () => {
-    window.history.back()
-  }
-  const formSubmit = (values) => {
-    values.password = window.btoa(values.password)
-    loginSubmit(values).then(res => {
-      Toast.success('登录/注册成功')
-      backPrev()
-    }).catch(err => {
-      Toast.fail(err.data.msg)
-      capture()
-    })
-  }
-  const backPrev = () => {
-    const redirecturi = getQuery('redirecturi')
-    if (redirecturi) {
-      window.location.href = decodeURIComponent(redirecturi)
-    } else {
-      history.back()
-    }
-  }
-  const capture = () => {
-    getCapture().then(res => {
-      const { data } = res
-      captureSvg.value = data
-    })
-  }
-
-  const init = () => {
+const headerBackClick = () => {
+  window.history.back()
+}
+const formSubmit = (values) => {
+  values.password = window.btoa(values.password)
+  loginSubmit(values).then(res => {
+    Toast.success('登录/注册成功')
+    backPrev()
+  }).catch(err => {
+    Toast.fail(err.data.msg)
     capture()
+  })
+}
+const backPrev = () => {
+  const redirecturi = getQuery('redirecturi')
+  if (redirecturi) {
+    window.location.href = decodeURIComponent(redirecturi)
+  } else {
+    history.back()
   }
-  init()
+}
+const capture = () => {
+  getCapture().then(res => {
+    const { data } = res
+    captureSvg.value = data
+  })
+}
+
+const init = () => {
+  capture()
+}
+init()
 </script>
 
 <style lang="less" scoped>

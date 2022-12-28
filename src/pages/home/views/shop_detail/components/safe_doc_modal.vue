@@ -21,30 +21,30 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 
-  const show = ref(false)
-  const props = defineProps({
-    shopImage: {
-      type: Object,
-      default: () => {}
-    }
-  })
-
-  const hasSafeDoc = computed(() => {
-    const { business_licence = '', food_licence = '' } = props.shopImage
-    return Boolean(business_licence || food_licence)
-  })
-
-  // 控制modal显隐
-  const showModal = () => {
-    show.value = true
+const show = ref(false)
+const props = defineProps({
+  shopImage: {
+    type: Object,
+    default: () => {}
   }
-  defineExpose({
-    showModal
-  })
+})
+
+const hasSafeDoc = computed(() => {
+  const { business_licence = '', food_licence = '' } = props.shopImage
+  return Boolean(business_licence || food_licence)
+})
+
+// 控制modal显隐
+const showModal = () => {
+  show.value = true
+}
+defineExpose({
+  showModal
+})
 </script>
- 
+
 <style lang="less" scoped>
   .info-modal {
     .modal-title {

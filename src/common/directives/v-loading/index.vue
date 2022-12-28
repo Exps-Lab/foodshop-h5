@@ -8,20 +8,20 @@
 </template>
 
 <script setup>
-  const props = defineProps({
-    text: {
-      type: String,
-      default: '加载中...'
-    },
-    needBg: {
-      type: Boolean,
-      default: false
-    },
-    needText: {
-      type: Boolean,
-      default: false
-    },
-  })
+const props = defineProps({
+  text: {
+    type: String,
+    default: '加载中...'
+  },
+  needBg: {
+    type: Boolean,
+    default: false
+  },
+  needText: {
+    type: Boolean,
+    default: false
+  }
+})
 </script>
 
 <style lang="less" scoped>

@@ -1,5 +1,5 @@
 
-//处理用户选择的位置Store
+// 处理用户选择的位置Store
 const UserChosePosStore = {
   namespaced: true,
   state: {
@@ -27,7 +27,7 @@ const UserChosePosStore = {
       state.city = city
       state.title = title
       state.address = address
-    },
+    }
   },
   actions: {
     setUserPos ({ commit, state }, value) {

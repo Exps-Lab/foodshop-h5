@@ -9,7 +9,7 @@ export function getQuery (query) {
   const _eachQuery = _query.split('&')
   let i = 0
   while (i < _eachQuery.length) {
-    let _keyValue = _eachQuery[i].split('=')
+    const _keyValue = _eachQuery[i].split('=')
     if (_keyValue[0] === query) {
       return _keyValue[1]
     }
@@ -39,11 +39,11 @@ export function hasQuery (url = window.location.href) {
  * @return {String}       返回删除后的url
  */
 export function delQuery (query, url = window.location.href) {
-  let urlArr = url.split('?')
+  const urlArr = url.split('?')
   if (urlArr.length > 1 && urlArr[1].indexOf(query) > -1) {
-    let _search = urlArr[1]
-    let obj = {}
-    let arr = _search.split('&')
+    const _search = urlArr[1]
+    const obj = {}
+    const arr = _search.split('&')
     for (let i = 0; i < arr.length; i++) {
       arr[i] = arr[i].split('=')
       obj[arr[i][0]] = arr[i][1]
@@ -184,8 +184,8 @@ export const Storage = {
  */
 export function cloneDeep (obj = {}) {
   if (!isObject(obj)) return obj
-  let newobj = {}
-  for (let attr in obj) {
+  const newobj = {}
+  for (const attr in obj) {
     newobj[attr] = cloneDeep(obj[attr])
   }
   return newobj
@@ -205,7 +205,7 @@ export function cloneDeep (obj = {}) {
 export const Cookie = {
   get (key) {
     const _cookie = '' + document.cookie
-    let ind = _cookie.indexOf(key)
+    const ind = _cookie.indexOf(key)
     if (ind === -1 || key === '') return ''
     let ind1 = _cookie.indexOf('; ', ind)
     if (ind1 === -1) ind1 = _cookie.length
@@ -215,7 +215,7 @@ export const Cookie = {
   set (key, value) {
     const _now = new Date()
     // Cookie过期时间
-    let _expire = new Date()
+    const _expire = new Date()
     // 如果未设置nDays参数或者nDays为0，取默认值1
     // if(nDays == null || nDays == 0) nDays = 1;
     // 计算Cookie过期时间【 3600000 * 24  为一天】
@@ -237,8 +237,8 @@ export const Cookie = {
   clear () {
     const _now = new Date()
     _now.setTime(-1000) // 设置时间
-    let _cookie = document.cookie
-    let _cookieArray = _cookie.split('; ')
+    const _cookie = document.cookie
+    const _cookieArray = _cookie.split('; ')
     for (let i = 0; i < _cookieArray.length; i++) {
       const _key = _cookieArray[i].split('=')
       document.cookie = `${_key[0]}=; expires=${_now.toGMTString()}`
@@ -288,8 +288,8 @@ export function isNodeList (nodeList) {
  * @return {Array}      结果数组
  */
 export function intersect (arr1, arr2) {
-  let result = []
-  let obj = {}
+  const result = []
+  const obj = {}
   for (let i = 0; i < arguments.length; i++) {
     for (let j = 0; j < arguments[i].length; j++) {
       const str = arguments[i][j]
@@ -311,8 +311,8 @@ export function intersect (arr1, arr2) {
  * @return {Array} 并集数组
  */
 export function union () {
-  let arr = []
-  let obj = {}
+  const arr = []
+  const obj = {}
   for (let i = 0; i < arguments.length; i++) {
     for (let j = 0; j < arguments[i].length; j++) {
       const str = arguments[i][j]
@@ -328,10 +328,9 @@ export function union () {
 // obj转url
 export function objToUrl (param) {
   if (param === null) return ''
-  var tempArr = []
-  for (var key in param) {
-    if (param.hasOwnProperty(key) &&
-      param[key] !== undefined &&
+  const tempArr = []
+  for (const key in param) {
+    if (param[key] !== undefined &&
       param[key] !== null) {
       tempArr.push(key + '=' + param[key])
     }
@@ -344,11 +343,11 @@ export function objToUrl (param) {
 
 // 获取query历史值，转换对象判空并返回
 export function getPreSubmitData (except) {
-  var queryData = urlToObj(location.href)
+  const queryData = urlToObj(location.href)
   Object.keys(queryData).forEach(item => {
     if (except.indexOf(item) >= 0 || (queryData[item] !== 0 && queryData[item] === '')) {
       delete queryData[item]
-    } else {}
+    }
   })
   return queryData
 }
@@ -356,11 +355,11 @@ export function getPreSubmitData (except) {
 // url中query的部分转obj
 export function urlToObj (url) {
   if (url === null || url.indexOf('?') < 0) return {}
-  var query = location.href.split('?')[1]
-  var tempObj = {}
+  const query = location.href.split('?')[1]
+  const tempObj = {}
   query.split('&').forEach(function (item) {
-    var key = item.split('=')[0]
-    var value = Uri.decode(item.split('=')[1])
+    const key = item.split('=')[0]
+    const value = Uri.decode(item.split('=')[1])
     if (!isNaN(Number(value))) {
       tempObj[key] = Number(value)
     } else {
@@ -378,11 +377,11 @@ export function urlToObj (url) {
  * @returns {string}
  */
 export function replaceQuery (url = window.location.href, query, value) {
-  let urlArr = url.split('?')
+  const urlArr = url.split('?')
   if (urlArr.length > 1 && urlArr[1].indexOf(query) > -1) {
-    let _search = urlArr[1]
-    let obj = {}
-    let arr = _search.split('&')
+    const _search = urlArr[1]
+    const obj = {}
+    const arr = _search.split('&')
     for (let i = 0; i < arr.length; i++) {
       arr[i] = arr[i].split('=')
       obj[arr[i][0]] = arr[i][1]
@@ -446,19 +445,19 @@ export function flatten (array) {
  * @param len   保留位数
  * @returns {string} 返回处理数字的string
  */
-export function roundNum(value, len = 0) {
+export function roundNum (value, len = 0) {
   const val = Math.round(value * Math.pow(10, len)) / Math.pow(10, len)
-  const [ onesVal, pointsVal = '' ] = String(val).split('.')
+  const [onesVal, pointsVal = ''] = String(val).split('.')
   return len ? `${onesVal}.${pointsVal.padEnd(len, '0')}` : String(onesVal)
 }
 
 // 价格处理
 export function priceHandle (price) {
-  if(!price){
+  if (!price) {
     return 0
   }
-  let priceString = String(price.toFixed(2))
-  let [pre, sub] = priceString.split('.')
+  const priceString = String(price.toFixed(2))
+  const [pre, sub] = priceString.split('.')
   if (Number(sub) === 0) {
     return pre
   }

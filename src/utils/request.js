@@ -1,8 +1,8 @@
-import axios from "axios"
+import axios from 'axios'
 // import Loading from "@common/components/Loading/index.js"
 
 // let loading = false
-let requestCount = 0
+// const requestCount = 0
 let redirecturi = ''
 const host = window.location.origin
 
@@ -47,7 +47,7 @@ service.interceptors.response.use(
       // 10002    "没有token或token格式错误"
       if ([10002].includes(res.code)) {
         redirecturi = redirecturi || window.location.href
-        window.location.href = host + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
+        window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
         // window.location.href = host + '/login.html?redirecturi=' + encodeURIComponent(redirecturi)
       } else {
         return Promise.reject(response)
@@ -58,12 +58,12 @@ service.interceptors.response.use(
   },
   error => {
     // hideLoading()
-    console.log("Error:" + error)
+    console.log('Error:' + error)
     return Promise.reject(error)
   }
-);
+)
 
-function handle(req) {
+function handle (req) {
   if (req.params && req.params.redirecturi) {
     redirecturi = req.params.redirecturi
     delete req.params.redirecturi

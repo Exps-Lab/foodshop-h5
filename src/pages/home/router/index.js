@@ -1,14 +1,14 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',
-    redirect:  '/home'
+    redirect: '/home'
   },
   {
     path: '/home',
     name: 'home',
-    component: () => import('../views/home/index.vue'),
+    component: () => import('../views/home/index.vue')
   },
   {
     path: '/roiPicker',
@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/shopDetail',
     name: 'shopDetail',
-    component: () => import('../views/shop_detail/index.vue'),
+    component: () => import('../views/shop_detail/index.vue')
   },
   {
     path: '/shopDetail/map',
@@ -40,4 +40,4 @@ const routes = [
 export default createRouter({
   history: createWebHashHistory(),
   routes
-});
+})

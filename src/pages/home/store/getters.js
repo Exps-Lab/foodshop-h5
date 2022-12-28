@@ -9,7 +9,7 @@ const getters = {
       city,
       address
     }
-  },
+  }
 }
 
 export default getters

@@ -15,51 +15,51 @@
 </template>
 
 <script setup>
-  import { getPosByTX } from '@utils/getAccuratePos'
-  import { reactive, onMounted } from 'vue'
-  import { useStore } from 'vuex'
-  import { useRouter } from 'vue-router'
+import { getPosByTX } from '@utils/getAccuratePos'
+import { reactive, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-  const { getters } = useStore()
-  const router = useRouter()
-  const brandMain = 'rgb(2, 182, 253)'
-  const constData = reactive({
-    isPosing: true,
-    pos: '',
-    minsizePos: false
+const { getters } = useStore()
+const router = useRouter()
+const brandMain = 'rgb(2, 182, 253)'
+const constData = reactive({
+  isPosing: true,
+  pos: '',
+  minsizePos: false
+})
+
+const getPos = () => {
+  const userChosePos = getters.getChosePos.title
+  getPosByTX().then(data => {
+    const { district, addr, city } = data
+    constData.pos = userChosePos || addr || district || city
+  }).finally(() => {
+    constData.isPosing = false
   })
+}
 
-  const getPos = () => {
-    const userChosePos = getters.getChosePos.title
-    getPosByTX().then(data => {
-      const { district, addr, city } = data
-      constData.pos = userChosePos || addr || district || city
-    }).finally(() => {
-      constData.isPosing = false
-    })
-  }
+const toGlobalSearchPage = () => {
+  console.log('跳转商品/商铺搜索页面')
+}
 
-  const toGlobalSearchPage = () => {
-    console.log('跳转商品/商铺搜索页面')
-  }
-
-  const handleScroll = () => {
-    window.addEventListener('scroll', (e) => {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      constData.minsizePos = scrollTop > 5
-    })
-  }
-
-  const toPOIPickerPage = () => {
-    router.push({
-      path: "/roiPicker"
-    })
-  }
-
-  getPos()
-  onMounted (() => {
-    handleScroll()
+const handleScroll = () => {
+  window.addEventListener('scroll', (e) => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+    constData.minsizePos = scrollTop > 5
   })
+}
+
+const toPOIPickerPage = () => {
+  router.push({
+    path: '/roiPicker'
+  })
+}
+
+getPos()
+onMounted(() => {
+  handleScroll()
+})
 </script>
 
 <style lang="less" scoped>

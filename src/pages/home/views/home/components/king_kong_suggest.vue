@@ -13,37 +13,42 @@
 </template>
 
 <script setup>
-  import { reactive } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { getKingKongSuggest } from '@api/home'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { getKingKongSuggest } from '@api/home'
 
-  const router = useRouter()
-  const data = reactive({
-    loading: false,
-    suggestData: [],
-  })
+const router = useRouter()
+const data = reactive({
+  loading: false,
+  suggestData: []
+})
 
-  const getSuggestData = () => {
-    data.loading = true
-    getKingKongSuggest().then(res => {
+const getSuggestData = () => {
+  data.loading = true
+  getKingKongSuggest()
+    .then(res => {
       data.suggestData = res.data
-    }).finally(err => {
+    })
+    .catch(err => {
+      console.log(err)
+    })
+    .finally(() => {
       data.loading = false
     })
-  }
+}
 
-  const toCategoryPage = (data) => {
-    const { name, id } = data
-    router.push({
-      path: '/shopTopic',
-      query: {
-        categoryId: id,
-        categoryName: name,
-      }
-    })
-  }
+const toCategoryPage = (data) => {
+  const { name, id } = data
+  router.push({
+    path: '/shopTopic',
+    query: {
+      categoryId: id,
+      categoryName: name
+    }
+  })
+}
 
-  getSuggestData()
+getSuggestData()
 </script>
 
 <style lang="less" scoped>

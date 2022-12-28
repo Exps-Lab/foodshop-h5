@@ -17,15 +17,15 @@ import template from './index.vue'
 const defaultOptions = {
   text: '加载中...',
   needBg: false,
-  needText: false,
+  needText: false
 }
 
-const appendEl = (el) =>{
+const appendEl = (el) => {
   el?.appendChild(el.instance.$el)
-};
-const removeEl = (el) =>{
+}
+const removeEl = (el) => {
   el?.removeChild(el.instance.$el)
-};
+}
 
 // 收集loading参数
 const getAttrOptions = (el) => {
@@ -39,14 +39,14 @@ const getAttrOptions = (el) => {
 // [note] 为了让loading撑满父元素空间，帮挂载的父元素添加relative属性
 const preHandlePosition = (el) => {
   const positionMap = ['relative', 'absolute', 'fixed', 'sticky']
-  const elPositionStyle = window.getComputedStyle(el)['position']
+  const elPositionStyle = window.getComputedStyle(el).position
   if (!positionMap.includes(elPositionStyle)) {
     el.style.position = 'relative'
   }
 }
 
 const Loading = {
-  mounted (el, binding){
+  mounted (el, binding) {
     const options = reactive(Object.assign({}, defaultOptions, getAttrOptions(el)))
     const app = createApp(template, options)
     el.instance = app.mount(document.createElement('div'))
@@ -59,7 +59,7 @@ const Loading = {
     if (binding.value !== binding.oldValue) {
       binding.value ? appendEl(el) : removeEl(el)
     }
-  },
-};
+  }
+}
 
 export default Loading

@@ -24,7 +24,6 @@
  * Loading.hide()
  */
 
-
 import { reactive, createApp } from 'vue'
 import template from './index.vue'
 
@@ -33,7 +32,7 @@ const defaultOptions = {
   text: '加载中...',
   teleport: 'body',
   needBgColor: false,
-  needText: false,
+  needText: false
 }
 let appInstance = null
 
@@ -55,7 +54,7 @@ const Loading = {
   hide () {
     appInstance._instance.exposed.hideLoading()
     appInstance = null
-  },
+  }
 }
 
 export default Loading

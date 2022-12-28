@@ -40,59 +40,59 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue'
-  import { priceHandle } from '@utils'
+import { ref, computed } from 'vue'
+import { priceHandle } from '@utils'
 
-  const show = ref(false)
-  const props = defineProps({
-    activeGoods: {
-      type: Object,
-      default: () => {}
-    }
-  })
-
-  // 选中的规格
-  let choseSpecIndex = ref(0)
-  const changeSpec = (index) => {
-    choseSpecIndex.value = index
+const show = ref(false)
+const props = defineProps({
+  activeGoods: {
+    type: Object,
+    default: () => {}
   }
-  // 所有的规格列表
-  const allSpec = computed(() => {
-    return props.activeGoods.specfoods
-  })
-  // 选中的规格属性
-  const choseSpecAttr = computed(() => {
-    const { name, price } = allSpec.value[choseSpecIndex.value]
-    const { discount_val, is_discount } = props.activeGoods
-    const payPrice = is_discount
-      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-      : priceHandle(price)
-    return {
-      name,
-      payPrice,
-      price
-    }
-  })
+})
 
-  // 触发父组件添加事件
-  const emit= defineEmits(['addGoods'])
-  const addShoppingCart = () => {
-    emit('addGoods', {
-      ...props.activeGoods,
-      choseSpecIndex: choseSpecIndex.value
-    })
-    show.value = false
+// 选中的规格
+const choseSpecIndex = ref(0)
+const changeSpec = (index) => {
+  choseSpecIndex.value = index
+}
+// 所有的规格列表
+const allSpec = computed(() => {
+  return props.activeGoods.specfoods
+})
+// 选中的规格属性
+const choseSpecAttr = computed(() => {
+  const { name, price } = allSpec.value[choseSpecIndex.value]
+  const { discount_val, is_discount } = props.activeGoods
+  const payPrice = is_discount
+    ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
+    : priceHandle(price)
+  return {
+    name,
+    payPrice,
+    price
   }
+})
 
-  // 控制modal显隐
-  const showModal = () => {
-    show.value = true
-  }
-  defineExpose({
-    showModal
+// 触发父组件添加事件
+const emit = defineEmits(['addGoods'])
+const addShoppingCart = () => {
+  emit('addGoods', {
+    ...props.activeGoods,
+    choseSpecIndex: choseSpecIndex.value
   })
+  show.value = false
+}
+
+// 控制modal显隐
+const showModal = () => {
+  show.value = true
+}
+defineExpose({
+  showModal
+})
 </script>
- 
+
 <style lang="less" scoped>
   .info-modal {
     .modal-title {

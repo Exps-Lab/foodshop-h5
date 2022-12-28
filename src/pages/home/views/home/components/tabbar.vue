@@ -7,14 +7,14 @@
 </template>
 
 <script setup>
-  import { reactive, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 
-  const constData = reactive({
-    active: 0,
-  })
+const constData = reactive({
+  active: 0
+})
 
-  onMounted (() => {
-  });
+onMounted(() => {
+})
 </script>
 
 <style lang="less" scoped>

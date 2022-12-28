@@ -46,50 +46,50 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue'
-  import { useRouter } from 'vue-router'
-  import SafeDoc from './safe_doc_modal.vue'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import SafeDoc from './safe_doc_modal.vue'
 
-  const router = useRouter()
-  const props = defineProps({
-    shopInfo: {
-      type: Object,
-      default: () => {}
+const router = useRouter()
+const props = defineProps({
+  shopInfo: {
+    type: Object,
+    default: () => {}
+  }
+})
+
+// 营业时间
+const openTime = computed(() => {
+  const [open, close] = props.shopInfo.open_time || []
+  return `${open} - ${close}`
+})
+// 店铺图片
+const shopImage = computed(() => {
+  return props.shopInfo.shop_image
+})
+
+// 拨打商家电话
+const phoneShop = () => {
+  window.location.href = `tel:${props.shopInfo.phone}`
+}
+// 在地图上展示商家
+const showAddressInMap = () => {
+  const { lat, lng } = props.shopInfo.pos || {}
+  router.push({
+    path: '/shopDetail/map',
+    query: {
+      shop_pos: `${lat},${lng}`,
+      shop_name: props.shopInfo.name,
+      shop_address: props.shopInfo.address
     }
   })
+}
 
-  // 营业时间
-  const openTime = computed(() => {
-    const [ open, close ] = props.shopInfo.open_time || []
-    return `${open} - ${close}`
-  })
-  // 店铺图片
-  const shopImage = computed(() => {
-    return props.shopInfo.shop_image
-  })
-
-  // 拨打商家电话
-  const phoneShop = () => {
-    window.location.href = `tel:${props.shopInfo.phone}`
-  }
-  // 在地图上展示商家
-  const showAddressInMap = () => {
-    const { lat, lng } = props.shopInfo.pos || {}
-    router.push({
-      path: '/shopDetail/map',
-      query: {
-        shop_pos: `${lat},${lng}`,
-        shop_name: props.shopInfo.name,
-        shop_address: props.shopInfo.address,
-      }
-    })
-  }
-
-  const shopImageModal = ref()
-  // 展示视频档案modal
-  const showSafeDoc = () => {
-    shopImageModal.value.showModal()
-  }
+const shopImageModal = ref()
+// 展示视频档案modal
+const showSafeDoc = () => {
+  shopImageModal.value.showModal()
+}
 
 </script>
 

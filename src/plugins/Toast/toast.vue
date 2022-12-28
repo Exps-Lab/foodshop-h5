@@ -22,60 +22,60 @@
 </template>
 
 <script setup>
-  import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
-  const props = defineProps({
-    type: {
-      type: String,
-      default: ''
-    },
-    text: {
-      type: String,
-      default: ''
-    },
-    duration: {
-      type: Number,
-      default: 2000
-    },
-    onClose: {
-      type: [Function, null],
-      default: null
-    },
-  })
-
-  let data = ref({
-    isShow: false,
-    timer: null
-  })
-
-  const show = () =>  {
-    clear()
-    data.value.isShow = true
-    data.value.timer = setTimeout(close, props.duration)
+const props = defineProps({
+  type: {
+    type: String,
+    default: ''
+  },
+  text: {
+    type: String,
+    default: ''
+  },
+  duration: {
+    type: Number,
+    default: 2000
+  },
+  onClose: {
+    type: [Function, null],
+    default: null
   }
+})
 
-  const close = () => {
-    data.value.isShow = false
-    if (props.onClose !== null) {
-      props.onClose()
-    }
+const data = ref({
+  isShow: false,
+  timer: null
+})
+
+const show = () => {
+  clear()
+  data.value.isShow = true
+  data.value.timer = setTimeout(close, props.duration)
+}
+
+const close = () => {
+  data.value.isShow = false
+  if (props.onClose !== null) {
+    props.onClose()
   }
-  const clear = ()  => {
-    clearTimeout(data.value.timer)
-    data.value.timer = null
+}
+const clear = () => {
+  clearTimeout(data.value.timer)
+  data.value.timer = null
+}
+
+const icon = computed(() => {
+  const ToastIconMap = {
+    warning: new URL('../static/warning_icon.png', import.meta.url).href,
+    success: new URL('../static/success_icon.png', import.meta.url).href
   }
+  return props.type ? ToastIconMap[props.type] : ''
+})
 
-  const icon = computed(() =>{
-    const ToastIconMap = {
-      'warning': new URL('../static/warning_icon.png', import.meta.url).href,
-      'success': new URL('../static/success_icon.png', import.meta.url).href,
-    }
-    return props.type ? ToastIconMap[props.type] : ''
-  })
-
-  onMounted(() => {
-    show()
-  })
+onMounted(() => {
+  show()
+})
 </script>
 
 <style scoped lang="less">

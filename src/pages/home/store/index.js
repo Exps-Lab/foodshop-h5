@@ -1,4 +1,4 @@
-import { createStore } from "vuex"
+import { createStore } from 'vuex'
 import getters from './getters'
 import UserChosePos from './user-chose-pos'
 
@@ -8,7 +8,7 @@ const store = createStore({
   },
   getters,
   state: {
-    name: 'hello vite',
+    name: 'hello vite'
   },
 
   mutations: {

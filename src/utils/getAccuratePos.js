@@ -5,31 +5,26 @@ const AppName = 'hiUser'
 const storageName = 'appPos'
 let retryAccuratePos = false
 let forceUpdatePos = false
+const qq = window.qq
 
 // 处理定位入口
-const getPosByTX = (options) => {
+const getPosByTX = async (options) => {
   forceUpdatePos = options?.forceUpdate || false
-  return new Promise(async (resolve, reject) => {
-    // 从storage缓存取
-    const posData = await handlePosStorage()
-    if (posData !== null) {
-      resolve(posData)
-    }
-    // 调用三方服务
-    await getAccuratePos()
-      .then(data => {
-        resolve(data)
-      })
-      .catch(errData => {
-        reject(errData)
-      })
-  })
+
+  // 从storage缓存取
+  const posData = await handlePosStorage()
+  if (posData !== null) {
+    return Promise.resolve(posData)
+  }
+  // 调用三方服务
+  const accuratePos = await getAccuratePos()
+  return Promise.resolve(accuratePos)
 }
 
 // 获取精确定位
 const getAccuratePos = () => {
   return new Promise((resolve, reject) => {
-    const geolocation = new qq.maps.Geolocation(TXKey, AppName);
+    const geolocation = new qq.maps.Geolocation(TXKey, AppName)
     geolocation.getLocation(async (position) => {
       await handlePosStorage('add', position)
       resolve(position)
@@ -45,8 +40,8 @@ const getAccuratePos = () => {
         })
     }, {
       // 精确定位接口超时时间
-      timeout: 3 * 1000,
-    });
+      timeout: 3 * 1000
+    })
   })
 }
 
@@ -55,7 +50,7 @@ const getPosByTXIP = () => {
   return new Promise((resolve, reject) => {
     getPosByIp()
       .then(res => {
-        const { ad_info, location: { lat, lng }  } = res.data.result
+        const { ad_info, location: { lat, lng } } = res.data.result
         resolve({
           ...ad_info,
           lat,
@@ -64,6 +59,7 @@ const getPosByTXIP = () => {
         })
       })
       .catch(err => {
+        console.log(err)
         return null
       })
   })
@@ -77,7 +73,7 @@ const handlePosStorage = (type = 'check', data) => {
         localStorage.setItem(storageName, JSON.stringify(data))
         break
       }
-      case "check": {
+      case 'check': {
         const historyPos = localStorage.getItem('appPos')
         if (historyPos) {
           const objectPos = JSON.parse(historyPos)
@@ -97,7 +93,9 @@ const handlePosStorage = (type = 'check', data) => {
           return null
         }
       }
-      default: {}
+      default: {
+        return null
+      }
     }
   })
 }

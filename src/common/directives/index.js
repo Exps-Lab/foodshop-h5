@@ -1,7 +1,7 @@
 import Loading from './v-loading'
 
 const DirectiveMap = {
-  'loading': Loading
+  loading: Loading
 }
 
 const installDirectives = (app) => {

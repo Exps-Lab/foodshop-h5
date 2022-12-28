@@ -11,57 +11,57 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
-  const props = defineProps({
-    fixed: {
-      type: Boolean,
-      default: false
-    },
-    text: {
-      type: String,
-      default: '加载中...'
-    },
-    teleport: {
-      type: String
-    },
-    needBgColor: {
-      type: Boolean,
-      default: false
-    },
-    needText: {
-      type: Boolean,
-      default: false
-    },
-  })
-
-  // 控制loading显隐
-  const show = ref(false)
-  const showLoading = () => {
-    show.value = true
+const props = defineProps({
+  fixed: {
+    type: Boolean,
+    default: false
+  },
+  text: {
+    type: String,
+    default: '加载中...'
+  },
+  teleport: {
+    type: String
+  },
+  needBgColor: {
+    type: Boolean,
+    default: false
+  },
+  needText: {
+    type: Boolean,
+    default: false
   }
-  const hideLoading = () => {
-    show.value = false
+})
+
+// 控制loading显隐
+const show = ref(false)
+const showLoading = () => {
+  show.value = true
+}
+const hideLoading = () => {
+  show.value = false
+}
+
+// [note] 为了让loading撑满父元素空间，帮挂载的父元素添加relative属性
+const preHandlePosition = () => {
+  const parentEl = document.querySelector(props.teleport)
+  const positionMap = ['relative', 'absolute', 'fixed', 'sticky']
+  const elPositionStyle = window.getComputedStyle(parentEl).position
+  if (!positionMap.includes(elPositionStyle)) {
+    parentEl.style.position = 'relative'
   }
+}
 
-  // [note] 为了让loading撑满父元素空间，帮挂载的父元素添加relative属性
-  const preHandlePosition = () => {
-    const parentEl = document.querySelector(props.teleport)
-    const positionMap = ['relative', 'absolute', 'fixed', 'sticky']
-    const elPositionStyle = window.getComputedStyle(parentEl)['position']
-    if (!positionMap.includes(elPositionStyle)) {
-      parentEl.style.position = 'relative'
-    }
-  }
+onMounted(() => {
+  !props.fixed && preHandlePosition()
+})
 
-  onMounted(() => {
-    !props.fixed && preHandlePosition()
-  })
-
-  defineExpose({
-    showLoading,
-    hideLoading
-  })
+defineExpose({
+  showLoading,
+  hideLoading
+})
 </script>
 
 <style lang="less" scoped>

@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import { cssConf, bundleConf } from './viteConf'
 import Components from "unplugin-vue-components/vite";
 import { VantResolver } from "unplugin-vue-components/resolvers";
+import eslint from 'vite-plugin-eslint'
 
 export default (params => {
   // 配置文件中加载环境变量
@@ -28,6 +29,12 @@ export default (params => {
       vue(),
       Components({
         resolvers: [VantResolver()],
+      }),
+      // 运行时检查eslint规范
+      eslint({
+        cache: false,
+        // fix: true,
+        include: ['src/**/*.js', 'src/**/*.vue']
       }),
     ],
     server: {

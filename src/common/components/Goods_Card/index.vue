@@ -23,42 +23,42 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue'
-  import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-  const router = useRouter()
-  const props = defineProps({
-    goodsData: {
-      type: Object,
-      default: () => {}
-    },
-    costTime: {
-      type: [String, Number],
-      default: '...'
+const router = useRouter()
+const props = defineProps({
+  goodsData: {
+    type: Object,
+    default: () => {}
+  },
+  costTime: {
+    type: [String, Number],
+    default: '...'
+  }
+})
+
+const posInfo = computed(() => {
+  const { distance } = props.goodsData
+  return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
+})
+const costTime = computed(() => {
+  const { costTime } = props
+  return costTime
+    ? costTime >= 24 * 60 ? '大于1天' : `${costTime}分钟`
+    : '暂无'
+})
+
+const toDetail = (data) => {
+  const { id: shop_id, pos } = data
+  router.push({
+    path: '/shopDetail',
+    query: {
+      shop_id,
+      current_pos: `${pos.lat},${pos.lng}`
     }
   })
-
-  const posInfo = computed(() => {
-    const { distance } = props.goodsData
-    return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
-  })
-  const costTime = computed(() => {
-    const { costTime } = props
-    return costTime
-      ? costTime >= 24 * 60 ? '大于1天' : `${costTime}分钟`
-      : '暂无'
-  })
-
-  const toDetail = (data) => {
-    const { id: shop_id, pos } = data
-    router.push({
-      path: '/shopDetail',
-      query: {
-        shop_id,
-        current_pos: `${pos.lat},${pos.lng}`
-      }
-    })
-  }
+}
 </script>
 
 <style lang="less" scoped>

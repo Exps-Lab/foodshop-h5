@@ -65,127 +65,127 @@
 </template>
 
 <script setup>
-  import { Toast } from 'vant'
-  import { useStore } from 'vuex'
-  import { ref, reactive, computed, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { searchWithRange, searchWithoutKeyword } from '@api/pos'
-  import { getPosByTX } from '@utils/getAccuratePos'
-  import Loading from '@common/components/Loading'
+// import { Toast } from 'vant'
+import { useStore } from 'vuex'
+import { ref, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { searchWithRange, searchWithoutKeyword } from '@api/pos'
+import { getPosByTX } from '@utils/getAccuratePos'
+// import Loading from '@common/components/Loading'
 
-  const { state, commit } = useStore()
-  const router = useRouter()
-  // 页面展示模式
-  // pos: 选择地址；search：搜索附近
-  const pageMode = ref('pos')
-  // 当前选择城市
-  const cityNow = computed(() => state.userPos.city)
+const { state, commit } = useStore()
+const router = useRouter()
+// 页面展示模式
+// pos: 选择地址；search：搜索附近
+const pageMode = ref('pos')
+// 当前选择城市
+const cityNow = computed(() => state.userPos.city)
 
-  // 定位
-  const pos = reactive({
-    isPosing: false,
-    city: '',
-    accurate: '',
-    roi: ''
+// 定位
+const pos = reactive({
+  isPosing: false,
+  city: '',
+  accurate: '',
+  roi: ''
+})
+// 控制位置信息相关展示
+const getLocation = (data) => {
+  const roiData = data || JSON.parse(localStorage.getItem('appPos') || '{}')
+  const { city, district, lat, lng, addr = '' } = roiData
+  pos.city = cityNow.value || city
+  pos.accurate = addr || district
+  pos.roi = `${lat},${lng}`
+}
+// 重新定位
+const handleRePos = () => {
+  pos.isPosing = true
+  getPosByTX({
+    forceUpdate: true
+  }).then(data => {
+    getLocation(data)
+  }).finally(() => {
+    pos.isPosing = false
   })
-  // 控制位置信息相关展示
-  const getLocation = (data) => {
-    const roiData = data || JSON.parse(localStorage.getItem('appPos') || '{}')
-    const { city, district, lat, lng, addr = '' } = roiData
-    pos.city = cityNow.value || city
-    pos.accurate = addr || district
-    pos.roi = `${lat},${lng}`
-  }
-  // 重新定位
-  const handleRePos = () => {
-    pos.isPosing = true
-    getPosByTX({
-      forceUpdate: true
-    }).then(data => {
-      getLocation(data)
-    }).finally(() => {
-      pos.isPosing = false
-    })
-  }
-  const chooseCity = () => {
-    router.push({
-      path: '/chooseCity',
-      query: {
-        city: pos.city
-      }
-    })
-  }
-
-  // 附近推荐地址
-  const explore = reactive({
-    loading: false,
-    list: []
-  })
-  const getNearbyExplore = () => {
-    explore.loading = true
-    searchWithoutKeyword({
-      current_pos: pos.roi,
-      page_size: 5
-    }).then(res => {
-      explore.list = res.data.place
-    }).finally(() => {
-      explore.loading = false
-    })
-  }
-
-  // 根据keyword搜索附近
-  const search = reactive({
-    loading: false,
-    finished: false,
-    keyword: '',
-    res: [],
-  })
-  const changePageShowMode = (mode) => {
-    pageMode.value = mode || 'pos'
-    search.keyword = ''
-    search.list = []
-  }
-  // 附近地标入口
-  const searchNearby = () => {
-    pageMode.value === 'pos' && changePageShowMode('search')
-    if (search.keyword) {
-      search.loading = true
-      searchPlace()
+}
+const chooseCity = () => {
+  router.push({
+    path: '/chooseCity',
+    query: {
+      city: pos.city
     }
-  }
-  // 根据关键字搜索目的地附近地标
-  const searchPlace = () => {
-    searchWithRange({
-      city_name: pos.city,
-      current_pos: pos.roi,
-      keyword: search.keyword,
-      page_size: 20
-    }).then(res => {
-      search.list = res.data.place
-    }).finally(() => {
-      search.loading = false
-      search.finished = true
-    })
-  }
+  })
+}
 
-  // 记录用户选择的位置
-  const setChoseAddress = (choseAddress) => {
-    const { location: { lat, lng }, address, title } = choseAddress
-    commit('userPos/setAllInfo', { lat, lng, address, title })
-    backHome()
-  }
+// 附近推荐地址
+const explore = reactive({
+  loading: false,
+  list: []
+})
+const getNearbyExplore = () => {
+  explore.loading = true
+  searchWithoutKeyword({
+    current_pos: pos.roi,
+    page_size: 5
+  }).then(res => {
+    explore.list = res.data.place
+  }).finally(() => {
+    explore.loading = false
+  })
+}
 
-  const backHome = () => {
-    router.push('/home')
+// 根据keyword搜索附近
+const search = reactive({
+  loading: false,
+  finished: false,
+  keyword: '',
+  res: []
+})
+const changePageShowMode = (mode) => {
+  pageMode.value = mode || 'pos'
+  search.keyword = ''
+  search.list = []
+}
+// 附近地标入口
+const searchNearby = () => {
+  pageMode.value === 'pos' && changePageShowMode('search')
+  if (search.keyword) {
+    search.loading = true
+    searchPlace()
   }
+}
+// 根据关键字搜索目的地附近地标
+const searchPlace = () => {
+  searchWithRange({
+    city_name: pos.city,
+    current_pos: pos.roi,
+    keyword: search.keyword,
+    page_size: 20
+  }).then(res => {
+    search.list = res.data.place
+  }).finally(() => {
+    search.loading = false
+    search.finished = true
+  })
+}
 
-  const init = async () => {
-    await getLocation()
-    await getNearbyExplore()
-  }
-  init()
+// 记录用户选择的位置
+const setChoseAddress = (choseAddress) => {
+  const { location: { lat, lng }, address, title } = choseAddress
+  commit('userPos/setAllInfo', { lat, lng, address, title })
+  backHome()
+}
+
+const backHome = () => {
+  router.push('/home')
+}
+
+const init = async () => {
+  await getLocation()
+  await getNearbyExplore()
+}
+init()
 </script>
- 
+
 <style lang="less" scoped>
   .location-icon {
     margin-right: 5px;

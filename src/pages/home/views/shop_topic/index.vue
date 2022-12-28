@@ -20,48 +20,48 @@
 </template>
 
 <script setup>
-  import { reactive } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import { getSubCategory } from '@api/home'
-  import SuggestList from '@common/components/Suggest_List/index.vue'
+import { reactive } from 'vue'
+import { useRoute } from 'vue-router'
+import { getSubCategory } from '@api/home'
+import SuggestList from '@common/components/Suggest_List/index.vue'
 
-  const router = useRouter()
-  const route = useRoute()
-  const brandMain = 'rgb(2, 182, 253)'
-  const { categoryId, categoryName } = route.query
+// const router = useRouter()
+const route = useRoute()
+const brandMain = 'rgb(2, 182, 253)'
+const { categoryId, categoryName } = route.query
 
-  const subCategory = reactive({
-    activeName: categoryName,
-    data: []
+const subCategory = reactive({
+  activeName: categoryName,
+  data: []
+})
+const getSubCategoryData = async () => {
+  const { data } = await getSubCategory({ categoryId })
+  data.forEach(item => {
+    if (item.name.includes('全部')) {
+      item.name = item.name.split('全部')[1]
+    }
   })
-  const getSubCategoryData = async () => {
-    const { data } = await getSubCategory({ categoryId })
-    data.filter(item => {
-      if (item.name.includes('全部')) {
-        item.name = item.name.split('全部')[1]
-      }
-    })
-    subCategory.data = data
-  }
-  const changeActive = (item) => {
-    const { name } = item
-    subCategory.activeName = name
-    suggestListFilter.shop_type = name
-  }
+  subCategory.data = data
+}
+const changeActive = (item) => {
+  const { name } = item
+  subCategory.activeName = name
+  suggestListFilter.shop_type = name
+}
 
-  // 列表筛选条件
-  const suggestListFilter = reactive({
-    distance: 1,
-    shop_type: subCategory.activeName,
-  })
+// 列表筛选条件
+const suggestListFilter = reactive({
+  distance: 1,
+  shop_type: subCategory.activeName
+})
 
-  const toGlobalSearchPage = () => {
-    console.log('跳转商品/商铺搜索页面')
-  }
+const toGlobalSearchPage = () => {
+  console.log('跳转商品/商铺搜索页面')
+}
 
-  getSubCategoryData()
+getSubCategoryData()
 </script>
- 
+
 <style lang="less" scoped>
   .topic-content {
     background-color: rgb(245, 245, 246);

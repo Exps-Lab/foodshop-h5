@@ -1,4 +1,20 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/usr/local/bin/bash
 
+bash "$(dirname -- "$0")/_/husky.sh"
+
+# 处理带颜色输出
+function colorEcho() {
+  declare -A colorMap=(
+    ["red"]="31"
+    ["green"]="32"
+    ["yellow"]="33"
+    ["blue"]="34"
+    ["purple"]="35"
+  )
+  echo -e "\e[${colorMap["$1"]}m $2 \e[0m"
+}
+
+
+colorEcho purple "[begin]开始进行代码检查以及自动修复"
 npx lint-staged
+colorEcho purple "[done]完成检查! 如有问题，请根据提示修复"

@@ -56,142 +56,143 @@
 </template>
 
 <script setup>
-  import { ref, reactive, computed } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import InfoDetailModal from './components/info_detail_modal.vue'
-  import ShoppingCartModal from './components/shopping_bag_modal.vue'
-  import StoreInfo from './components/store_info.vue'
-  import ShopMenu from './components/menu_info.vue'
-  import { getShopDetail, searchShopGoods, addShoppingBag } from '@api/shop'
-  import { priceHandle } from '@utils'
+import { ref, reactive, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import InfoDetailModal from './components/info_detail_modal.vue'
+import ShoppingCartModal from './components/shopping_bag_modal.vue'
+import StoreInfo from './components/store_info.vue'
+import ShopMenu from './components/menu_info.vue'
+// searchShopGoods 搜索具体商品接口
+import { getShopDetail, addShoppingBag } from '@api/shop'
+import { priceHandle } from '@utils'
 
-  const router = useRouter()
-  const route = useRoute()
-  const brandMain = 'rgb(2, 182, 253)'
-  const { shop_id, current_pos } = route.query
+const route = useRoute()
+// 主背景色，使用开启
+// const brandMain = 'rgb(2, 182, 253)'
+const { shop_id } = route.query
 
-  /* 商铺详情部分 */
-  const { lat, lng } = JSON.parse(localStorage.getItem('appPos') || '{}')
-  const shopBaseInfo = reactive({})
-  const getShopInfo = async () => {
-    const { data } = await getShopDetail({ shop_id, current_pos: `${lat},${lng}` })
-    Object.assign(shopBaseInfo, data)
+/* 商铺详情部分 */
+const { lat, lng } = JSON.parse(localStorage.getItem('appPos') || '{}')
+const shopBaseInfo = reactive({})
+const getShopInfo = async () => {
+  const { data } = await getShopDetail({ shop_id, current_pos: `${lat},${lng}` })
+  Object.assign(shopBaseInfo, data)
+}
+// 商铺顶部背景
+const shopBgUrl = computed(() => {
+  const avatar = shopBaseInfo.shop_image?.avatar || ''
+  return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), ${avatar} center top / cover`
+})
+getShopInfo()
+
+/* 控制店铺详情modal */
+const infoModal = ref()
+const showDetailInfo = () => {
+  infoModal.value.showModal()
+}
+// 展示购物车列表
+const shoppingListModal = ref()
+const showShoppingCartModal = () => {
+  if (hasMoreThanOneGoods.value) {
+    shoppingListModal.value.showModal()
   }
-  // 商铺顶部背景
-  const shopBgUrl = computed(() => {
-    const avatar = shopBaseInfo.shop_image?.avatar || ''
-    return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), ${avatar} center top / cover`
+}
+// 删除购物车列表
+const clearShoppingCart = () => {
+  Object.keys(choseGoods).forEach(key => {
+    delete choseGoods[key]
   })
-  getShopInfo()
+  shoppingListModal.value.hideModal()
+}
 
-  /* 控制店铺详情modal */
-  const infoModal = ref()
-  const showDetailInfo = () => {
-    infoModal.value.showModal()
-  }
-  // 展示购物车列表
-  const shoppingListModal = ref()
-  const showShoppingCartModal = () => {
-    if (hasMoreThanOneGoods.value) {
-      shoppingListModal.value.showModal()
-    }
-  }
-  // 删除购物车列表
-  const clearShoppingCart = () => {
-    Object.keys(choseGoods).forEach(key => {
-      delete choseGoods[key]
-    })
-    shoppingListModal.value.hideModal()
-  }
+/* 控制菜单切换 */
+const activeMenuName = ref('menu')
+const menuTabClick = ({ title, name }) => {
+  console.log(name)
+}
 
-  /* 控制菜单切换 */
-  const activeMenuName = ref('menu')
-  const menuTabClick = ({ title, name }) => {
-    console.log(name)
-  }
-
-  /* 用户选择商品和计算金额部分 */
-  let choseGoods = reactive({})
-  // 选择的商品总数
-  const totalChoseCount = computed(() => {
-    let count = Object.values(choseGoods).reduce((totalCount, category) => {
-      totalCount += category.reduce((categoryCount, goods) => {
-        categoryCount += goods.count
-        return categoryCount
-      }, 0)
-      return totalCount
+/* 用户选择商品和计算金额部分 */
+const choseGoods = reactive({})
+// 选择的商品总数
+const totalChoseCount = computed(() => {
+  const count = Object.values(choseGoods).reduce((totalCount, category) => {
+    totalCount += category.reduce((categoryCount, goods) => {
+      categoryCount += goods.count
+      return categoryCount
     }, 0)
-    return count > 0 ? count : undefined
-  })
-  // 配送费
-  const deliveryFee = computed(() => {
-    const delivery = shopBaseInfo.delivery_fee || 0
-    return delivery > 0 ? `另需配送费约¥${delivery}` : '免配送费'
-  })
-  // 所有选择商品包装费用
-  const totalBagFee = computed(() => {
-    return Object.values(choseGoods).reduce((totalFee, category) => {
-      totalFee += category.reduce((total, goods) => {
-        const { specfoods, choseSpecIndex } = goods
-        total += specfoods[choseSpecIndex].packing_fee
-        return total
-      }, 0)
-      return totalFee
+    return totalCount
+  }, 0)
+  return count > 0 ? count : undefined
+})
+// 配送费
+const deliveryFee = computed(() => {
+  const delivery = shopBaseInfo.delivery_fee || 0
+  return delivery > 0 ? `另需配送费约¥${delivery}` : '免配送费'
+})
+// 所有选择商品包装费用
+const totalBagFee = computed(() => {
+  return Object.values(choseGoods).reduce((totalFee, category) => {
+    totalFee += category.reduce((total, goods) => {
+      const { specfoods, choseSpecIndex } = goods
+      total += specfoods[choseSpecIndex].packing_fee
+      return total
     }, 0)
-  })
-  // 本次共选择需要支付金额
-  const totalNeedPay = computed(() => {
-    let price = Object.values(choseGoods).reduce((totalPrice, category) => {
-      totalPrice += category.reduce((categoryPrice, goods) => {
-        const { specfoods, choseSpecIndex, count, is_discount, discount_val } = goods
-        const { price } = specfoods[choseSpecIndex]
-        categoryPrice += is_discount
-          ? price * count * (discount_val / 10)
-          : price * count
-        return categoryPrice
-      }, 0)
-      return totalPrice
+    return totalFee
+  }, 0)
+})
+// 本次共选择需要支付金额
+const totalNeedPay = computed(() => {
+  const price = Object.values(choseGoods).reduce((totalPrice, category) => {
+    totalPrice += category.reduce((categoryPrice, goods) => {
+      const { specfoods, choseSpecIndex, count, is_discount, discount_val } = goods
+      const { price } = specfoods[choseSpecIndex]
+      categoryPrice += is_discount
+        ? price * count * (discount_val / 10)
+        : price * count
+      return categoryPrice
     }, 0)
-    return priceHandle(price + totalBagFee.value)
-  })
-  // 是否达到最低配送价格
-  const canDeliver = computed(() => {
-    return totalNeedPay.value >= shopBaseInfo.mini_delivery_price
-  })
-  // 是否选择了商品
-  const hasMoreThanOneGoods = computed(() => {
-    return Boolean(Object.keys(choseGoods).length)
-  })
-  // 结算按钮文案
-  const deliverText = computed(() => {
-    const { mini_delivery_price = 0 } = shopBaseInfo
-    const nowPrice = totalNeedPay.value
-    if (nowPrice=== 0) {
-      return `¥${mini_delivery_price}起送`
-    }
-    return canDeliver.value
-      ? '去结算'
-      : `差¥${priceHandle(mini_delivery_price - nowPrice)}起送`
-  })
-
-  // 提交结算
-  const submitChose = async () => {
-    if (!hasMoreThanOneGoods.value || !canDeliver.value) {
-      return false
-    }
-    // 选择对象转为数组
-    const choseDataArr = Object.values(choseGoods).reduce((choseArr, category) => {
-      category.forEach(goods => { choseArr.push(goods) })
-      return choseArr
-    }, [])
-    const { data } = await addShoppingBag({
-      shop_id,
-      chose_goods_list: choseDataArr
-    })
-    console.dir(data)
+    return totalPrice
+  }, 0)
+  return priceHandle(price + totalBagFee.value)
+})
+// 是否达到最低配送价格
+const canDeliver = computed(() => {
+  return totalNeedPay.value >= shopBaseInfo.mini_delivery_price
+})
+// 是否选择了商品
+const hasMoreThanOneGoods = computed(() => {
+  return Boolean(Object.keys(choseGoods).length)
+})
+// 结算按钮文案
+const deliverText = computed(() => {
+  const { mini_delivery_price = 0 } = shopBaseInfo
+  const nowPrice = totalNeedPay.value
+  if (nowPrice === 0) {
+    return `¥${mini_delivery_price}起送`
   }
+  return canDeliver.value
+    ? '去结算'
+    : `差¥${priceHandle(mini_delivery_price - nowPrice)}起送`
+})
+
+// 提交结算
+const submitChose = async () => {
+  if (!hasMoreThanOneGoods.value || !canDeliver.value) {
+    return false
+  }
+  // 选择对象转为数组
+  const choseDataArr = Object.values(choseGoods).reduce((choseArr, category) => {
+    category.forEach(goods => { choseArr.push(goods) })
+    return choseArr
+  }, [])
+  const { data } = await addShoppingBag({
+    shop_id,
+    chose_goods_list: choseDataArr
+  })
+  console.dir(data)
+}
 </script>
- 
+
 <style lang="less" scoped>
   .detail-content {
     min-height: 100vh;
