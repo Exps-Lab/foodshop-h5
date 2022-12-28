@@ -81,7 +81,7 @@ const getShopInfo = async () => {
 // 商铺顶部背景
 const shopBgUrl = computed(() => {
   const avatar = shopBaseInfo.shop_image?.avatar || ''
-  return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), ${avatar} center top / cover`
+  return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), url(${avatar}) center top / cover`
 })
 getShopInfo()
 

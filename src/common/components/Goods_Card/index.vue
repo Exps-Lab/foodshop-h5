@@ -2,7 +2,7 @@
   <van-card
     @click="toDetail(props.goodsData)"
     :title="props.goodsData.name"
-    thumb="https://fastly.jsdelivr.net/npm/@vant/assets/ipad.jpeg">
+    :thumb="shopAvatar">
     <template #desc>
       <section class="info-box top-4">
         <span class="info-text right-6 rank">4.8分</span>
@@ -38,6 +38,12 @@ const props = defineProps({
   }
 })
 
+const shopAvatar = computed(() => {
+  const { avatar } = props.goodsData.shop_image
+  return (avatar && avatar.includes('static'))
+    ? avatar
+    : 'https://fastly.jsdelivr.net/npm/@vant/assets/ipad.jpeg'
+})
 const posInfo = computed(() => {
   const { distance } = props.goodsData
   return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
