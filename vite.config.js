@@ -9,11 +9,12 @@ import eslint from 'vite-plugin-eslint'
 export default (params => {
   // 配置文件中加载环境变量
   const env = loadEnv(params.mode, __dirname)
-  const { mode } = params
+  // const { mode } = params
   return defineConfig({
     root: './',
     // [note] 生成环境部署Nginx时需要改成nginx对应路由的base
-    base: mode === 'production' ? path.resolve(__dirname, '/hi-user') + '/' : './',
+    base: '/',
+    // base: mode === 'production' ? path.resolve(__dirname, '/hi-user') + '/' : './',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),

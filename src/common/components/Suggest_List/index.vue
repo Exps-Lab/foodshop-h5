@@ -157,6 +157,7 @@ init()
 
 <style lang="less" scoped>
   .self-list-box {
-    padding: 10px 10px 50px;
+    /*min-height: 50vh;*/
+    padding: 10px 10px 20px;
   }
 </style>
