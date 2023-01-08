@@ -9,8 +9,7 @@
     "preview": "vite preview",
     "deploy": "upload-remote -r ./hi-user -n hi-user",
     "remote_build": "npm run build:prod && npm run deploy",
-    "lint": "eslint --ext .js,.vue src --fix",
-    "prepare": "husky install"
+    "lint": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "axios": "^0.26.1",

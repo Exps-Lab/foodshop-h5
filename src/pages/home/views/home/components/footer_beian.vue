@@ -1,5 +1,5 @@
 <template>
-  <section class="benan-box">
+  <section class="beian-box">
     <p class="list">
       <span class="name">FoodShop.Fun </span>
       <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备2023000026号-1</a>
@@ -16,7 +16,7 @@
 </script>
 
 <style lang="less" scoped>
-  .benan-box {
+  .beian-box {
     background-color: #f5f5f6;
     padding: 0 30px 20px;
     .list {

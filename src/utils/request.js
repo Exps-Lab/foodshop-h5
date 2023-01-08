@@ -47,8 +47,8 @@ service.interceptors.response.use(
       // 10002    "没有token或token格式错误"
       if ([10002].includes(res.code)) {
         redirecturi = redirecturi || window.location.href
-        window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
-        // window.location.href = host + '/login.html?redirecturi=' + encodeURIComponent(redirecturi)
+        // window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
+        window.location.href = host + '/login?redirecturi=' + encodeURIComponent(redirecturi)
       } else {
         return Promise.reject(response)
       }

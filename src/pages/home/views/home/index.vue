@@ -3,7 +3,7 @@
     <MainHeader />
     <KingKongSuggest />
     <SuggestList :filter="suggestListFilter" />
-    <FooterBenan />
+    <FooterBeian />
   </div>
   <Tabbar />
 </template>
@@ -12,7 +12,7 @@
 import MainHeader from './components/header.vue'
 import Tabbar from './components/tabbar.vue'
 import KingKongSuggest from './components/king_kong_suggest.vue'
-import FooterBenan from './components/footer_benan.vue'
+import FooterBeian from './components/footer_beian.vue'
 import SuggestList from '@common/components/Suggest_List/index.vue'
 
 const suggestListFilter = {
