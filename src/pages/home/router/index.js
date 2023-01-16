@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
+    path: '/src/pages/home/index.html',
+    redirect: '/home'
+  },
+  {
     path: '/',
     redirect: '/home'
   },
@@ -34,6 +38,11 @@ const routes = [
     path: '/shopDetail/map',
     name: 'shopDetailMap',
     component: () => import('../views/shop_detail/show_in_map.vue')
+  },
+  {
+    path: '/:pathMatch(.*)',
+    name: '404',
+    component: () => import('../../404.vue')
   }
 ]
 
