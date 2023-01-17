@@ -7,8 +7,8 @@
 
 <style lang="less">
   #app {
+    .elm-center;
     min-height: 100vh;
-    max-width: 750px;
-    margin: 0 auto;
+    box-shadow: 0 0 1px #ddd;
   }
 </style>
