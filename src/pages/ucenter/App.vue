@@ -1,0 +1,14 @@
+<template>
+  <router-view/>
+</template>
+
+<script setup>
+</script>
+
+<style lang="less">
+  #app {
+    .elm-center;
+    min-height: 100vh;
+    box-shadow: 0 0 1px #ddd;
+  }
+</style>

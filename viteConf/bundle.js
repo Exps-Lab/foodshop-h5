@@ -50,7 +50,6 @@ function getFileList (mutiFileObj = {}) {
   let rootPath = resolve(__dirname, '../')
   const rootPathIndex = rootPath + '/index.html'
   const preRootStr = ''
-  // const preRootStr = mode === 'production' ? '/hi-user' : ''
 
   let listHtmlText = '<ul style="font-size: 16px;"> # 所有资源列表，点击跳转到对应页面 #'
   for (let fileName of fileNameArr) {

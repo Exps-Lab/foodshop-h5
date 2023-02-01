@@ -5,12 +5,12 @@
     <SuggestList :filter="suggestListFilter" />
     <FooterBeian />
   </div>
-  <Tabbar />
+  <Tabbar :active="0" />
 </template>
 
 <script setup>
 import MainHeader from './components/header.vue'
-import Tabbar from './components/tabbar.vue'
+import Tabbar from '@common/components/Tab_Bar/index.vue'
 import KingKongSuggest from './components/king_kong_suggest.vue'
 import FooterBeian from './components/footer_beian.vue'
 import SuggestList from '@common/components/Suggest_List/index.vue'
