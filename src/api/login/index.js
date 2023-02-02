@@ -15,3 +15,11 @@ export function loginSubmit (data) {
     data
   })
 }
+
+export function logoutSubmit (data) {
+  return request({
+    url: '/h5/user/auth/logout',
+    method: 'post',
+    data
+  })
+}

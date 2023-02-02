@@ -5,7 +5,7 @@
         <img v-if="userInfo.avatar" class="avatar" :src="userInfo.avatar" alt="avatar">
         <van-icon v-else class="icon-avatar" name="user-circle-o" />
       </p>
-      <p class="username">用户名</p>
+      <p class="username text-ellipsis">用户名</p>
     </section>
     <section class="menu-container">
       <!--   活动功能   -->
@@ -38,7 +38,7 @@
           <van-icon class="icon" name="notes-o" />
           <span class="text">关于本站</span>
         </p>
-        <p class="menu-item gray">
+        <p class="menu-item gray" @click="preLogout">
           <van-icon class="icon" name="smile-o" />
           <span class="text">退出登录</span>
         </p>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-// import { getCapture, loginSubmit } from '@api/login'
+import User from '@utils/User'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
 import { reactive } from 'vue'
 
@@ -62,11 +62,17 @@ const userInfo = reactive({
   name: ''
 })
 
+// 目前菜单写死，只拿用户信息
 const reqUcenterData = () => {
+  // [todo] 判断storage里是否有用户数据，没有重新获取
   // getUcenterData().then(res => {
   //   const { data } = res
   //   Svg.value = data
   // })
+}
+
+const preLogout = () => {
+  User.logout()
 }
 
 const init = () => {
@@ -101,7 +107,6 @@ init()
         box-shadow: 0 0 10px @line-1;
       }
       .username {
-        .text-ellipsis;
         max-width: 50%;
         font-size: 16px;
         margin-top: 8px;
@@ -122,7 +127,7 @@ init()
         &.activity {
           .menu-item {
             .icon {
-              .font-bold-weight;
+              font-weight: 500;
               color: @error-6;
             }
           }

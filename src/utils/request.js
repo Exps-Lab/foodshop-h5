@@ -1,10 +1,11 @@
 import axios from 'axios'
+import User from '@utils/User'
 // import Loading from "@common/components/Loading/index.js"
 
 // let loading = false
 // const requestCount = 0
 let redirecturi = ''
-const host = window.location.origin
+// const host = window.location.origin
 
 // const showLoading = () => {
 //   if (requestCount === 0) {
@@ -48,7 +49,8 @@ service.interceptors.response.use(
       if ([10002].includes(res.code)) {
         redirecturi = redirecturi || window.location.href
         // window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
-        window.location.href = host + '/login?redirecturi=' + encodeURIComponent(redirecturi)
+        // window.location.href = host + '/login?redirecturi=' + encodeURIComponent(redirecturi)
+        User.login(redirecturi)
       } else {
         return Promise.reject(response)
       }
@@ -63,7 +65,7 @@ service.interceptors.response.use(
   }
 )
 
-function handle (req) {
+function serviceInstance (req) {
   if (req.params && req.params.redirecturi) {
     redirecturi = req.params.redirecturi
     delete req.params.redirecturi
@@ -73,4 +75,4 @@ function handle (req) {
   return service(req)
 }
 
-export default handle
+export default serviceInstance
