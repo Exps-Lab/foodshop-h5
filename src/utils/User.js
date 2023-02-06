@@ -21,10 +21,11 @@ class User {
 
   // 统一处理登录
   login (redirecturi) {
+    const url = redirecturi || window.location.href
     const loginUrl = import.meta.env.DEV
       ? 'src/pages/login/index.html'
       : 'login'
-    location.href = `${location.origin}/${loginUrl}?redirecturi=${encodeURIComponent(redirecturi)}`
+    location.href = `${location.origin}/${loginUrl}?redirecturi=${encodeURIComponent(url)}`
   }
 
   // 登出

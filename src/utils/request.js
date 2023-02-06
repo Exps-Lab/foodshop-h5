@@ -46,10 +46,9 @@ service.interceptors.response.use(
     const res = response.data
     if (res.code !== 1) {
       // 10002    "没有token或token格式错误"
-      if ([10002].includes(res.code)) {
+      // forbidAutoJumpLogin
+      if ([10002].includes(res.code) && !response.config.forbidAutoJumpLogin) {
         redirecturi = redirecturi || window.location.href
-        // window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
-        // window.location.href = host + '/login?redirecturi=' + encodeURIComponent(redirecturi)
         User.login(redirecturi)
       } else {
         return Promise.reject(response)

@@ -1,11 +1,9 @@
 <template>
   <div class="main">
-    <section class="info-box">
-      <p>
-        <img v-if="userInfo.avatar" class="avatar" :src="userInfo.avatar" alt="avatar">
-        <van-icon v-else class="icon-avatar" name="user-circle-o" />
-      </p>
-      <p class="username text-ellipsis">用户名</p>
+    <section class="info-box" @click="infoBoxClick" v-loading="userInfo.loading">
+      <img class="avatar" :src="userInfo.avatar" alt="avatar">
+      <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
+      <p v-else class="username font-bold-weight">点击登录/注册</p>
     </section>
     <section class="menu-container">
       <!--   活动功能   -->
@@ -54,29 +52,51 @@
 
 <script setup>
 import User from '@utils/User'
+import { getUserInfo } from '@api/user'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 
 const userInfo = reactive({
-  avatar: '',
-  name: ''
+  loading: false,
+  avatar: new URL('./imgs/default_avatar.png', import.meta.url).href,
+  username: ''
 })
 
-// 目前菜单写死，只拿用户信息
-const reqUcenterData = () => {
-  // [todo] 判断storage里是否有用户数据，没有重新获取
-  // getUcenterData().then(res => {
-  //   const { data } = res
-  //   Svg.value = data
-  // })
+// 是否登录
+const isLogin = computed(() => {
+  return userInfo.username
+})
+
+// 业务跳转前判断登录态
+const preAuthJump = () => {
+  if (!isLogin.value) {
+    User.login()
+  }
 }
 
+// 用户信息点击
+const infoBoxClick = () => {
+  preAuthJump()
+}
+
+// 菜单点击 - 退出
 const preLogout = () => {
   User.logout()
 }
 
+const reqUserInfo = () => {
+  userInfo.loading = true
+  getUserInfo().then(res => {
+    const { avatar, username } = res.data || {}
+    avatar && (userInfo.avatar = avatar)
+    userInfo.username = username
+  }).catch(e => {
+  }).finally(() => {
+    userInfo.loading = false
+  })
+}
 const init = () => {
-  reqUcenterData()
+  reqUserInfo()
 }
 init()
 </script>
@@ -93,23 +113,16 @@ init()
       justify-content: center;
       align-items: center;
       .avatar {
-        height: 80px;
-        width: 80px;
+        height: 70px;
+        width: 70px;
         object-fit: cover;
         border-radius: 50%;
       }
-      .icon-avatar {
-        font-size: 56px;
-        background: @line-2;
-        color: rgba(0,0,0,.4);
-        border: 1px solid @brand1-6;
-        border-radius: 50%;
-        box-shadow: 0 0 10px @line-1;
-      }
       .username {
         max-width: 50%;
-        font-size: 16px;
-        margin-top: 8px;
+        color: @text-4;
+        font-size: 15px;
+        margin-top: 10px;
       }
     }
     .menu-container {
