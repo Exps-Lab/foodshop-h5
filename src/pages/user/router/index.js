@@ -2,10 +2,6 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 
 const routes = [
   {
-    path: '/src/pages/ucenter/index.html',
-    redirect: '/ucenter'
-  },
-  {
     path: '/',
     redirect: '/ucenter'
   },
@@ -15,9 +11,14 @@ const routes = [
     component: () => import('../views/ucenter/index.vue')
   },
   {
-    path: '/ucenter/test',
-    name: 'test',
-    component: () => import('../views/test/index.vue')
+    path: '/ucenter/about_us',
+    name: 'aboutUs',
+    component: () => import('../views/about_us/index.vue')
+  },
+  {
+    path: '/ucenter/user_info',
+    name: 'userInfo',
+    component: () => import('../views/user_info/index.vue')
   },
   {
     path: '/:pathMatch(.*)',

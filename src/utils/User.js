@@ -30,11 +30,14 @@ class User {
 
   // 登出
   logout () {
-    logoutSubmit().then(res => {
-      Toast('已退出登录!')
-      this.removeLoginToken()
-      location.reload()
-    })
+    logoutSubmit()
+      .then(res => {
+        Toast('已退出登录!')
+        this.removeLoginToken()
+        location.reload()
+      }).catch(err => {
+        console.log(err)
+      })
   }
 }
 

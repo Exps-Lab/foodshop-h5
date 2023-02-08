@@ -50,9 +50,8 @@ service.interceptors.response.use(
       if ([10002].includes(res.code) && !response.config.forbidAutoJumpLogin) {
         redirecturi = redirecturi || window.location.href
         User.login(redirecturi)
-      } else {
-        return Promise.reject(response)
       }
+      return Promise.reject(response)
     } else {
       return res
     }

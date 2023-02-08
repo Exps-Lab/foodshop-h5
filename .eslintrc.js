@@ -25,6 +25,7 @@ module.exports = {
     // 子组件修改父组件props
     'vue/no-mutating-props': 'off',
     'no-case-declarations': 'off',
-    'no-new': 'off'
+    'no-new': 'off',
+    'indent': ['off', 2],
   }
 }

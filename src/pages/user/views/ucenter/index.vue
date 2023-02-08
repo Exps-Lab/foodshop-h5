@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <section class="info-box" @click="infoBoxClick" v-loading="userInfo.loading">
+    <section class="info-box" @click="infoBoxClick" v-loading="loading">
       <img class="avatar" :src="userInfo.avatar" alt="avatar">
       <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
       <p v-else class="username font-bold-weight">点击登录/注册</p>
@@ -16,13 +16,17 @@
 
       <!--   常规功能   -->
       <section class="menu-box">
-        <p class="menu-item">
-          <van-icon class="icon" name="sign" />
-          <span class="text">我的订单</span>
+        <p class="menu-item" @click="toUserInfo">
+          <van-icon class="icon" name="contact" />
+          <span class="text">个人信息</span>
         </p>
         <p class="menu-item">
           <van-icon class="icon" name="location-o" />
           <span class="text">我的地址</span>
+        </p>
+        <p class="menu-item">
+          <van-icon class="icon" name="sign" />
+          <span class="text">我的订单</span>
         </p>
         <p class="menu-item">
           <van-icon class="icon" name="like-o" />
@@ -32,7 +36,11 @@
           <van-icon class="icon" name="star-o" />
           <span class="text">我的评价</span>
         </p>
-        <p class="menu-item">
+      </section>
+
+      <!--    系统功能   -->
+      <section class="menu-box">
+        <p class="menu-item" @click="toAboutUs">
           <van-icon class="icon" name="notes-o" />
           <span class="text">关于本站</span>
         </p>
@@ -41,9 +49,6 @@
           <span class="text">退出登录</span>
         </p>
       </section>
-
-      <!--    系统功能   -->
-      <!--    <section class="menu-box"></section>-->
     </section>
   </div>
 
@@ -52,15 +57,15 @@
 
 <script setup>
 import User from '@utils/User'
-import { getUserInfo } from '@api/user'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
-import { computed, reactive } from 'vue'
+import { computed, ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserInfo } from '@pages/user/composables/userInfo'
 
-const userInfo = reactive({
-  loading: false,
-  avatar: new URL('./imgs/default_avatar.png', import.meta.url).href,
-  username: ''
-})
+const router = useRouter()
+const { userInfoLoading, userData } = useUserInfo()
+const loading = ref(userInfoLoading)
+const userInfo = reactive(userData)
 
 // 是否登录
 const isLogin = computed(() => {
@@ -79,26 +84,21 @@ const infoBoxClick = () => {
   preAuthJump()
 }
 
-// 菜单点击 - 退出
+/**
+ * 菜单点击
+ */
+// 退出
 const preLogout = () => {
   User.logout()
 }
-
-const reqUserInfo = () => {
-  userInfo.loading = true
-  getUserInfo().then(res => {
-    const { avatar, username } = res.data || {}
-    avatar && (userInfo.avatar = avatar)
-    userInfo.username = username
-  }).catch(e => {
-  }).finally(() => {
-    userInfo.loading = false
-  })
+// 关于我们
+const toAboutUs = () => {
+  router.push('/ucenter/about_us')
 }
-const init = () => {
-  reqUserInfo()
+// 我的信息
+const toUserInfo = () => {
+  router.push('/ucenter/user_info')
 }
-init()
 </script>
 
 <style lang="less" scoped>
