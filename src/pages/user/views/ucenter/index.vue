@@ -56,49 +56,49 @@
 </template>
 
 <script setup>
-import User from '@utils/User'
-import Tabbar from '@common/components/Tab_Bar/index.vue'
-import { computed, ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserInfo } from '@pages/user/composables/userInfo'
+  import User from '@utils/User'
+  import { useRouter } from 'vue-router'
+  import { computed, ref, reactive } from 'vue'
+  import Tabbar from '@common/components/Tab_Bar/index.vue'
+  import { useUserInfo } from '@pages/user/composables/userInfo'
 
-const router = useRouter()
-const { userInfoLoading, userData } = useUserInfo()
-const loading = ref(userInfoLoading)
-const userInfo = reactive(userData)
+  const router = useRouter()
+  const { userInfoLoading, userData } = useUserInfo()
+  const loading = ref(userInfoLoading)
+  const userInfo = reactive(userData)
 
-// 是否登录
-const isLogin = computed(() => {
-  return userInfo.username
-})
+  // 是否登录
+  const isLogin = computed(() => {
+    return userInfo.username
+  })
 
-// 业务跳转前判断登录态
-const preAuthJump = () => {
-  if (!isLogin.value) {
-    User.login()
+  // 业务跳转前判断登录态
+  const preAuthJump = () => {
+    if (!isLogin.value) {
+      User.login()
+    }
   }
-}
 
-// 用户信息点击
-const infoBoxClick = () => {
-  preAuthJump()
-}
+  // 用户信息点击
+  const infoBoxClick = () => {
+    preAuthJump()
+  }
 
-/**
- * 菜单点击
- */
-// 退出
-const preLogout = () => {
-  User.logout()
-}
-// 关于我们
-const toAboutUs = () => {
-  router.push('/ucenter/about_us')
-}
-// 我的信息
-const toUserInfo = () => {
-  router.push('/ucenter/user_info')
-}
+  /**
+   * 菜单点击
+   */
+  // 退出
+  const preLogout = () => {
+    User.logout()
+  }
+  // 关于我们
+  const toAboutUs = () => {
+    router.push('/ucenter/about_us')
+  }
+  // 我的信息
+  const toUserInfo = () => {
+    router.push('/ucenter/user_info')
+  }
 </script>
 
 <style lang="less" scoped>

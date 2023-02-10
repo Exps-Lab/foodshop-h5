@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import { Toast } from 'vant'
 import { logoutSubmit } from '@api/login'
+import { useUserInfo } from '@pages/user/composables/userInfo'
 
 class User {
   constructor () {
@@ -30,10 +31,12 @@ class User {
 
   // 登出
   logout () {
+    const { removeUserStorage } = useUserInfo()
     logoutSubmit()
       .then(res => {
         Toast('已退出登录!')
         this.removeLoginToken()
+        removeUserStorage()
         location.reload()
       }).catch(err => {
         console.log(err)

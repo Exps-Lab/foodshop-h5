@@ -27,7 +27,7 @@ const constData = reactive({
 const tabChange = (index) => {
   const host = window.location.host
   const baseHome = import.meta.env.DEV ? `//${host}/src/pages/home/index.html` : `//${host}/home`
-  const baseUser = import.meta.env.DEV ? `//${host}/src/pages/user/index.html` : `//${host}/user`
+  const baseUser = import.meta.env.DEV ? `//${host}/src/pages/user/index.html` : `//${host}/ucenter`
   switch (index) {
     case 0:
       window.location.href = baseHome

@@ -5,8 +5,9 @@ import { getUserInfo } from '@api/user'
 export function useUserInfo () {
   const storageKey = 'userInfo'
   const loading = ref(false)
+  const defaultAvatar = 'http://static.foodshop.fun/WzEaxHRQsmA2rea.png'
   let userInfo = reactive({
-    avatar: '',
+    avatar: defaultAvatar,
     username: '',
     c_time: '',
     u_id: ''
@@ -25,18 +26,30 @@ export function useUserInfo () {
   const reqUserInfo = () => {
     loading.value = true
     getUserInfo().then(res => {
+      res.data.avatar = res.data.avatar || defaultAvatar
       userInfo = Object.assign(userInfo, res.data)
-      localStorage.setItem(storageKey, JSON.stringify(userInfo))
+      setUserStorage(userInfo)
     }).catch(e => {
     }).finally(() => {
       loading.value = false
     })
   }
 
+  const setUserStorage = (data) => {
+    localStorage.removeItem(storageKey)
+    localStorage.setItem(storageKey, JSON.stringify(data))
+  }
+
+  const removeUserStorage = () => {
+    localStorage.removeItem(storageKey)
+  }
+
   getUserData()
 
   return {
     userInfoLoading: loading.value,
-    userData: userInfo
+    userData: userInfo,
+    setUserStorage,
+    removeUserStorage
   }
 }
