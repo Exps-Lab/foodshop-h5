@@ -36,11 +36,12 @@
 </template>
 
 <script setup>
-  import { Dialog } from 'vant'
+  import { Dialog, Toast } from 'vant'
   import { ref, reactive } from 'vue'
+  import Loading from '@common/components/Loading'
   import { updateUserAvatar, updateUserName } from '@api/user'
   import ImageUpload from '@components/ImgUpload/index.vue'
-  import { useUserInfo } from '@pages/user/composables/userInfo'
+  import { useUserInfo } from '@pages/user/hooks/userInfo'
 
   const { userData, setUserStorage } = useUserInfo()
   const userInfo = reactive(userData)
@@ -57,8 +58,10 @@
       avatar: url
     }).then(res => {
       setUserStorage(res.data)
+      Toast.success('头像修改成功')
     }).catch(e => {
       console.error(e)
+      Toast.fail(e)
     })
   }
 
@@ -74,6 +77,7 @@
   // 提交用户名更改
   const onModifyNameSubmit = () => {
     showModifyNameDialog.value = false
+    Loading.show()
     if (modifyName.value === userInfo.username) {
       return false
     } else {
@@ -82,8 +86,12 @@
         username: modifyName.value
       }).then(res => {
         setUserStorage(res.data)
+        Toast.success('用户名修改成功')
       }).catch(e => {
         console.error(e)
+        Toast.fail(e)
+      }).finally(() => {
+        Loading.hide()
       })
     }
   }

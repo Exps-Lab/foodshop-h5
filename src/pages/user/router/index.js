@@ -21,6 +21,16 @@ const routes = [
     component: () => import('../views/user_info/index.vue')
   },
   {
+    path: '/ucenter/address_list',
+    name: 'addressList',
+    component: () => import('../views/address_list/index.vue')
+  },
+  {
+    path: '/ucenter/address_detail',
+    name: 'addressDetail',
+    component: () => import('../views/address_detail/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')

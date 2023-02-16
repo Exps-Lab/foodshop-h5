@@ -13,6 +13,7 @@ export function useUserInfo () {
     u_id: ''
   })
 
+  // 统一抽离获取用户信息入口
   const getUserData = () => {
     const storageUserInfo = JSON.parse(localStorage.getItem(storageKey) || '{}')
     if (!storageUserInfo.username) {
@@ -35,11 +36,14 @@ export function useUserInfo () {
     })
   }
 
+  // 用户信息数据分别单独更新，所有不统一抽离更新请求函数，只抽出增删storage相关方法
+  // 更新用户storage
   const setUserStorage = (data) => {
     localStorage.removeItem(storageKey)
     localStorage.setItem(storageKey, JSON.stringify(data))
   }
 
+  // 删除用户storage
   const removeUserStorage = () => {
     localStorage.removeItem(storageKey)
   }

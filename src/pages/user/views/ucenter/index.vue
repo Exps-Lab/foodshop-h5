@@ -20,7 +20,7 @@
           <van-icon class="icon" name="contact" />
           <span class="text">个人信息</span>
         </p>
-        <p class="menu-item">
+        <p class="menu-item" @click="toAddress">
           <van-icon class="icon" name="location-o" />
           <span class="text">我的地址</span>
         </p>
@@ -60,7 +60,7 @@
   import { useRouter } from 'vue-router'
   import { computed, ref, reactive } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
-  import { useUserInfo } from '@pages/user/composables/userInfo'
+  import { useUserInfo } from '@pages/user/hooks/userInfo'
 
   const router = useRouter()
   const { userInfoLoading, userData } = useUserInfo()
@@ -98,6 +98,10 @@
   // 我的信息
   const toUserInfo = () => {
     router.push('/ucenter/user_info')
+  }
+  // 我的地址
+  const toAddress = () => {
+    router.push('/ucenter/address_list')
   }
 </script>
 

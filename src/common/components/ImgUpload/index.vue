@@ -49,90 +49,95 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { uploadToken } from '@api/common/index'
-import { ref, watch } from 'vue'
+  import axios from 'axios'
+  import { uploadToken } from '@api/common/index'
+  import { ref, watch } from 'vue'
 
-const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  // 支持接收的类型
-  acceptType: {
-    type: String,
-    default: 'image/jpeg,image/png,image/jpg'
-  },
-  // 回显列表
-  fileData: {
-    type: Array,
-    default: () => []
-  }
-})
-
-const domain = 'https://upload-z1.qiniup.com'
-const qiniuAddr = 'static.foodshop.fun'
-const emits = defineEmits(['imgUploadFinish'])
-const uploader = ref()
-const fileList = ref([])
-
-// 获取文件流
-const afterReadFile = (fileObj, detail) => {
-  if (fileList.value.length > 1) {
-    fileList.value.splice(0, 1)
-  }
-  qiniuRequest(fileObj.file)
-}
-
-// 点击回显图片拉起文件选择
-const handlePreView = () => {
-  uploader.value.chooseFile()
-}
-
-// 七牛上传
-const qiniuRequest = async (file) => {
-  const extName = file.name.split('.').at(-1)
-  const keyName = randomString(15) + '.' + extName
-
-  // 从后端获取上传凭证token
-  const { data: token } = await uploadToken()
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('token', token)
-  formData.append('key', keyName)
-
-  // 获取到凭证以后再将文件上传到七牛云空间
-  const res = await axios.post(domain, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+  const props = defineProps({
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    // 支持接收的类型
+    acceptType: {
+      type: String,
+      default: 'image/jpeg,image/png,image/jpg'
+    },
+    // 回显列表
+    fileData: {
+      type: Array,
+      default: () => []
+    }
   })
-  if (res && res.status === 200) {
-    const url = 'http://' + qiniuAddr + '/' + res.data.key
-    emits('imgUploadFinish', url)
-  } else {
-    new Error(res.msg)
-  }
-}
 
-const randomString = (len = 32) => {
-  const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
-  const maxPos = chars.length
-  let pwd = ''
-  for (let i = 0; i < len; i++) {
-    pwd += chars.charAt(Math.floor(Math.random() * maxPos))
-  }
-  return pwd
-}
+  const domain = 'https://upload-z1.qiniup.com'
+  const qiniuAddr = 'static.foodshop.fun'
+  const emits = defineEmits(['imgUploadFinish'])
+  const uploader = ref()
+  const fileList = ref([])
 
-// 监听回显avatar
-watch(
-  () => props.fileData,
-  (now) => {
-    fileList.value = [...fileList.value, ...now]
-  },
-  {
-    immediate: true
+  // 获取文件流
+  const afterReadFile = (fileObj) => {
+    if (fileList.value.length > 1) {
+      fileList.value.splice(0, 1)
+    }
+    qiniuRequest(fileObj.file)
   }
-)
+
+  // 点击回显图片拉起文件选择
+  const handlePreView = () => {
+    uploader.value.chooseFile()
+  }
+
+  // 七牛上传
+  const qiniuRequest = async (file) => {
+    const extName = file.name.split('.').at(-1)
+    const keyName = randomString(15) + '.' + extName
+
+    // 从后端获取上传凭证token
+    const { data: token } = await uploadToken()
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('token', token)
+    formData.append('key', keyName)
+
+    // 获取到凭证以后再将文件上传到七牛云空间
+    const res = await axios.post(domain, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    if (res && res.status === 200) {
+      const url = 'http://' + qiniuAddr + '/' + res.data.key
+      emits('imgUploadFinish', url)
+    } else {
+      new Error(res.msg)
+    }
+  }
+
+  const randomString = (len = 32) => {
+    const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+    const maxPos = chars.length
+    let pwd = ''
+    for (let i = 0; i < len; i++) {
+      pwd += chars.charAt(Math.floor(Math.random() * maxPos))
+    }
+    return pwd
+  }
+
+  // 监听回显avatar
+  watch(
+    () => props.fileData,
+    (now) => {
+      fileList.value = [...fileList.value, ...now]
+    },
+    {
+      immediate: true
+    }
+  )
+  // watchEffect 会在副作用发生期间追踪依赖。它会在同步执行过程中，自动追踪“所有“能访问到的响应式属性
+  // watchEffect(() => {
+  //   if (fileList.value.length > 0) return false
+  //   fileList.value = [...fileList.value, ...props.fileData]
+  // })
 </script>
 
 <style lang="less" scoped>
