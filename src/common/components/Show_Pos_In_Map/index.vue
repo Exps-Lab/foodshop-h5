@@ -45,20 +45,20 @@
     })
     // MultiMarker文档地址：https://lbs.qq.com/webApi/javascriptGL/glDoc/glDocMarker
     const markerSetting = Object.assign({}, {
-      width: 20, // 样式宽
-      height: 30, // 样式高
-      anchor: { x: 10, y: 30 } // 描点位置
+      width: 30, // 样式宽
+      height: 45 // 样式高
     }, props.markerSetting)
     new TMap.MultiMarker({
       map,
       styles: {
-        marker: new TMap.MarkerStyle(markerSetting)
+        // [note] 更改default配置控制默认的marker展示
+        default: new TMap.MarkerStyle(markerSetting)
       },
       geometries: [
         // 点标记数据数组
         {
           position: centerInstance,
-          id: 'marker'
+          id: 'default'
         }
       ]
     })

@@ -52,7 +52,10 @@ const handleScroll = () => {
 
 const toPOIPickerPage = () => {
   router.push({
-    path: '/roiPicker'
+    path: '/roiPicker',
+    query: {
+      from: 'home'
+    }
   })
 }
 

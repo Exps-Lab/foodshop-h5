@@ -467,6 +467,20 @@ export function priceHandle (price) {
   return priceString
 }
 
+/**
+ * h5多页面之间相互跳转
+ * @param path        跳转的具体路径
+ * @param query       跳转带的参数
+ * @param moduleName  跳转所在多页moduleName (开发场景hash模式下可传)
+ */
+export function diffModuleJump (path, query = '', moduleName) {
+  const host = window.location.host
+  const devUrl = `//${host}/src/pages/${moduleName}/index.html#${path}`
+  const prodUrl = `//${host}${path}`
+  const baseUrl = import.meta.env.DEV ? devUrl : prodUrl
+  location.href = baseUrl + (query ? '?' + query : '')
+}
+
 export default {
   getQuery,
   delQuery,
@@ -492,5 +506,6 @@ export default {
   getPreSubmitData,
   flatten,
   roundNum,
-  priceHandle
+  priceHandle,
+  diffModuleJump
 }

@@ -12,6 +12,7 @@
 
 <script setup>
 import { reactive, onMounted } from 'vue'
+import { diffModuleJump } from '@utils'
 
 const tabProps = defineProps({
   active: {
@@ -25,18 +26,15 @@ const constData = reactive({
 })
 
 const tabChange = (index) => {
-  const host = window.location.host
-  const baseHome = import.meta.env.DEV ? `//${host}/src/pages/home/index.html` : `//${host}/home`
-  const baseUser = import.meta.env.DEV ? `//${host}/src/pages/user/index.html` : `//${host}/ucenter`
   switch (index) {
     case 0:
-      window.location.href = baseHome
+      diffModuleJump('/home', '', 'home')
       break
     case 1:
       console.log('my order')
       break
     case 2:
-      window.location.href = baseUser
+      diffModuleJump('/ucenter', '', 'ucenter')
       break
   }
 }
