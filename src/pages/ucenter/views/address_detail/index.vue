@@ -160,6 +160,19 @@
     })
   }
 
+  // 回显tag
+  const reviewTag = (tagText) => {
+    if (form.tag) {
+      const tagObj = addressTagMap.find(item => item.text === form.tag)
+      chooseTag(tagObj)
+    } else {
+      addressTagMap.forEach(item => {
+        item.isChose = false
+      })
+    }
+  }
+
+  // 删除地址
   const preDeleteAddress = async () => {
     Dialog.confirm({
       title: '删除地址',
@@ -206,7 +219,7 @@
       try {
         const { data } = await getAddressDetail({ address_id })
         Object.assign(form, data)
-        form.tag && chooseTag(addressTagMap.find(item => item.text === form.tag))
+        reviewTag(form.tag)
       } catch (err) {
         Toast.fail(err)
       } finally {
@@ -228,12 +241,12 @@
      }
   }
 
-  // 回显form
+  // 获取sessionStorage里缓存的form表单并回显
   const setTempForm = () => {
     const storageData = JSON.parse(sessionStorage.getItem(TEMPCHOSEPOS)) || null
     if (storageData) {
       Object.assign(form, storageData)
-      form.tag && chooseTag(addressTagMap.find(item => item.text === form.tag))
+      reviewTag(form.tag)
       // [note] 只用来传递跨页数据，接到后删除不做后续功能支持
       sessionStorage.removeItem(TEMPCHOSEPOS)
     }
@@ -242,7 +255,8 @@
   // 离开页面记录表单
   window.onbeforeunload = () => {
     const isEmptyObj = Object.values(form).every(item => item === '')
-    if (!isEmptyObj) {
+    const { name } = route
+    if (!isEmptyObj && name === 'addressDetail') {
       sessionStorage.setItem(TEMPCHOSEPOS, JSON.stringify(form))
     }
   }
