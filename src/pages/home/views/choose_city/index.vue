@@ -21,13 +21,10 @@
 </template>
 
 <script setup>
-// import { Toast } from 'vant'
 import { reactive } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { getAllCity } from '@api/home'
 
-const { commit } = useStore()
 const router = useRouter()
 const route = useRoute()
 const city = reactive({
@@ -54,12 +51,16 @@ const getCities = async () => {
 
 const choseCity = (city) => {
   const { name } = city
-  commit('userPos/setCity', name)
-  backToRoiPage()
+  backToRoiPage(name)
 }
 
-const backToRoiPage = () => {
-  router.back()
+const backToRoiPage = (city_name) => {
+  router.push({
+    path: '/roiPicker',
+    query: {
+      city_name
+    }
+  })
 }
 
 const init = async () => {

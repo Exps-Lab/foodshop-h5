@@ -3,7 +3,7 @@
     <section :class="['pos-text', constData.minsizePos && 'minsize']" @click="toPOIPickerPage">
       <van-icon class="location-icon font-bold-weight" name="location-o" />
       <span class="font-bold-weight" v-if="constData.isPosing">定位中...</span>
-      <span class="font-bold-weight" v-else>{{constData.pos}} ></span>
+      <span class="font-bold-weight text-ellipsis" v-else>{{constData.pos}}></span>
     </section>
     <van-search
       readonly
@@ -17,10 +17,9 @@
 <script setup>
 import { getPosByTX } from '@utils/getAccuratePos'
 import { reactive, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
 
-const { getters } = useStore()
 const router = useRouter()
 const brandMain = 'rgb(2, 182, 253)'
 const constData = reactive({
@@ -30,10 +29,15 @@ const constData = reactive({
 })
 
 const getPos = () => {
-  const userChosePos = getters.getChosePos.title
+  const { title = '' } = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || {}
+  if (title) {
+    constData.pos = title
+    constData.isPosing = false
+    return true
+  }
   getPosByTX().then(data => {
     const { district, addr, city } = data
-    constData.pos = userChosePos || addr || district || city
+    constData.pos = addr || district || city
   }).finally(() => {
     constData.isPosing = false
   })

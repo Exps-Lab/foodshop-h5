@@ -1,41 +1,72 @@
 <template>
-  <section class="main address-box">
-    <section class="address-list">
-      <van-icon class="edit-icon" name="edit" @click="toAddressDetail" />
+  <section class="main address-box" v-if="addressList.length">
+    <section class="address-list" v-for="address in addressList" :key="address.id">
+      <van-icon class="edit-icon" name="edit" @click="toAddressDetail(address.id)" />
       <p class="msg-box">
-        <span class="tag">公司</span>
-        <span class="title font-bold-weight text-ellipsis">北京市朝阳区北京市123123123123朝阳区北京市朝阳区北京市朝阳区</span>
+        <span class="tag" v-if="address.tag">{{address.tag}}</span>
+        <span class="title font-bold-weight text-ellipsis">{{address.title}} {{address.room}}</span>
       </p>
       <p class="msg-box">
-        <span class="name sub-text">测试</span>
-        <span class="tel sub-text">1123123123</span>
+        <span class="name sub-text">{{address.receive}} ({{getGenderText(address.gender)}})</span>
+        <span class="tel sub-text">{{address.phone}}</span>
       </p>
     </section>
   </section>
 
+  <van-empty description="暂无地址" v-else />
   <!--  添加地址  -->
-  <van-icon class="add-address" name="add" @click="toAddressDetail" />
+  <van-icon class="add-address" name="add" @click="toAddressDetail('')" />
 </template>
 
 <script setup>
+  import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  const router = useRouter()
+  import { getAddressList } from '@api/user/address'
+  import Loading from '@common/components/Loading'
+  import { Toast } from 'vant'
 
+  const router = useRouter()
+  const addressList = ref([])
   // 跳转地址详情页
-  const toAddressDetail = () => {
-    // todo 传参地址id待定
+  const toAddressDetail = (addressId) => {
     // 区分新增还是更新(是否传id)
+    const query = addressId ? { addressId } : {}
     router.push({
       path: '/ucenter/address_detail',
-      query: {}
+      query
     })
   }
+
+  const getGenderText = (gender) => {
+    const genderMap = {
+      0: '先生',
+      1: '女士'
+    }
+    return genderMap[gender]
+  }
+
+  // 获取地址列表
+  const preGetAddressList = async () => {
+    Loading.show()
+    try {
+      const { data } = await getAddressList()
+      addressList.value = addressList.value.concat(data)
+    } catch (err) {
+      Toast.fail(err)
+    } finally {
+      Loading.hide()
+    }
+  }
+  preGetAddressList()
 </script>
 
 <style lang="less" scoped>
   .main {
     min-height: 100vh;
     background: var(--van-gray-1);
+  }
+  .van-empty {
+    height: 100vh;
   }
   .address-box {
     .address-list {
@@ -75,6 +106,9 @@
         .sub-text {
           color: @text-3;
           font-size: 13px;
+        }
+        .tel {
+          margin-left: 10px;
         }
         .name {
           margin-right: 10px;

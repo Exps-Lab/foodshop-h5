@@ -23,14 +23,19 @@
 
   // 加载腾讯sdk
   const loadScript = () => {
-    const txKey = 'UIWBZ-OJNWV-KOTPW-UEBS7-4KSVH-B2BNG'
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = `https://map.qq.com/api/gljs?v=1.exp&key=${txKey}&callback=init`
-    script.onload = script.onreadystatechange = () => {
+    if (document.querySelector('#testScript') === null) {
+      const txKey = 'UIWBZ-OJNWV-KOTPW-UEBS7-4KSVH-B2BNG'
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.setAttribute('id', 'testScript')
+      script.src = `https://map.qq.com/api/gljs?v=1.exp&key=${txKey}&callback=init`
+      script.onload = script.onreadystatechange = () => {
+        initMap()
+      }
+      document.body.appendChild(script)
+    } else {
       initMap()
     }
-    document.body.appendChild(script)
   }
 
   const initMap = () => {

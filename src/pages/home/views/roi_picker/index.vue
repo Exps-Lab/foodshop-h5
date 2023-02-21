@@ -65,21 +65,24 @@
 </template>
 
 <script setup>
-// import { Toast } from 'vant'
-import { useStore } from 'vuex'
-import { ref, reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { searchWithRange, searchWithoutKeyword } from '@api/pos'
 import { getPosByTX } from '@utils/getAccuratePos'
-// import Loading from '@common/components/Loading'
+import { diffModuleJump } from '@utils'
+import { HOMECHOSEPOS, ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
 
-const { state, commit } = useStore()
 const router = useRouter()
+const route = useRoute()
 // 页面展示模式
 // pos: 选择地址；search：搜索附近
 const pageMode = ref('pos')
 // 当前选择城市
-const cityNow = computed(() => state.userPos.city)
+const cityNow = route.query.city_name
+// 来源页面 (home首页，address地址详情页)
+const fromPage = route.query.from
+// 地址详情id (从address地址详情页带过来)
+const addressId = route.query.addressId
 
 // 定位
 const pos = reactive({
@@ -90,9 +93,9 @@ const pos = reactive({
 })
 // 控制位置信息相关展示
 const getLocation = (data) => {
-  const roiData = data || JSON.parse(localStorage.getItem('appPos') || '{}')
+  const roiData = data || JSON.parse(localStorage.getItem('appPos')) || {}
   const { city, district, lat, lng, addr = '' } = roiData
-  pos.city = cityNow.value || city
+  pos.city = cityNow || city
   pos.accurate = addr || district
   pos.roi = `${lat},${lng}`
 }
@@ -171,12 +174,26 @@ const searchPlace = () => {
 // 记录用户选择的位置
 const setChoseAddress = (choseAddress) => {
   const { location: { lat, lng }, address, title } = choseAddress
-  commit('userPos/setAllInfo', { lat, lng, address, title })
-  backHome()
+  const pageConfMap = {
+    home: {
+      storageName: HOMECHOSEPOS,
+      goRouter: '/home',
+      module: 'home'
+    },
+    address: {
+      storageName: ADDRESSCHOSEPOS,
+      goRouter: '/ucenter/address_detail',
+      module: 'ucenter'
+    }
+  }
+  const { storageName, goRouter, module } = pageConfMap[fromPage]
+  sessionStorage.setItem(storageName, JSON.stringify({ lat, lng, address, title }))
+  linkPage(goRouter, module)
 }
 
-const backHome = () => {
-  router.push('/home')
+const linkPage = (page, module) => {
+  const query = addressId !== undefined ? `addressId=${addressId}` : ''
+  diffModuleJump(page, query, module)
 }
 
 const init = async () => {

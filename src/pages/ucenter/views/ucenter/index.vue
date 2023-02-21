@@ -5,6 +5,8 @@
       <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
       <p v-else class="username font-bold-weight">点击登录/注册</p>
     </section>
+
+    <!-- todo server配置返回auth菜单 -->
     <section class="menu-container">
       <!--   活动功能   -->
       <section class="menu-box activity">
@@ -73,10 +75,12 @@
   })
 
   // 业务跳转前判断登录态
-  const preAuthJump = () => {
+  const preAuthJump = (handleCb) => {
     if (!isLogin.value) {
       User.login()
+      return false
     }
+    handleCb && handleCb.constructor === Function && handleCb()
   }
 
   // 用户信息点击
@@ -89,7 +93,9 @@
    */
   // 退出
   const preLogout = () => {
-    User.logout()
+    preAuthJump(() => {
+      User.logout()
+    })
   }
   // 关于我们
   const toAboutUs = () => {
@@ -97,11 +103,15 @@
   }
   // 我的信息
   const toUserInfo = () => {
-    router.push('/ucenter/user_info')
+    preAuthJump(() => {
+      router.push('/ucenter/user_info')
+    })
   }
   // 我的地址
   const toAddress = () => {
-    router.push('/ucenter/address_list')
+    preAuthJump(() => {
+      router.push('/ucenter/address_list')
+    })
   }
 </script>
 
