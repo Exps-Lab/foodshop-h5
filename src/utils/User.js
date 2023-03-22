@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 import { Toast } from 'vant'
+import { diffModuleJump } from '@utils/index'
 import { logoutSubmit } from '@api/login'
 import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
 
@@ -23,10 +24,8 @@ class User {
   // 统一处理登录
   login (redirecturi) {
     const url = redirecturi || window.location.href
-    const loginUrl = import.meta.env.DEV
-      ? 'src/pages/login/index.html'
-      : 'login'
-    location.href = `${location.origin}/${loginUrl}?redirecturi=${encodeURIComponent(url)}`
+    const query = `redirecturi=${encodeURIComponent(url)}`
+    diffModuleJump('/login', query, 'login')
   }
 
   // 登出

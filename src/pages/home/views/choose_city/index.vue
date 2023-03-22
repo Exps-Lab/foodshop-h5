@@ -4,7 +4,7 @@
       <van-icon class="location-icon font-bold-weight" name="location-o" />
       当前定位城市<span class="yellow font-bold-weight">{{route.query.city}}</span>
     </p>
-    <p class="back" @click="backToRoiPage">取消</p>
+    <p class="back" @click="backToRoiPage('')">取消</p>
   </section>
   <section class="hot-city-box">
     <p class="list-box__header yellow">热门城市</p>
@@ -55,11 +55,14 @@ const choseCity = (city) => {
 }
 
 const backToRoiPage = (city_name) => {
+  const { city, from } = route.query || {}
+  const query = {
+    city_name: city_name || city
+  }
+  from && (query.from = from)
   router.push({
     path: '/roiPicker',
-    query: {
-      city_name
-    }
+    query
   })
 }
 

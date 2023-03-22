@@ -111,11 +111,13 @@ const handleRePos = () => {
   })
 }
 const chooseCity = () => {
+  const query = {
+    city: pos.city
+  }
+  fromPage && (query.from = fromPage)
   router.push({
     path: '/chooseCity',
-    query: {
-      city: pos.city
-    }
+    query
   })
 }
 
