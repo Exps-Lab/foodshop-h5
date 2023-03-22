@@ -35,6 +35,10 @@ const props = defineProps({
   filter: {
     type: Object,
     default: () => {}
+  },
+  firstPosStr: {
+    type: String,
+    default: ''
   }
 })
 
@@ -76,6 +80,9 @@ const handleFilterParams = () => {
 const preGetShopList = () => {
   resetFilterData()
   const filter = handleFilterParams()
+  if (nowPosStr.value.includes('undefined')) {
+    return false
+  }
   return getShopList(filter).then(res => {
     const { data } = res
     pagination.total = data.length
@@ -118,6 +125,9 @@ watch(
         res.push({ lat, lng })
         return res
       }, [])
+      if (nowPosStr.value.includes('undefined')) {
+        return false
+      }
       listShop.costTime = listShop.costTime.concat(await getCostTime(nowPosStr.value, endPosArr))
     }
   }
@@ -133,13 +143,33 @@ watch(
   }
 )
 
+watch(
+  () => props.firstPosStr,
+  async (now) => {
+    if (now) {
+      nowPosStr.value = now
+    }
+  }
+)
+
+watch(
+  nowPosStr,
+  async (now) => {
+    if (now.includes('undefined')) {
+      return false
+    }
+    await preGetShopList()
+    await onLoad()
+  }
+)
+
 // 获取当前定位
 const getPosNow = () => {
   return new Promise((resolve) => {
     // 用户选择位置
     const getChosePos = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || null
     // 腾讯定位位置
-    const appPos = JSON.parse(localStorage.getItem('appPos')) || null
+    const appPos = JSON.parse(localStorage.getItem('appPos') || '{}') || null
     const originData = getChosePos || appPos
     const { lat, lng } = originData
     nowPosStr.value = `${lat},${lng}`
@@ -149,8 +179,8 @@ const getPosNow = () => {
 
 const init = async () => {
   await getPosNow()
-  await preGetShopList()
-  await onLoad()
+  // await preGetShopList()
+  // await onLoad()
 }
 
 init()

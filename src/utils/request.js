@@ -22,7 +22,7 @@ let redirecturi = ''
 // }
 
 const service = axios.create({
-  timeout: 5000
+  timeout: 30 * 1000
 })
 
 // Sign in the request interceptors.

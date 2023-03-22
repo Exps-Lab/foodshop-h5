@@ -16,7 +16,7 @@
 
 <script setup>
 import { getPosByTX } from '@utils/getAccuratePos'
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, defineEmits } from 'vue'
 import { useRouter } from 'vue-router'
 import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
 
@@ -28,6 +28,7 @@ const constData = reactive({
   minsizePos: false
 })
 
+const emits = defineEmits(['getFirstPos'])
 const getPos = () => {
   const { title = '' } = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || {}
   if (title) {
@@ -36,8 +37,12 @@ const getPos = () => {
     return true
   }
   getPosByTX().then(data => {
-    const { district, addr, city } = data
+    const { district, addr, city, lat, lng } = data
     constData.pos = addr || district || city
+    emits('getFirstPos', {
+      lat,
+      lng
+    })
   }).finally(() => {
     constData.isPosing = false
   })
