@@ -2,7 +2,7 @@
   <section class="list-box__header" v-if="props.needTitle">附近商家</section>
   <van-list
     class="self-list-box"
-    v-model:loading="loading"
+    v-loading="loading"
     :finished="finished"
     :finished-text="pagination.endText"
     :immediate-check="false"
@@ -19,7 +19,10 @@
 import { reactive, ref, watch } from 'vue'
 import { getShopList, getPosCostTime } from '@api/home'
 import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
+import { posStore } from '@pages/home/store/pos'
 import GoodsCard from '@common/components/Goods_Card/index.vue'
+
+const store = posStore()
 
 const loading = ref(true)
 const finished = ref(false)
@@ -35,10 +38,6 @@ const props = defineProps({
   filter: {
     type: Object,
     default: () => {}
-  },
-  firstPosStr: {
-    type: String,
-    default: ''
   }
 })
 
@@ -80,9 +79,6 @@ const handleFilterParams = () => {
 const preGetShopList = () => {
   resetFilterData()
   const filter = handleFilterParams()
-  if (nowPosStr.value.includes('undefined')) {
-    return false
-  }
   return getShopList(filter).then(res => {
     const { data } = res
     pagination.total = data.length
@@ -105,7 +101,6 @@ const getCostTime = async (startPos, endPosArr) => {
 }
 
 const onLoad = async () => {
-  loading.value = true
   pagination.pageNum++
   loadNextData(pagination.pageNum)
   loading.value = false
@@ -125,9 +120,6 @@ watch(
         res.push({ lat, lng })
         return res
       }, [])
-      if (nowPosStr.value.includes('undefined')) {
-        return false
-      }
       listShop.costTime = listShop.costTime.concat(await getCostTime(nowPosStr.value, endPosArr))
     }
   }
@@ -142,45 +134,44 @@ watch(
     deep: true
   }
 )
-
+// 处理跟首页header异步数据
 watch(
-  () => props.firstPosStr,
+  () => store.firstPosStr,
   async (now) => {
     if (now) {
       nowPosStr.value = now
     }
   }
 )
-
 watch(
   nowPosStr,
   async (now) => {
+    // [note] storage没有并且store里没有触发过首页header定位（直接访问链接进入需要定位的页面）
+    loading.value = true
     if (now.includes('undefined')) {
-      return false
+      if (!store.positioning) {
+        await store.getPosByTXReq()
+      }
+    } else {
+      await preGetShopList()
+      await onLoad()
     }
-    await preGetShopList()
-    await onLoad()
   }
 )
 
 // 获取当前定位
 const getPosNow = () => {
-  return new Promise((resolve) => {
-    // 用户选择位置
-    const getChosePos = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || null
-    // 腾讯定位位置
-    const appPos = JSON.parse(localStorage.getItem('appPos') || '{}') || null
-    const originData = getChosePos || appPos
-    const { lat, lng } = originData
-    nowPosStr.value = `${lat},${lng}`
-    resolve(nowPosStr)
-  })
+  // 用户选择位置
+  const getChosePos = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || null
+  // 腾讯定位位置
+  const appPos = JSON.parse(localStorage.getItem('appPos') || '{}') || null
+  const originData = getChosePos || appPos
+  const { lat, lng } = originData
+  nowPosStr.value = `${lat},${lng}`
 }
 
 const init = async () => {
-  await getPosNow()
-  // await preGetShopList()
-  // await onLoad()
+  getPosNow()
 }
 
 init()

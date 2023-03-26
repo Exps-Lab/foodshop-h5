@@ -15,10 +15,12 @@
 </template>
 
 <script setup>
-import { getPosByTX } from '@utils/getAccuratePos'
-import { reactive, onMounted, defineEmits } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { posStore } from '@pages/home/store/pos'
 import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
+
+const store = posStore()
 
 const router = useRouter()
 const brandMain = 'rgb(2, 182, 253)'
@@ -28,24 +30,16 @@ const constData = reactive({
   minsizePos: false
 })
 
-const emits = defineEmits(['getFirstPos'])
-const getPos = () => {
+const getPos = async () => {
   const { title = '' } = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || {}
   if (title) {
     constData.pos = title
     constData.isPosing = false
     return true
   }
-  getPosByTX().then(data => {
-    const { district, addr, city, lat, lng } = data
-    constData.pos = addr || district || city
-    emits('getFirstPos', {
-      lat,
-      lng
-    })
-  }).finally(() => {
-    constData.isPosing = false
-  })
+  const { addr, district, city } = await store.getPosByTXReq()
+  constData.pos = addr || district || city
+  constData.isPosing = false
 }
 
 const toGlobalSearchPage = () => {

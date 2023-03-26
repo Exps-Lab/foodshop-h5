@@ -1,15 +1,14 @@
 <template>
   <div class="main-content">
-    <MainHeader @getFirstPos="getFirstPos"/>
+    <MainHeader />
     <KingKongSuggest />
-    <SuggestList :filter="suggestListFilter" :firstPosStr="firstPosStr"/>
+    <SuggestList :filter="suggestListFilter" />
     <FooterBeian />
   </div>
   <Tabbar :active="0" />
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import MainHeader from './components/header.vue'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
 import KingKongSuggest from './components/king_kong_suggest.vue'
@@ -18,11 +17,6 @@ import SuggestList from '@common/components/Suggest_List/index.vue'
 
 const suggestListFilter = {
   distance: 1
-}
-const firstPosStr = ref('')
-const getFirstPos = ({ lat, lng }) => {
-  firstPosStr.value = `${lat},${lng}`
-  console.log(firstPosStr.value)
 }
 </script>
 

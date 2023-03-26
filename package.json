@@ -16,10 +16,10 @@
     "axios": "^0.26.1",
     "chalk": "^2.4.2",
     "js-cookie": "^3.0.1",
+    "pinia": "^2.0.29",
     "vant": "^3.6.1",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.14",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.0.14"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.0",

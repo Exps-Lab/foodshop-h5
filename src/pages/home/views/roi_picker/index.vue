@@ -65,12 +65,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { searchWithRange, searchWithoutKeyword } from '@api/pos'
-import { getPosByTX } from '@utils/getAccuratePos'
 import { diffModuleJump } from '@utils'
+import { posStore } from '@pages/home/store/pos'
 import { HOMECHOSEPOS, ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
+
+const store = posStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -100,15 +102,13 @@ const getLocation = (data) => {
   pos.roi = `${lat},${lng}`
 }
 // 重新定位
-const handleRePos = () => {
+const handleRePos = async () => {
   pos.isPosing = true
-  getPosByTX({
+  const posData = await store.getPosByTXReq({
     forceUpdate: true
-  }).then(data => {
-    getLocation(data)
-  }).finally(() => {
-    pos.isPosing = false
   })
+  getLocation(posData)
+  pos.isPosing = false
 }
 const chooseCity = () => {
   const query = {
@@ -198,9 +198,21 @@ const linkPage = (page, module) => {
   diffModuleJump(page, query, module)
 }
 
+watch(
+  () => pos.roi,
+  async (now) => {
+    // [note] 初始storage里没有需要自动发起一次定位
+    if (now.includes('undefined')) {
+      explore.loading = true
+      await handleRePos()
+    } else {
+      await getNearbyExplore()
+    }
+  }
+)
+
 const init = async () => {
-  await getLocation()
-  await getNearbyExplore()
+  getLocation()
 }
 init()
 </script>
