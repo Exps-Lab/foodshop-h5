@@ -18,7 +18,7 @@
     <SearchHistory v-if="!isSearching" @search="historyClick" />
     <van-list
       v-else
-      v-model:loading="data.loading"
+      v-loading="data.loading"
       :finished="data.finished"
       :finished-text="pagination.endText"
       :immediate-check="false"
@@ -87,6 +87,7 @@ const historyClick = (val) => {
 // 获取搜索结果
 const getResultList = async () => {
   if (!data.searchVal) return
+  data.loading = true
   // 没有定位信息需要先获取
   if (store.firstPosStr.includes('undefined')) {
     await store.getPosByTXReq()
@@ -105,7 +106,7 @@ const getResultList = async () => {
 // 加载分页数据
 const onLoad = async () => {
   pagination.pageNum++
-  loadNextData(pagination.pageNum)
+  await loadNextData(pagination.pageNum)
   data.loading = false
   if (!pagination.hasNext) {
     data.finished = true
