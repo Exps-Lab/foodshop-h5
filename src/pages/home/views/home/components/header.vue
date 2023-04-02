@@ -44,6 +44,7 @@ const getPos = async () => {
 
 const toGlobalSearchPage = () => {
   console.log('跳转商品/商铺搜索页面')
+  router.push({ path: '/searchResult' })
 }
 
 const handleScroll = () => {
