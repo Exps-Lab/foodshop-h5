@@ -503,6 +503,7 @@ export default {
   replaceQuery,
   urlToObj,
   objToUrl,
+  debounce,
   getPreSubmitData,
   flatten,
   roundNum,
