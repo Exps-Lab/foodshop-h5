@@ -7,7 +7,7 @@
         autofocus
         placeholder="请输入商家或商品名称"
         @search="onSearch"
-        @update:model-value="searchValChange"
+        @update:model-value="debounce(getResultList, 300)"
       >
         <template #action>
           <div @click="onSearch">搜索</div>
@@ -35,7 +35,7 @@ import SearchHistory from './components/search_history.vue'
 import ShopCard from './components/shop_card.vue'
 import { posStore } from '@pages/home/store/pos'
 import { getGlobalSearch, getPosCostTime } from '@/api/home'
-import { Storage } from '@/utils/index.js'
+import { Storage, debounce } from '@/utils/index.js'
 
 const store = posStore()
 
@@ -71,13 +71,6 @@ const onSearch = () => {
   getResultList()
 }
 
-// 输入框内容变化
-const searchValChange = (val) => {
-  if (!val) {
-    resetFilterData()
-  }
-}
-
 // 点击历史搜索项
 const historyClick = (val) => {
   data.searchVal = val
@@ -86,9 +79,9 @@ const historyClick = (val) => {
 
 // 获取搜索结果
 const getResultList = async () => {
+  resetFilterData()
   if (!data.searchVal) return
   data.loading = true
-  resetFilterData()
   // 没有定位信息需要先获取
   if (store.firstPosStr.includes('undefined')) {
     await store.getPosByTXReq()
@@ -107,7 +100,7 @@ const getResultList = async () => {
 // 加载分页数据
 const onLoad = async () => {
   pagination.pageNum++
-  loadNextData(pagination.pageNum)
+  await loadNextData(pagination.pageNum)
   data.loading = false
   if (!pagination.hasNext) {
     data.finished = true
