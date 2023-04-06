@@ -21,11 +21,11 @@
 
 <script setup>
 import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getSubCategory } from '@api/home'
 import SuggestList from '@common/components/Suggest_List/index.vue'
 
-// const router = useRouter()
+const router = useRouter()
 const route = useRoute()
 const brandMain = 'rgb(2, 182, 253)'
 const { categoryId, categoryName } = route.query
@@ -56,7 +56,7 @@ const suggestListFilter = reactive({
 })
 
 const toGlobalSearchPage = () => {
-  console.log('跳转商品/商铺搜索页面')
+  router.push({ path: '/searchResult' })
 }
 
 getSubCategoryData()

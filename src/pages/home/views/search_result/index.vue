@@ -18,7 +18,7 @@
     <SearchHistory v-if="!isSearching" @search="historyClick" />
     <van-list
       v-else
-      v-model:loading="data.loading"
+      v-loading="data.loading"
       :finished="data.finished"
       :finished-text="pagination.endText"
       :immediate-check="false"
@@ -87,6 +87,8 @@ const historyClick = (val) => {
 // 获取搜索结果
 const getResultList = async () => {
   if (!data.searchVal) return
+  data.loading = true
+  resetFilterData()
   // 没有定位信息需要先获取
   if (store.firstPosStr.includes('undefined')) {
     await store.getPosByTXReq()
@@ -119,6 +121,8 @@ const loadNextData = async (pageNum = 1) => {
   // 获取新店铺列表
   const newShopList = data.shopResList.slice((pageNum - 1) * pageSize, pageNum * pageSize)
   if (newShopList.length === 0) {
+    // [note] 展示数据置空
+    data.shopShowList = []
     return
   }
   // 获取新店铺的配送时长列表

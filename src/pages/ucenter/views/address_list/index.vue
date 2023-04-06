@@ -1,6 +1,6 @@
 <template>
   <section class="main address-box" v-if="addressList.length">
-    <section class="address-list" v-for="address in addressList" :key="address.id">
+    <section class="address-list" v-for="address in addressList" :key="address.id" @click="choseAddress(address)">
       <van-icon class="edit-icon" name="edit" @click="toAddressDetail(address.id)" />
       <p class="msg-box">
         <span class="tag" v-if="address.tag">{{address.tag}}</span>
@@ -35,6 +35,11 @@
       path: '/ucenter/address_detail',
       query
     })
+  }
+
+  // [note] 选择当前地址，目前业务来源有"确认订单页"
+  const choseAddress = ({ id }) => {
+    // todo 跳转确认订单
   }
 
   const getGenderText = (gender) => {

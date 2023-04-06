@@ -49,10 +49,10 @@ const Loading = {
   },
   show (options) {
     !appInstance && this.initLoading(options)
-    appInstance._instance.exposed.showLoading()
+    appInstance._instance?.exposed?.showLoading()
   },
   hide () {
-    appInstance._instance.exposed.hideLoading()
+    appInstance._instance?.exposed?.hideLoading()
     appInstance = null
   }
 }
