@@ -7,20 +7,32 @@
     :finished-text="pagination.endText"
     :immediate-check="false"
     @load="onLoad">
-    <GoodsCard
-      v-for="(goodsData, index) in listShop.showData"
-      :key="goodsData._id"
-      :goods-data="goodsData"
-      :costTime="listShop.costTime[index]"/>
+    <!--  订单卡片  -->
+    <template v-if="props.cardType === 'order'">
+      <GoodsCardOrder
+        v-for="(goodsData, index) in listShop.showData"
+        :key="goodsData._id"
+        :goods-data="goodsData"
+        :costTime="listShop.costTime[index]"/>
+    </template>
+    <!--  推荐卡片  -->
+    <template v-else-if="props.cardType === 'suggest'">
+      <GoodsCard
+        v-for="(goodsData, index) in listShop.showData"
+        :key="goodsData._id"
+        :goods-data="goodsData"
+        :costTime="listShop.costTime[index]"/>
+    </template>
   </van-list>
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 import { getShopList, getPosCostTime } from '@api/home'
 import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
 import { posStore } from '@pages/home/store/pos'
 import GoodsCard from '@common/components/Goods_Card/index.vue'
+import GoodsCardOrder from '@common/components/Goods_Card_Order/index.vue'
 
 const store = posStore()
 
@@ -38,7 +50,18 @@ const props = defineProps({
   filter: {
     type: Object,
     default: () => {}
+  },
+  // 列表组件使用的卡片类型
+  cardType: {
+    type: String,
+    // 'suggest', 'order'
+    default: 'suggest'
   }
+})
+
+// 根据是否需要定位来拆分不同的列表逻辑
+const needPos = computed(() => {
+  return props.cardType === 'suggest'
 })
 
 // 前端分页，区分展示和源数据
@@ -110,11 +133,16 @@ const onLoad = async () => {
   }
 }
 
+const getData = async () => {
+  await preGetShopList()
+  await onLoad()
+}
+
 // 计算配送路线所需时间
 watch(
   () => listShop.sliceData,
   async (newPageData) => {
-    if (newPageData.length) {
+    if (newPageData.length && needPos.value) {
       const endPosArr = newPageData.reduce((res, now) => {
         const { lat, lng } = now.pos
         res.push({ lat, lng })
@@ -128,8 +156,7 @@ watch(
 watch(
   () => props.filter,
   async (now, pre) => {
-    await preGetShopList()
-    await onLoad()
+    await getData()
   }, {
     deep: true
   }
@@ -153,8 +180,7 @@ watch(
         await store.getPosByTXReq()
       }
     } else {
-      await preGetShopList()
-      await onLoad()
+      await getData()
     }
   }
 )
@@ -171,7 +197,7 @@ const getPosNow = () => {
 }
 
 const init = async () => {
-  getPosNow()
+  needPos.value ? getPosNow() : getData()
 }
 
 init()

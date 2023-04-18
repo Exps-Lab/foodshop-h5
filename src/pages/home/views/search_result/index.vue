@@ -114,8 +114,6 @@ const loadNextData = async (pageNum = 1) => {
   // 获取新店铺列表
   const newShopList = data.shopResList.slice((pageNum - 1) * pageSize, pageNum * pageSize)
   if (newShopList.length === 0) {
-    // [note] 展示数据置空
-    data.shopShowList = []
     return
   }
   // 获取新店铺的配送时长列表
@@ -146,6 +144,7 @@ const resetFilterData = () => {
 
 <style lang="less" scoped>
   .result-container {
+    position: relative;
     background-color: #F5F5F5;
     height: 100vh;
     padding-top: 58px;
@@ -153,7 +152,8 @@ const resetFilterData = () => {
   }
   &:deep(.van-cell-group) {
     height: 34px;
-    width: 350px;
+    min-width: 350px;
+    width: calc(100% - 24px);
     position: absolute;
     top: 0;
     margin: 12px;
@@ -164,6 +164,7 @@ const resetFilterData = () => {
     .van-search {
       padding: 0;
       .van-search__content {
+        padding-left: 0;
         background-color: @fill-1;
         input {
           &::-webkit-input-placeholder {

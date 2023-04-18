@@ -2,7 +2,7 @@
   <div class="main-content">
     <MainHeader />
     <KingKongSuggest />
-    <SuggestList :filter="suggestListFilter" />
+    <ComList :filter="ComListFilter" />
     <FooterBeian />
   </div>
   <Tabbar :active="0" />
@@ -13,9 +13,9 @@ import MainHeader from './components/header.vue'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
 import KingKongSuggest from './components/king_kong_suggest.vue'
 import FooterBeian from './components/footer_beian.vue'
-import SuggestList from '@common/components/Suggest_List/index.vue'
+import ComList from '@common/components/Com_List/index.vue'
 
-const suggestListFilter = {
+const ComListFilter = {
   distance: 1
 }
 </script>

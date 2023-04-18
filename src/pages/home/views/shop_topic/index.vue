@@ -15,7 +15,7 @@
         </div>
       </section>
     </div>
-    <SuggestList :needTitle="false" :filter="suggestListFilter" />
+    <ComList :needTitle="false" :filter="ComListFilter" cardType="order" />
   </div>
 </template>
 
@@ -23,7 +23,7 @@
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getSubCategory } from '@api/home'
-import SuggestList from '@common/components/Suggest_List/index.vue'
+import ComList from '@common/components/Com_List/index.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -46,11 +46,11 @@ const getSubCategoryData = async () => {
 const changeActive = (item) => {
   const { name } = item
   subCategory.activeName = name
-  suggestListFilter.shop_type = name
+  ComListFilter.shop_type = name
 }
 
 // 列表筛选条件
-const suggestListFilter = reactive({
+const ComListFilter = reactive({
   distance: 1,
   shop_type: subCategory.activeName
 })
