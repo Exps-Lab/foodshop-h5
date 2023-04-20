@@ -28,7 +28,7 @@
         </p>
         <p class="menu-item">
           <van-icon class="icon" name="sign" />
-          <span class="text">我的订单</span>
+          <span class="text">我的账户</span>
         </p>
         <p class="menu-item">
           <van-icon class="icon" name="like-o" />
@@ -59,6 +59,7 @@
 
 <script setup>
   import User from '@utils/User'
+  import { Dialog } from 'vant'
   import { useRouter } from 'vue-router'
   import { computed, ref, reactive } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
@@ -94,7 +95,16 @@
   // 退出
   const preLogout = () => {
     preAuthJump(() => {
-      User.logout()
+      Dialog.confirm({
+        title: '确认退出？'
+      })
+        .then(() => {
+          preAuthJump(() => {
+            User.logout()
+          })
+        })
+        .catch(() => {
+        })
     })
   }
   // 关于我们

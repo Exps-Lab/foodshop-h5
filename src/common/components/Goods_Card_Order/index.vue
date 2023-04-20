@@ -165,7 +165,7 @@ const toOrderDetail = (data) => {
       .order-price-box {
         display: flex;
         flex-direction: column;
-        align-items: end;
+        align-items: flex-end;
         .order-price {
           font-size: 16px;
           display: flex;
@@ -185,7 +185,7 @@ const toOrderDetail = (data) => {
     .order-button-group {
       display: flex;
       justify-content: flex-end;
-      margin-top: 20px;
+      margin-top: 25px;
       .order-btn {
         width: 75px;
         height: 25px;
