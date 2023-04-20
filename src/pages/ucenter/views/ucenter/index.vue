@@ -1,54 +1,23 @@
 <template>
   <div class="main">
-    <section class="info-box" @click="infoBoxClick" v-loading="loading">
+    <section class="info-box" v-loading="loading" @click="infoBoxClick">
       <img class="avatar" :src="userInfo.avatar" alt="avatar">
       <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
       <p v-else class="username font-bold-weight">点击登录/注册</p>
     </section>
 
-    <!-- todo server配置返回auth菜单 -->
     <section class="menu-container">
-      <!--   活动功能   -->
-      <section class="menu-box activity">
-        <p class="menu-item">
-          <van-icon class="icon" name="point-gift" />
-          <span class="text">我的红包</span>
-        </p>
-      </section>
-
-      <!--   常规功能   -->
-      <section class="menu-box">
-        <p class="menu-item" @click="toUserInfo">
-          <van-icon class="icon" name="contact" />
-          <span class="text">个人信息</span>
-        </p>
-        <p class="menu-item" @click="toAddress">
-          <van-icon class="icon" name="location-o" />
-          <span class="text">我的地址</span>
-        </p>
-        <p class="menu-item">
-          <van-icon class="icon" name="sign" />
-          <span class="text">我的账户</span>
-        </p>
-        <p class="menu-item">
-          <van-icon class="icon" name="like-o" />
-          <span class="text">我的收藏</span>
-        </p>
-        <p class="menu-item">
-          <van-icon class="icon" name="star-o" />
-          <span class="text">我的评价</span>
-        </p>
-      </section>
-
-      <!--    系统功能   -->
-      <section class="menu-box">
-        <p class="menu-item" @click="toAboutUs">
-          <van-icon class="icon" name="notes-o" />
-          <span class="text">关于本站</span>
-        </p>
-        <p class="menu-item gray" @click="preLogout">
-          <van-icon class="icon" name="smile-o" />
-          <span class="text">退出登录</span>
+      <section
+        v-for="(menuBox, index) in menuMap"
+        :key="index"
+        :class="['menu-box', menuBox.isHot && 'hot']">
+        <p
+          class="menu-item"
+          v-for="menuItem in menuBox.data"
+          :key="menuItem.name"
+          @click="preAuthJump(menuItem.clickEvent, menuItem.needLogin)">
+          <van-icon class="icon" :name="menuItem.icon" />
+          <span class="text">{{menuItem.name}}</span>
         </p>
       </section>
     </section>
@@ -76,8 +45,8 @@
   })
 
   // 业务跳转前判断登录态
-  const preAuthJump = (handleCb) => {
-    if (!isLogin.value) {
+  const preAuthJump = (handleCb, needLogin = true) => {
+    if (needLogin && !isLogin.value) {
       User.login()
       return false
     }
@@ -123,6 +92,72 @@
       router.push('/ucenter/address_list')
     })
   }
+  const toAccountInfo = () => {
+    preAuthJump(() => {
+      router.push('/ucenter/account_info')
+    })
+  }
+
+  // [note] 菜单配置数据
+  const menuMap = [
+    // 活动功能
+    {
+      type: 'activity',
+      isHot: true,
+      data: [{
+        name: '我的红包',
+        icon: 'point-gift',
+        needLogin: true,
+        clickEvent: () => {}
+      }]
+    },
+    // 常规功能
+    {
+      type: 'common',
+      isHot: false,
+      data: [{
+        name: '个人信息',
+        icon: 'contact',
+        needLogin: true,
+        clickEvent: toUserInfo
+      }, {
+        name: '我的地址',
+        icon: 'location-o',
+        needLogin: true,
+        clickEvent: toAddress
+      }, {
+        name: '我的账户',
+        icon: 'contact',
+        needLogin: true,
+        clickEvent: toAccountInfo
+      }, {
+        name: '我的收藏',
+        icon: 'like-o',
+        needLogin: true,
+        clickEvent: () => {}
+      }, {
+        name: '我的评价',
+        icon: 'star-o',
+        needLogin: true,
+        clickEvent: () => {}
+      }]
+    },
+    // 系统功能
+    {
+      type: 'system',
+      isHot: false,
+      data: [{
+        name: '关于本站',
+        icon: 'notes-o',
+        needLogin: false,
+        clickEvent: toAboutUs
+      }, {
+        name: '退出登录',
+        icon: 'smile-o',
+        needLogin: true,
+        clickEvent: preLogout
+      }]
+    }]
 </script>
 
 <style lang="less" scoped>
@@ -161,7 +196,7 @@
         background-color: #fff;
         margin-bottom: 10px;
         box-shadow: 0 0 5px @line-2;
-        &.activity {
+        &.hot {
           .menu-item {
             .icon {
               font-weight: 500;
