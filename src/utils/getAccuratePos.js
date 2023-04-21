@@ -26,6 +26,9 @@ const getAccuratePos = () => {
   return new Promise((resolve, reject) => {
     const geolocation = new qq.maps.Geolocation(TXKey, AppName)
     geolocation.getLocation(async (position) => {
+      console.log('geolocation定位成功')
+      // [note] 兼容chrome定位不准确
+      position.district = position.district || position.city
       await handlePosStorage('add', position)
       resolve(position)
     }, function () {
@@ -40,7 +43,8 @@ const getAccuratePos = () => {
         })
     }, {
       // 精确定位接口超时时间
-      timeout: 3 * 1000
+      timeout: 3 * 1000,
+      failTipFlag: true
     })
   })
 }
