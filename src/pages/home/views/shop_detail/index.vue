@@ -25,7 +25,7 @@
     </div>
 
     <!-- 购物车 -->
-    <section class="shopping-bag-area">
+    <section class="shopping-bag-area fix-elm-center">
       <p class="spec-tips" v-show="!shoppingListModal?.show"><span class="text">满30减10</span></p>
       <div class="shopping-bag">
         <section class="bag-left" @click="showShoppingCartModal">

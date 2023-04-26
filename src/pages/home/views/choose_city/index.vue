@@ -4,7 +4,7 @@
       <van-icon class="location-icon font-bold-weight" name="location-o" />
       当前定位城市<span class="yellow font-bold-weight">{{route.query.city}}</span>
     </p>
-    <p class="back" @click="backToRoiPage">取消</p>
+    <p class="back" @click="backToRoiPage('')">取消</p>
   </section>
   <section class="hot-city-box">
     <p class="list-box__header yellow">热门城市</p>
@@ -21,13 +21,10 @@
 </template>
 
 <script setup>
-// import { Toast } from 'vant'
 import { reactive } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { getAllCity } from '@api/home'
 
-const { commit } = useStore()
 const router = useRouter()
 const route = useRoute()
 const city = reactive({
@@ -54,12 +51,19 @@ const getCities = async () => {
 
 const choseCity = (city) => {
   const { name } = city
-  commit('userPos/setCity', name)
-  backToRoiPage()
+  backToRoiPage(name)
 }
 
-const backToRoiPage = () => {
-  router.back()
+const backToRoiPage = (city_name) => {
+  const { city, from } = route.query || {}
+  const query = {
+    city_name: city_name || city
+  }
+  from && (query.from = from)
+  router.push({
+    path: '/roiPicker',
+    query
+  })
 }
 
 const init = async () => {

@@ -76,7 +76,7 @@ const backPrev = () => {
   if (redirecturi) {
     window.location.href = decodeURIComponent(redirecturi)
   } else {
-    history.back()
+    headerBackClick()
   }
 }
 const capture = () => {

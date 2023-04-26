@@ -3,7 +3,7 @@
     <section :class="['pos-text', constData.minsizePos && 'minsize']" @click="toPOIPickerPage">
       <van-icon class="location-icon font-bold-weight" name="location-o" />
       <span class="font-bold-weight" v-if="constData.isPosing">定位中...</span>
-      <span class="font-bold-weight" v-else>{{constData.pos}} ></span>
+      <span class="font-bold-weight text-ellipsis" v-else>{{constData.pos}}></span>
     </section>
     <van-search
       readonly
@@ -15,12 +15,13 @@
 </template>
 
 <script setup>
-import { getPosByTX } from '@utils/getAccuratePos'
 import { reactive, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { posStore } from '@pages/home/store/pos'
+import { HOMECHOSEPOS } from '@utils/sessionStorage_keys'
 
-const { getters } = useStore()
+const store = posStore()
+
 const router = useRouter()
 const brandMain = 'rgb(2, 182, 253)'
 const constData = reactive({
@@ -29,18 +30,20 @@ const constData = reactive({
   minsizePos: false
 })
 
-const getPos = () => {
-  const userChosePos = getters.getChosePos.title
-  getPosByTX().then(data => {
-    const { district, addr, city } = data
-    constData.pos = userChosePos || addr || district || city
-  }).finally(() => {
+const getPos = async () => {
+  const { title = '' } = JSON.parse(sessionStorage.getItem(HOMECHOSEPOS)) || {}
+  if (title) {
+    constData.pos = title
     constData.isPosing = false
-  })
+    return true
+  }
+  const { addr, district, city } = await store.getPosByTXReq()
+  constData.pos = addr || district || city
+  constData.isPosing = false
 }
 
 const toGlobalSearchPage = () => {
-  console.log('跳转商品/商铺搜索页面')
+  router.push({ path: '/searchResult' })
 }
 
 const handleScroll = () => {
@@ -52,7 +55,10 @@ const handleScroll = () => {
 
 const toPOIPickerPage = () => {
   router.push({
-    path: '/roiPicker'
+    path: '/roiPicker',
+    query: {
+      from: 'home'
+    }
   })
 }
 

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
@@ -21,6 +21,11 @@ const routes = [
     component: () => import('../views/choose_city/index.vue')
   },
   {
+    path: '/searchResult',
+    name: 'searchResult',
+    component: () => import('../views/search_result/index.vue')
+  },
+  {
     path: '/shopTopic',
     name: 'shopTopic',
     component: () => import('../views/shop_topic/index.vue')
@@ -34,10 +39,15 @@ const routes = [
     path: '/shopDetail/map',
     name: 'shopDetailMap',
     component: () => import('../views/shop_detail/show_in_map.vue')
+  },
+  {
+    path: '/:pathMatch(.*)',
+    name: '404',
+    component: () => import('../../404.vue')
   }
 ]
 
 export default createRouter({
-  history: createWebHashHistory(),
+  history: import.meta.env.DEV ? createWebHashHistory() : createWebHistory(),
   routes
 })

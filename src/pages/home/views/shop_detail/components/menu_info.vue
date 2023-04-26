@@ -3,13 +3,15 @@
 <template>
   <div class="menu-container" v-if="menuData.length">
     <!--  菜单分类列表  -->
-    <van-sidebar class="sidebar-box" v-model="activeIndex" @change="activeChange">
-      <section class="menu-list" v-for="(menu, index) in menuData" :key="index">
-        <van-badge :content="getMenuCount(menu.id)">
-          <van-sidebar-item :title="menu.name" />
-        </van-badge>
-      </section>
-    </van-sidebar>
+    <van-sticky :offset-top="44">
+      <van-sidebar class="sidebar-box" v-model="activeIndex" @change="activeChange">
+        <section class="menu-list" v-for="(menu, index) in menuData" :key="index">
+          <van-badge :content="getMenuCount(menu.id)">
+            <van-sidebar-item :title="menu.name" />
+          </van-badge>
+        </section>
+      </van-sidebar>
+    </van-sticky>
 
     <!--  对应当前选中分类里的商品列表  -->
     <div class="food-container">
@@ -105,6 +107,7 @@ const activeCategoryData = computed(() => {
 })
 // 左侧菜单change
 const activeChange = () => {
+  window.scrollTo(0, 0)
 }
 // 获取当前 菜单分类 的点餐count
 const getMenuCount = (id) => {
@@ -226,13 +229,10 @@ const deleteGoods = (food) => {
 <style lang="less" scoped>
   .menu-container {
     display: flex;
-    height: 430px;
+    justify-content: flex-end;
     .sidebar-box {
       background: @fill-3;
       flex-shrink: 0;
-      &::-webkit-scrollbar {
-        width: 0;
-      }
       .menu-list {
         border-bottom: 1px solid #eee;
         :deep(.van-badge__wrapper) {
@@ -256,13 +256,9 @@ const deleteGoods = (food) => {
     }
     .food-container {
       padding: 10px;
-      overflow-y: scroll;
       flex-grow: 1;
       box-sizing: border-box;
       max-width: calc(100% - 0.8rem);
-      &::-webkit-scrollbar {
-        width: 0;
-      }
       .category-info {
         height: 30px;
         line-height: 30px;

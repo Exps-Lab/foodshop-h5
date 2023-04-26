@@ -1,10 +1,11 @@
 import axios from 'axios'
+import User from '@utils/User'
 // import Loading from "@common/components/Loading/index.js"
 
 // let loading = false
 // const requestCount = 0
 let redirecturi = ''
-const host = window.location.origin
+// const host = window.location.origin
 
 // const showLoading = () => {
 //   if (requestCount === 0) {
@@ -21,7 +22,7 @@ const host = window.location.origin
 // }
 
 const service = axios.create({
-  timeout: 5000
+  timeout: 30 * 1000
 })
 
 // Sign in the request interceptors.
@@ -45,13 +46,12 @@ service.interceptors.response.use(
     const res = response.data
     if (res.code !== 1) {
       // 10002    "没有token或token格式错误"
-      if ([10002].includes(res.code)) {
+      // forbidAutoJumpLogin
+      if ([10002].includes(res.code) && !response.config.forbidAutoJumpLogin) {
         redirecturi = redirecturi || window.location.href
-        window.location.href = host + '/hi-user/' + '/src/pages/login/index.html?redirecturi=' + encodeURIComponent(redirecturi)
-        // window.location.href = host + '/login.html?redirecturi=' + encodeURIComponent(redirecturi)
-      } else {
-        return Promise.reject(response)
+        User.login(redirecturi)
       }
+      return Promise.reject(response)
     } else {
       return res
     }
@@ -63,7 +63,7 @@ service.interceptors.response.use(
   }
 )
 
-function handle (req) {
+function serviceInstance (req) {
   if (req.params && req.params.redirecturi) {
     redirecturi = req.params.redirecturi
     delete req.params.redirecturi
@@ -73,4 +73,4 @@ function handle (req) {
   return service(req)
 }
 
-export default handle
+export default serviceInstance

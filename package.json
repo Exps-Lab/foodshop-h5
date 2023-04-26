@@ -4,21 +4,22 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite serve --mode development",
+    "build": "vite build",
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
     "preview": "vite preview",
     "deploy": "upload-remote -r ./hi-user -n hi-user",
     "remote_build": "npm run build:prod && npm run deploy",
-    "lint": "eslint --ext .js,.vue src --fix",
-    "prepare": "husky install"
+    "lint": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "axios": "^0.26.1",
     "chalk": "^2.4.2",
+    "js-cookie": "^3.0.1",
+    "pinia": "^2.0.29",
     "vant": "^3.6.1",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.14",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.0.14"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.0",

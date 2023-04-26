@@ -49,7 +49,7 @@ function getFileList (mutiFileObj = {}) {
   // 输出的路径(root)和文件名(index)
   let rootPath = resolve(__dirname, '../')
   const rootPathIndex = rootPath + '/index.html'
-  const preRootStr = mode === 'production' ? '/hi-user' : ''
+  const preRootStr = ''
 
   let listHtmlText = '<ul style="font-size: 16px;"> # 所有资源列表，点击跳转到对应页面 #'
   for (let fileName of fileNameArr) {
@@ -90,6 +90,7 @@ function padFileAndWrite (template, sliceIndex, padHtml, filePath) {
 
 export default {
   outDir: resolve(__dirname, '../hi-user'),
+  cssCodeSplit: false,
   rollupOptions: {
     input: {
       ...generateInput(),

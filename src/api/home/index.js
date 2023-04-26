@@ -1,5 +1,6 @@
 import request from '@utils/request.js'
 
+// 获取商铺列表
 export function getShopList (params) {
   return request({
     url: '/h5/sale/noauth/shop/list',
@@ -8,6 +9,7 @@ export function getShopList (params) {
   })
 }
 
+// 商铺或商品模糊查询
 export function getGlobalSearch (params) {
   return request({
     url: '/h5/sale/noauth/global/search',
@@ -16,6 +18,7 @@ export function getGlobalSearch (params) {
   })
 }
 
+// 获取金刚位一级分类信息
 export function getKingKongSuggest (params) {
   return request({
     url: '/h5/sale/noauth/shop/getCategory',
@@ -24,6 +27,7 @@ export function getKingKongSuggest (params) {
   })
 }
 
+// 获取二级分类信息
 export function getSubCategory (params) {
   return request({
     url: '/h5/sale/noauth/shop/getSubCategory',
@@ -32,6 +36,7 @@ export function getSubCategory (params) {
   })
 }
 
+// 批量获取配送时长
 export function getPosCostTime (params) {
   return request({
     url: '/h5/sale/noauth/getPosCostTime',
@@ -40,6 +45,7 @@ export function getPosCostTime (params) {
   })
 }
 
+// 获取城市列表
 export function getAllCity (params) {
   return request({
     url: '/h5/sale/noauth/getAllCity',
