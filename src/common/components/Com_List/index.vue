@@ -56,6 +56,10 @@ const props = defineProps({
     type: String,
     // 'suggest', 'order'
     default: 'suggest'
+  },
+  pageSize: {
+    type: Number,
+    default: 10
   }
 })
 
@@ -64,9 +68,8 @@ const needPos = computed(() => {
   return props.cardType === 'suggest'
 })
 
-// 前端分页，区分展示和源数据
+// 分页，区分展示和源数据
 const listShop = reactive({
-  resData: [],
   showData: [],
   sliceData: [],
   costTime: []
@@ -74,23 +77,15 @@ const listShop = reactive({
 
 // 处理分页参数
 const pagination = reactive({
-  pageSize: 10,
-  pageNum: 0,
+  pageSize: props.pageSize,
+  pageNum: 1,
   total: 0,
   hasNext: false,
   endText: '没有更多了'
 })
-const resetFilterData = () => {
-  listShop.resData = []
-  listShop.showData = []
-  listShop.sliceData = []
-  listShop.costTime = []
-  pagination.pageNum = 0
-  pagination.total = 0
-  pagination.hasNext = false
-}
+
 const handleFilterParams = () => {
-  return Object.keys(props.filter).reduce((params, key) => {
+  const propFilter = Object.keys(props.filter).reduce((params, key) => {
     const value = props.filter[key]
     if (key === 'distance') {
       params.current_pos = nowPosStr.value
@@ -98,24 +93,25 @@ const handleFilterParams = () => {
     params[key] = value
     return params
   }, {})
-}
-const preGetShopList = () => {
-  resetFilterData()
-  const filter = handleFilterParams()
-  return getShopList(filter).then(res => {
-    const { data } = res
-    pagination.total = data.length
-    pagination.hasNext = Boolean(data.length > pagination.pageSize)
-    listShop.resData = listShop.resData.concat(data)
-  })
+  propFilter.page_num = pagination.pageNum
+  propFilter.page_size = pagination.pageSize
+  return propFilter
 }
 
-// 加载下一页数据
-const loadNextData = (pageNum = 1) => {
-  const { pageSize } = pagination
-  pagination.hasNext = Boolean(pagination.total - pageNum * pageSize > 0)
-  listShop.sliceData = listShop.resData.slice((pageNum - 1) * pageSize, pageNum * pageSize)
-  listShop.showData = listShop.showData.concat(listShop.sliceData)
+const preGetShopList = () => {
+  const filter = handleFilterParams()
+  loading.value = true
+  return getShopList(filter)
+    .then(res => {
+      const { data: { total, hasNext, list } } = res
+      pagination.total = total
+      pagination.hasNext = hasNext
+      listShop.sliceData = list
+      listShop.showData = listShop.showData.concat(list)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 const getCostTime = async (startPos, endPosArr) => {
@@ -124,18 +120,18 @@ const getCostTime = async (startPos, endPosArr) => {
 }
 
 const onLoad = async () => {
-  pagination.pageNum++
-  loadNextData(pagination.pageNum)
-  loading.value = false
+  if (!loading.value && pagination.hasNext) {
+    pagination.pageNum++
+    await preGetShopList()
 
-  if (!pagination.hasNext) {
-    finished.value = true
+    if (!pagination.hasNext) {
+      finished.value = true
+    }
   }
 }
 
 const getData = async () => {
   await preGetShopList()
-  await onLoad()
 }
 
 // 计算配送路线所需时间
