@@ -36,7 +36,7 @@ import GoodsCardOrder from '@common/components/Goods_Card_Order/index.vue'
 
 const store = posStore()
 
-const loading = ref(true)
+const loading = ref(false)
 const finished = ref(false)
 const nowPosStr = ref('')
 const props = defineProps({
@@ -98,20 +98,31 @@ const handleFilterParams = () => {
   return propFilter
 }
 
-const preGetShopList = () => {
-  const filter = handleFilterParams()
-  loading.value = true
-  return getShopList(filter)
-    .then(res => {
-      const { data: { total, hasNext, list } } = res
-      pagination.total = total
-      pagination.hasNext = hasNext
-      listShop.sliceData = list
-      listShop.showData = listShop.showData.concat(list)
-    })
-    .finally(() => {
-      loading.value = false
-    })
+const preGetShopList = async () => {
+  if (!loading.value) {
+    const filter = handleFilterParams()
+    loading.value = true
+    const { data: { total, hasNext, list } } = await getShopList(filter)
+
+    pagination.total = total
+    pagination.hasNext = hasNext
+    listShop.sliceData = list
+    listShop.showData = listShop.showData.concat(list)
+    loading.value = false
+  }
+}
+
+// 计算配送路线所需时间
+const preGetCostTime = async (sliceData) => {
+  if (sliceData.length && needPos.value) {
+    const endPosArr = sliceData.reduce((res, now) => {
+      const { lat, lng } = now.pos
+      res.push({ lat, lng })
+      return res
+    }, [])
+    const calcTimeArr = await getCostTime(nowPosStr.value, endPosArr)
+    listShop.costTime = listShop.costTime.concat(calcTimeArr)
+  }
 }
 
 const getCostTime = async (startPos, endPosArr) => {
@@ -138,14 +149,7 @@ const getData = async () => {
 watch(
   () => listShop.sliceData,
   async (newPageData) => {
-    if (newPageData.length && needPos.value) {
-      const endPosArr = newPageData.reduce((res, now) => {
-        const { lat, lng } = now.pos
-        res.push({ lat, lng })
-        return res
-      }, [])
-      listShop.costTime = listShop.costTime.concat(await getCostTime(nowPosStr.value, endPosArr))
-    }
+    await preGetCostTime(newPageData)
   }
 )
 // 计算配送路线所需时间
@@ -170,7 +174,7 @@ watch(
   nowPosStr,
   async (now) => {
     // [note] storage没有并且store里没有触发过首页header定位（直接访问链接进入需要定位的页面）
-    loading.value = true
+    // loading.value = true
     if (now.includes('undefined')) {
       if (!store.positioning) {
         await store.getPosByTXReq()

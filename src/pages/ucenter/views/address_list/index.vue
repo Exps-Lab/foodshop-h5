@@ -1,16 +1,12 @@
 <template>
   <section class="main address-box" v-if="addressList.length">
-    <section class="address-list" v-for="address in addressList" :key="address.id" @click="choseAddress(address)">
-      <van-icon class="edit-icon" name="edit" @click="toAddressDetail(address.id)" />
-      <p class="msg-box">
-        <span class="tag" v-if="address.tag">{{address.tag}}</span>
-        <span class="title font-bold-weight text-ellipsis">{{address.title}} {{address.room}}</span>
-      </p>
-      <p class="msg-box">
-        <span class="name sub-text">{{address.receive}} ({{getGenderText(address.gender)}})</span>
-        <span class="tel sub-text">{{address.phone}}</span>
-      </p>
-    </section>
+    <template v-for="address in addressList" :key="address.id">
+      <AddressMesBlock :address="address" @addressClick="choseAddress">
+        <template #iconBtn>
+          <van-icon name="edit" @click="toAddressDetail(address.id)" />
+        </template>
+      </AddressMesBlock>
+    </template>
   </section>
 
   <van-empty description="暂无地址" v-else />
@@ -19,11 +15,14 @@
 </template>
 
 <script setup>
+  import { Toast } from 'vant'
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
+  import { diffModuleJump } from '@utils'
   import { getAddressList } from '@api/user/address'
   import Loading from '@common/components/Loading'
-  import { Toast } from 'vant'
+  import { ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
+  import AddressMesBlock from '@common/components/Address_Mes_Block/index.vue'
 
   const router = useRouter()
   const addressList = ref([])
@@ -38,16 +37,9 @@
   }
 
   // [note] 选择当前地址，目前业务来源有"确认订单页"
-  const choseAddress = ({ id }) => {
-    // todo 跳转确认订单
-  }
-
-  const getGenderText = (gender) => {
-    const genderMap = {
-      0: '先生',
-      1: '女士'
-    }
-    return genderMap[gender]
+  const choseAddress = (address) => {
+    sessionStorage.setItem(ADDRESSCHOSEPOS, JSON.stringify(address))
+    diffModuleJump('order/orderConfirm', '', 'home')
   }
 
   // 获取地址列表
@@ -72,54 +64,6 @@
   }
   .van-empty {
     height: 100vh;
-  }
-  .address-box {
-    .address-list {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      padding: 12px 40px 12px 20px;
-      background-color: @fill-1;
-      border-bottom: 1px solid @line-1;
-      &:last-child {
-        border-bottom: 0;
-      }
-      .edit-icon {
-        position: absolute;
-        font-size: 18px;
-        right: 20px;
-        top: 50%;
-        color: @fill-7;
-        transform: translateY(-50%);
-      }
-      .msg-box {
-        display: flex;
-        align-items: center;
-        line-height: 1.7;
-        .tag {
-          flex-shrink: 0;
-          border-radius: 4px;
-          padding: 3px 6px;
-          color: @brand1-6;
-          line-height: 1;
-          background-color: @brand1-1;
-          transform: scale(0.8) translateX(-4px);
-        }
-        .title {
-          font-size: 15px;
-        }
-        .sub-text {
-          color: @text-3;
-          font-size: 13px;
-        }
-        .tel {
-          margin-left: 10px;
-        }
-        .name {
-          margin-right: 10px;
-        }
-      }
-    }
   }
   .add-address {
     position: fixed;

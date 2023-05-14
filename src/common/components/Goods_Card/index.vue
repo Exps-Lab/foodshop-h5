@@ -15,7 +15,7 @@
         </p>
         <p class="inner-info-box">
           <span class="info-text right-6">{{costTime}}</span>
-          <span class="info-text">{{posInfo}}</span>
+          <span class="info-text" v-if="posInfo">{{posInfo}}</span>
         </p>
       </section>
     </template>
@@ -46,7 +46,11 @@ const shopAvatar = computed(() => {
 })
 const posInfo = computed(() => {
   const { distance } = props.goodsData
-  return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
+  return distance !== undefined
+    ? distance < 1
+      ? `${Math.floor(distance * 100)}m`
+      : `${distance}km`
+    : ''
 })
 const costTime = computed(() => {
   const { costTime } = props

@@ -41,6 +41,11 @@ const routes = [
     component: () => import('../views/shop_detail/show_in_map.vue')
   },
   {
+    path: '/order/orderConfirm',
+    name: 'orderConfirm',
+    component: () => import('../views/order/order_confirm/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')
