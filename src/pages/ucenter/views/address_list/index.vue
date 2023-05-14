@@ -3,7 +3,7 @@
     <template v-for="address in addressList" :key="address.id">
       <AddressMesBlock :address="address" @addressClick="choseAddress">
         <template #iconBtn>
-          <van-icon name="edit" @click="toAddressDetail(address.id)" />
+          <van-icon name="edit" @click.stop="toAddressDetail(address.id)" />
         </template>
       </AddressMesBlock>
     </template>

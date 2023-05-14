@@ -13,7 +13,7 @@
         <span class="tel sub-text">{{address.phone}}</span>
       </p>
     </section>
-    <p v-else class="default-text font-bold-weight">请选择收货地址</p>
+    <p v-else class="default-text">请选择收货地址</p>
   </section>
 </template>
 
@@ -59,7 +59,6 @@
     padding: 12px 40px 12px 20px;
     background-color: @fill-1;
     border-bottom: 1px solid @line-1;
-    border-radius: 6px;
     &:last-child {
       border-bottom: 0;
     }
@@ -70,6 +69,9 @@
       top: 50%;
       color: @fill-7;
       transform: translateY(-50%);
+    }
+    .default-text {
+      font-size: 14px;
     }
     .msg-box {
       display: flex;

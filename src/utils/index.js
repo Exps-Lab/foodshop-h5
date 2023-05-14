@@ -481,6 +481,12 @@ export function diffModuleJump (path, query = '', moduleName) {
   location.href = baseUrl + (query ? '?' + query : '')
 }
 
+// 传进来10以下的字符，就返回前面带一个'0'
+export function padZero (num) {
+  const numTemp = Number(num)
+  return numTemp < 10 ? '0' + numTemp : String(num)
+}
+
 export default {
   getQuery,
   delQuery,
@@ -508,5 +514,6 @@ export default {
   flatten,
   roundNum,
   priceHandle,
-  diffModuleJump
+  diffModuleJump,
+  padZero
 }
