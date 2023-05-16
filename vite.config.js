@@ -52,6 +52,10 @@ export default (params => {
           target: env.VITE_HOST_URL,
           changeOrigin: true
         },
+        '/h5/order': {
+          target: env.VITE_HOST_URL,
+          changeOrigin: true
+        },
         '/test': {
           target: env.VITE_HOST_URL,
           changeOrigin: true
