@@ -19,7 +19,7 @@
   import { diffModuleJump, padZero } from '@utils'
   import { getPosCostTime } from '@/api/home'
   import { getRecentAddress } from '@/api/order'
-  import { ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
+  import { ADDRESSCHOSEPOS, CHANGINGORDERADDRESS } from '@utils/sessionStorage_keys'
   import AddressMesBlock from '@common/components/Address_Mes_Block/index.vue'
 
   const props = defineProps({
@@ -34,6 +34,7 @@
   const choseAddress = reactive({})
   // [note] 跳转选择地址
   const jumpChoseAddress = () => {
+    sessionStorage.setItem(CHANGINGORDERADDRESS, 'changingAddress')
     diffModuleJump('/ucenter/address_list', '', 'ucenter')
   }
   // 获取最近的地址经纬度
@@ -79,6 +80,15 @@
     () => choseAddress.pos,
     async (now) => {
       // [note] 选择地址更改之后重新计算送达时
+      if (props.shopPos) {
+        sendTime.value = await getSendTime(now)
+      }
+    }
+  )
+  watch(
+    () => props.shopPos,
+    async (now) => {
+      // [note] 初始异步获取商铺地址计算送达时
       sendTime.value = await getSendTime(now)
     }
   )

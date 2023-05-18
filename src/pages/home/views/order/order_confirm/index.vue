@@ -7,11 +7,18 @@
 </template>
 
 <script setup>
-  // import { ref, reactive, computed } from 'vue'
+  import { ref } from 'vue'
+  import { useRoute } from 'vue-router'
   import ChoseAddress from './components/Chose_Address.vue'
 
-  // test
-  const shopPos = '39.908789, 116.495676'
+  const route = useRoute()
+  console.log(route.query.shoppingBagId)
+
+  const shopPos = ref('')
+  // test [todo] 应该从redis中取
+  setTimeout(() => {
+    shopPos.value = '39.908789, 116.495676'
+  }, 2000)
 </script>
 
 <style lang="less" scoped>

@@ -64,7 +64,7 @@ import StoreInfo from './components/store_info.vue'
 import ShopMenu from './components/menu_info.vue'
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
-import { priceHandle } from '@utils'
+import { priceHandle, diffModuleJump } from '@utils'
 
 const route = useRoute()
 // 主背景色，使用开启
@@ -189,7 +189,7 @@ const submitChose = async () => {
     shop_id,
     chose_goods_list: choseDataArr
   })
-  console.dir(data)
+  diffModuleJump('order/orderConfirm', `shoppingBagId=${data}`, 'home')
 }
 </script>
 
