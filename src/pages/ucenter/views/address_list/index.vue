@@ -21,7 +21,7 @@
   import { diffModuleJump } from '@utils'
   import { getAddressList } from '@api/user/address'
   import Loading from '@common/components/Loading'
-  import { ADDRESSCHOSEPOS, CHANGINGORDERADDRESS } from '@utils/sessionStorage_keys'
+  import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
   import AddressMesBlock from '@common/components/Address_Mes_Block/index.vue'
 
   const router = useRouter()
@@ -38,10 +38,11 @@
 
   // [note] 选择当前地址，目前业务来源有"确认订单页"
   const choseAddress = (address) => {
-    const isChangeAddress = (sessionStorage.getItem(CHANGINGORDERADDRESS) === 'changingAddress')
-    if (isChangeAddress) {
-      sessionStorage.setItem(ADDRESSCHOSEPOS, JSON.stringify(address))
-      sessionStorage.removeItem(CHANGINGORDERADDRESS)
+    const tempData = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
+    if (tempData.changingAddress) {
+      tempData.address = address
+      sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
+      // sessionStorage.setItem(ADDRESSCHOSEPOS, JSON.stringify(address))
       diffModuleJump('order/orderConfirm', '', 'home')
     }
   }

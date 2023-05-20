@@ -19,7 +19,7 @@
   import { diffModuleJump, padZero } from '@utils'
   import { getPosCostTime } from '@/api/home'
   import { getRecentAddress } from '@/api/order'
-  import { ADDRESSCHOSEPOS, CHANGINGORDERADDRESS } from '@utils/sessionStorage_keys'
+  import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
   import AddressMesBlock from '@common/components/Address_Mes_Block/index.vue'
 
   const props = defineProps({
@@ -27,14 +27,24 @@
     shopPos: {
       type: String,
       default: ''
+    },
+    //  购物袋id
+    shoppingBagId: {
+      type: String,
+      default: ''
     }
   })
 
+  const tempShoppingBagId = ref('')
   // 用户计算送达时间
   const choseAddress = reactive({})
   // [note] 跳转选择地址
   const jumpChoseAddress = () => {
-    sessionStorage.setItem(CHANGINGORDERADDRESS, 'changingAddress')
+    const tempData = {
+      changingAddress: true,
+      tempShoppingBagId: tempShoppingBagId.value
+    }
+    sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
     diffModuleJump('/ucenter/address_list', '', 'ucenter')
   }
   // 获取最近的地址经纬度
@@ -49,11 +59,14 @@
   // 获取用户地址
   // [note]包括首次进入最近地址 以及 切换之后的地址展示
   const setChoseAddress = async () => {
-    const storageData = JSON.parse(sessionStorage.getItem(ADDRESSCHOSEPOS)) || null
-    if (storageData) {
-      Object.assign(choseAddress, storageData)
-      // [note] 只用来传递跨页数据，接到后删除不做后续功能支持
-      sessionStorage.removeItem(ADDRESSCHOSEPOS)
+    const tempData = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
+    if (tempData.address) {
+      Object.assign(choseAddress, tempData.address)
+
+      // [note] 只用来传递跨页数据，接到后只更改状态不删除数据防止刷新页面购物袋id丢失
+      tempData.changingAddress = false
+      delete tempData.address
+      sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
     } else {
       const tempAddress = await getRecentAddressRequest()
       Object.assign(choseAddress, tempAddress)
@@ -90,6 +103,14 @@
     async (now) => {
       // [note] 初始异步获取商铺地址计算送达时
       sendTime.value = await getSendTime(choseAddress.pos)
+    }
+  )
+  watch(
+    () => props.shoppingBagId,
+    (now) => {
+      tempShoppingBagId.value = now
+    }, {
+      immediate: true
     }
   )
 

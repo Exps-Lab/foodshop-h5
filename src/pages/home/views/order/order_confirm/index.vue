@@ -2,23 +2,33 @@
 
 <template>
   <div class="main-content">
-    <ChoseAddress :shopPos="shopPos"/>
+    <ChoseAddress :shopPos="shopPos" :shoppingBagId="shoppingBagId"/>
   </div>
 </template>
 
 <script setup>
   import { ref } from 'vue'
   import { useRoute } from 'vue-router'
+  import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
   import ChoseAddress from './components/Chose_Address.vue'
 
   const route = useRoute()
-  console.log(route.query.shoppingBagId)
+  const shoppingBagId = ref('')
+  const getShoppingBagId = () => {
+    const { tempShoppingBagId } = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
+    shoppingBagId.value = route.query.shoppingBagId || tempShoppingBagId
+  }
 
   const shopPos = ref('')
   // test [todo] 应该从redis中取
   setTimeout(() => {
     shopPos.value = '39.908789, 116.495676'
   }, 2000)
+
+  const init = () => {
+    getShoppingBagId()
+  }
+  init()
 </script>
 
 <style lang="less" scoped>
