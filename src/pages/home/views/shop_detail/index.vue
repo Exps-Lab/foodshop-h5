@@ -189,7 +189,7 @@ const submitChose = async () => {
     shop_id,
     chose_goods_list: choseDataArr
   })
-  diffModuleJump('order/orderConfirm', `shoppingBagId=${data}`, 'home')
+  diffModuleJump('/order/orderConfirm', `shoppingBagId=${data}`, 'home')
 }
 </script>
 

@@ -42,8 +42,7 @@
     if (tempData.changingAddress) {
       tempData.address = address
       sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
-      // sessionStorage.setItem(ADDRESSCHOSEPOS, JSON.stringify(address))
-      diffModuleJump('order/orderConfirm', '', 'home')
+      diffModuleJump('/order/orderConfirm', '', 'home')
     }
   }
 
