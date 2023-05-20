@@ -89,7 +89,7 @@
     () => props.shopPos,
     async (now) => {
       // [note] 初始异步获取商铺地址计算送达时
-      sendTime.value = await getSendTime(now)
+      sendTime.value = await getSendTime(choseAddress.pos)
     }
   )
 
