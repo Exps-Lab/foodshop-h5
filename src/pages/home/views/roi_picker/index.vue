@@ -68,7 +68,6 @@
 import { ref, reactive, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { searchWithRange, searchWithoutKeyword } from '@api/pos'
-import { diffModuleJump } from '@utils'
 import { posStore } from '@pages/home/store/pos'
 import { HOMECHOSEPOS, ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
 
@@ -83,8 +82,8 @@ const pageMode = ref('pos')
 const cityNow = route.query.city_name
 // 来源页面 (home首页，address地址详情页)
 const fromPage = route.query.from
-// 地址详情id (从address地址详情页带过来)
-const addressId = route.query.addressId
+// // 地址详情id (从address地址详情页带过来)
+// const addressId = route.query.addressId
 
 // 定位
 const pos = reactive({
@@ -194,8 +193,9 @@ const setChoseAddress = (choseAddress) => {
 }
 
 const linkPage = (page, module) => {
-  const query = addressId !== undefined ? `addressId=${addressId}` : ''
-  diffModuleJump(page, query, module)
+  // const query = addressId !== undefined ? `addressId=${addressId}` : ''
+  // diffModuleJump(page, query, module)
+  history.go(-1)
 }
 
 watch(
