@@ -472,13 +472,20 @@ export function priceHandle (price) {
  * @param path        跳转的具体路径
  * @param query       跳转带的参数
  * @param moduleName  跳转所在多页moduleName (开发场景hash模式下可传)
+ * @param jumpReplace 跳转是否replace
  */
-export function diffModuleJump (path, query = '', moduleName) {
+export function diffModuleJump (path, query = '', moduleName, jumpReplace = false) {
   const host = window.location.host
   const devUrl = `//${host}/src/pages/${moduleName}/index.html#${path}`
   const prodUrl = `//${host}${path}`
   const baseUrl = import.meta.env.DEV ? devUrl : prodUrl
-  location.href = baseUrl + (query ? '?' + query : '')
+  const jumpUrl = baseUrl + (query ? '?' + query : '')
+
+  if (jumpReplace) {
+    location.replace(jumpUrl)
+  } else {
+    location.href = jumpUrl
+  }
 }
 
 // 传进来10以下的字符，就返回前面带一个'0'
