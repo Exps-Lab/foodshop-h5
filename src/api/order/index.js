@@ -7,3 +7,11 @@ export function getRecentAddress (params) {
     params
   })
 }
+
+export function getConfirmDetail (params) {
+  return request({
+    url: '/h5/order/auth/getConfirmDetail',
+    method: 'get',
+    params
+  })
+}

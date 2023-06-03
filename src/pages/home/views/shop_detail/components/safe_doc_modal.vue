@@ -57,13 +57,14 @@ defineExpose({
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      padding-bottom: 70px;
       .shop-image {
         width: 80%;
         min-height: 100px;
         border-radius: 6px;
         object-fit: cover;
         background-color: @fill-3;
-        margin: 20px 0;
+        margin-bottom: 20px;
         border: 1px solid #ccc;
       }
     }

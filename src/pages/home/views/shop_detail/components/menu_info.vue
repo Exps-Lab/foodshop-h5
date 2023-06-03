@@ -76,7 +76,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { getShopGoods } from '@api/shop'
-import { priceHandle } from '@utils'
+import { getShowPrice } from '@utils'
 import GoodsSpec from './goods_spec.vue'
 import { Toast } from 'vant'
 
@@ -128,20 +128,6 @@ const getGoodsCount = (goods) => {
     }
     return count
   }, 0)
-}
-// 处理商品卡片的价格展示
-const getShowPrice = (type, food) => {
-  const { discount_val, is_discount, specfoods: [defaultSpec] } = food
-  const { price } = defaultSpec
-  let resPrice = 0
-  if (type === 'showPrice') {
-    resPrice = is_discount
-      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-      : priceHandle(price)
-  } else if (type === 'originPrice') {
-    resPrice = priceHandle(price)
-  }
-  return resPrice
 }
 
 // 当前选中商品

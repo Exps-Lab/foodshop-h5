@@ -1,7 +1,7 @@
 <!-- 选择地址组件 -->
 
 <template>
-  <section class="address-time-box">
+  <section class="address-com-box">
     <AddressMesBlock :address="choseAddress" @addressClick="jumpChoseAddress">
       <template #iconBtn>
         <van-icon name="arrow" />
@@ -102,7 +102,9 @@
     () => props.shopPos,
     async (now) => {
       // [note] 初始异步获取商铺地址计算送达时
-      sendTime.value = await getSendTime(choseAddress.pos)
+      if (choseAddress.pos) {
+        sendTime.value = await getSendTime(choseAddress.pos)
+      }
     }
   )
   watch(
@@ -121,7 +123,7 @@
 </script>
 
 <style lang="less" scoped>
-  .address-time-box {
+  .address-com-box {
     overflow: hidden;
     border-radius: 6px;
     background-color: #fff;

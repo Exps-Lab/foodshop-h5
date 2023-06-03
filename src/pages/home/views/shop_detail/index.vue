@@ -39,7 +39,7 @@
               <i class="symbol font-bold-weight">¥</i>
               <span class="discount-price font-bold-weight">{{totalNeedPay}}</span>
             </p>
-            <p class="delivery-fee">{{deliveryFee}}</p>
+            <p class="delivery-fee">{{deliveryFeeShow}}</p>
           </section>
         </section>
         <!--  提交结算按钮  -->
@@ -64,7 +64,7 @@ import StoreInfo from './components/store_info.vue'
 import ShopMenu from './components/menu_info.vue'
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
-import { priceHandle, diffModuleJump } from '@utils'
+import { priceHandle, calcTotalBagFee, orderTotalNeedPay, diffModuleJump } from '@utils'
 
 const route = useRoute()
 // 主背景色，使用开启
@@ -125,35 +125,18 @@ const totalChoseCount = computed(() => {
   return count > 0 ? count : undefined
 })
 // 配送费
-const deliveryFee = computed(() => {
+const deliveryFeeShow = computed(() => {
   const delivery = shopBaseInfo.delivery_fee || 0
   return delivery > 0 ? `另需配送费约¥${delivery}` : '免配送费'
 })
 // 所有选择商品包装费用
 const totalBagFee = computed(() => {
-  return Object.values(choseGoods).reduce((totalFee, category) => {
-    totalFee += category.reduce((total, goods) => {
-      const { specfoods, choseSpecIndex } = goods
-      total += specfoods[choseSpecIndex].packing_fee
-      return total
-    }, 0)
-    return totalFee
-  }, 0)
+  return calcTotalBagFee(Object.values(choseGoods)[0] || [])
 })
 // 本次共选择需要支付金额
 const totalNeedPay = computed(() => {
-  const price = Object.values(choseGoods).reduce((totalPrice, category) => {
-    totalPrice += category.reduce((categoryPrice, goods) => {
-      const { specfoods, choseSpecIndex, count, is_discount, discount_val } = goods
-      const { price } = specfoods[choseSpecIndex]
-      categoryPrice += is_discount
-        ? price * count * (discount_val / 10)
-        : price * count
-      return categoryPrice
-    }, 0)
-    return totalPrice
-  }, 0)
-  return priceHandle(price + totalBagFee.value)
+  const choseGoodsArr = Object.values(choseGoods)[0] || []
+  return orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
 })
 // 是否达到最低配送价格
 const canDeliver = computed(() => {
@@ -189,7 +172,7 @@ const submitChose = async () => {
     shop_id,
     chose_goods_list: choseDataArr
   })
-  diffModuleJump('/order/orderConfirm', `shoppingBagId=${data}`, 'home')
+  diffModuleJump('/order/orderConfirm', `shoppingBagId=${data}`, 'order')
 }
 </script>
 
