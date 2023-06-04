@@ -136,7 +136,9 @@ const totalBagFee = computed(() => {
 // 本次共选择需要支付金额
 const totalNeedPay = computed(() => {
   const choseGoodsArr = Object.values(choseGoods)[0] || []
-  return orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
+  return choseGoodsArr.length
+    ? orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
+    : 0
 })
 // 是否达到最低配送价格
 const canDeliver = computed(() => {

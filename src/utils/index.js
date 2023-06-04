@@ -512,7 +512,7 @@ export function getShowPrice (type, food) {
     if (type === 'showPrice') {
       return resPrice
     } else if (type === 'showPriceTotal') {
-      return priceHandle(count * resPrice)
+      return priceHandle(count * Number(resPrice))
     } else {
       return '暂时不支持此参数'
     }

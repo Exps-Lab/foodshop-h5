@@ -28,7 +28,7 @@
             <div class="price">
               <p class="price-item red">
                 <i class="symbol">¥</i>
-                <span class="discount-price">{{getShowPrice('showPrice', goods)}}</span>
+                <span class="discount-price">{{getShowPrice('showPriceTotal', goods)}}</span>
               </p>
               <p class="price-item del gray" v-if="goods.is_discount">
                 <i class="symbol">¥</i>
@@ -49,7 +49,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { priceHandle } from '@utils'
+import { getShowPrice } from '@utils'
 
 const show = ref(false)
 const props = defineProps({
@@ -73,21 +73,6 @@ const choseGoodsList = computed(() => {
   })
   return resArr
 })
-
-// 处理商品卡片的价格展示
-const getShowPrice = (type, food) => {
-  const { discount_val, is_discount, choseSpecIndex, specfoods } = food
-  const { price } = specfoods[choseSpecIndex]
-  let resPrice = 0
-  if (type === 'showPrice') {
-    resPrice = is_discount
-      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-      : priceHandle(price)
-  } else if (type === 'originPrice') {
-    resPrice = priceHandle(price)
-  }
-  return resPrice
-}
 
 // 删除所有选择
 const emit = defineEmits(['clearShoppingCart'])
