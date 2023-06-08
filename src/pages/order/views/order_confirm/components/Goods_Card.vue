@@ -68,7 +68,7 @@
         小计
         <p class="com-price">
           <span class="com-symbol">￥</span>
-          <span class="price big-size font-bold-weight">{{payPrice}}</span>
+          <span class="price big-size font-bold-weight">{{price.payPrice}}</span>
         </p>
       </section>
     </section>
@@ -76,8 +76,8 @@
 </template>
 
 <script setup>
-  import { computed, ref } from 'vue'
-  import { getShowPrice, calcTotalBagFee } from '@utils'
+  import { computed } from 'vue'
+  import { getShowPrice, calcTotalBagFee } from '@utils/calcGoodsPrice'
 
   const props = defineProps({
     // 选择的商品数据
@@ -90,14 +90,16 @@
       type: Object,
       default: () => {}
     },
-    payPrice: {
+    price: {
+      type: Object,
+      default: () => {}
+    },
+    shopDiscount: {
       type: Number,
       default: 0
     }
   })
 
-  // [todo] 店铺满减。后台待加配置项，目前写死
-  const shopDiscount = ref(10)
   // 所有选择商品包装费用
   const totalBagFee = computed(() => {
     return calcTotalBagFee(props.choseGoodsData)

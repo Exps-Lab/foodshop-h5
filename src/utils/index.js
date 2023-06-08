@@ -495,54 +495,6 @@ export function padZero (num) {
   return numTemp < 10 ? '0' + numTemp : String(num)
 }
 
-// 处理商品卡片的价格展示
-// 返回两种价格模式：计算优惠后(showPrice) 计算优惠总价(showPriceTotal) 和 原始价格(originPrice)
-export function getShowPrice (type, food) {
-  const { discount_val, is_discount, count, choseSpecIndex = 0, specfoods } = food
-  const { price } = specfoods[choseSpecIndex]
-
-  const originPrice = priceHandle(price)
-  if (type === 'originPrice') {
-    return originPrice
-  } else {
-    const resPrice = is_discount
-      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-      : priceHandle(price)
-
-    if (type === 'showPrice') {
-      return resPrice
-    } else if (type === 'showPriceTotal') {
-      return priceHandle(count * Number(resPrice))
-    } else {
-      return '暂时不支持此参数'
-    }
-  }
-}
-
-// 所有选择商品包装费用
-export function calcTotalBagFee (choseGoods = []) {
-  return choseGoods.reduce((total, goods) => {
-    const { specfoods, count, choseSpecIndex } = goods
-    total += (specfoods[choseSpecIndex].packing_fee * count)
-    return total
-  }, 0)
-}
-
-// 本次共选择需要支付金额
-export function orderTotalNeedPay (choseGoodsData = [], shopInfo = {}) {
-  // 商品价格
-  const price = choseGoodsData.reduce((categoryPrice, goods) => {
-    const nowGoodsPrice = Number(getShowPrice('showPriceTotal', goods))
-    categoryPrice += nowGoodsPrice
-    return categoryPrice
-  }, 0)
-  // 商品包装费
-  const bagPrice = calcTotalBagFee(choseGoodsData)
-  // 处理店铺相关
-  const { delivery_fee } = shopInfo
-  return Number(priceHandle(price + bagPrice + delivery_fee))
-}
-
 export default {
   getQuery,
   delQuery,
@@ -571,8 +523,5 @@ export default {
   roundNum,
   priceHandle,
   diffModuleJump,
-  padZero,
-  getShowPrice,
-  calcTotalBagFee,
-  orderTotalNeedPay
+  padZero
 }

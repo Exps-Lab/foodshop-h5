@@ -76,7 +76,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { getShopGoods } from '@api/shop'
-import { getShowPrice } from '@utils'
+import { getShowPrice } from '@utils/calcGoodsPrice'
 import GoodsSpec from './goods_spec.vue'
 import { Toast } from 'vant'
 

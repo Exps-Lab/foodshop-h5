@@ -3,16 +3,16 @@
 <template>
   <div class="main-content">
     <ChoseAddress :shopPos="shopData.pos" :shoppingBagId="shoppingBagId"/>
-    <GoodsCard :shopData="shopData" :choseGoodsData="choseGoodsData" :payPrice="getPayPrice"/>
+    <GoodsCard :shopData="shopData" :choseGoodsData="choseGoodsData" :price="getPayPrice" :shopDiscount="shopDiscount"/>
     <ChosePayChannel />
 
     <van-submit-bar
       class="submit-btn"
-      :price="getPayPrice * 100"
+      :price="getPayPrice.payPrice * 100"
       button-text="提交订单"
       button-color="#02B6FD"
       @submit="submitOrder">
-      <span>已优惠￥10</span>
+      <span>已优惠￥{{shopDiscount}}</span>
     </van-submit-bar>
   </div>
 </template>
@@ -21,8 +21,9 @@
   import { Dialog } from 'vant'
   import { ref, reactive, computed } from 'vue'
   import { useRoute } from 'vue-router'
-  import { diffModuleJump, orderTotalNeedPay } from '@utils'
   import { getConfirmDetail } from '@/api/order'
+  import { diffModuleJump } from '@utils'
+  import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
   import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
   import ChoseAddress from './components/Chose_Address.vue'
   import ChosePayChannel from './components/Chose_Pay_Channel.vue'
@@ -38,9 +39,13 @@
   // 获取确认订单页详情
   const shopData = reactive({})
   const choseGoodsData = reactive([])
-  // 获取当前商品总价
+  // 获取当前商品计算价格
   const getPayPrice = computed(() => {
     return orderTotalNeedPay(choseGoodsData, shopData)
+  })
+  // 店铺满减费用
+  const shopDiscount = computed(() => {
+    return getDiscountInfo(shopData, getPayPrice.value.goodsPrice).price
   })
 
   // 获取详情

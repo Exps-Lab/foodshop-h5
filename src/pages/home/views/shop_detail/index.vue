@@ -26,18 +26,19 @@
 
     <!-- 购物车 -->
     <section class="shopping-bag-area fix-elm-center">
-      <p class="spec-tips" v-show="!shoppingListModal?.show"><span class="text">满30减10</span></p>
+      <!-- 满减tooltips -->
+      <DiscountToolTip v-show="!shoppingListModal?.show" :choseGoods="choseGoods" :shopBaseInfo="shopBaseInfo" />
       <div class="shopping-bag">
         <section class="bag-left" @click="showShoppingCartModal">
           <van-badge :content="totalChoseCount">
             <p class="icon-box">
-              <van-icon :class="['icon', totalNeedPay > 0 && 'active']" :name="totalNeedPay > 0 ? 'cart' : 'cart-o'" />
+              <van-icon :class="['icon', totalNeedPay.goodsPrice > 0 && 'active']" :name="totalNeedPay.goodsPrice > 0 ? 'cart' : 'cart-o'" />
             </p>
           </van-badge>
           <section class="price-info">
             <p class="pay-price">
               <i class="symbol font-bold-weight">¥</i>
-              <span class="discount-price font-bold-weight">{{totalNeedPay}}</span>
+              <span class="discount-price font-bold-weight">{{totalNeedPay.detailPrice}}</span>
             </p>
             <p class="delivery-fee">{{deliveryFeeShow}}</p>
           </section>
@@ -48,7 +49,12 @@
     </section>
 
     <!-- 购物车列表详情 -->
-    <ShoppingCartModal ref="shoppingListModal" :choseGoods="choseGoods" :totalBagFee="totalBagFee" @clearShoppingCart="clearShoppingCart" />
+    <ShoppingCartModal
+      ref="shoppingListModal"
+      :choseGoods="choseGoods"
+      :totalBagFee="totalBagFee"
+      :shopBaseInfo="shopBaseInfo"
+      @clearShoppingCart="clearShoppingCart" />
 
     <!--  商铺基本信息弹窗  -->
     <InfoDetailModal ref="infoModal" :shopInfo="shopBaseInfo" />
@@ -60,15 +66,16 @@ import { ref, reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import InfoDetailModal from './components/info_detail_modal.vue'
 import ShoppingCartModal from './components/shopping_bag_modal.vue'
+import DiscountToolTip from './components/discount_tooltip.vue'
 import StoreInfo from './components/store_info.vue'
 import ShopMenu from './components/menu_info.vue'
+
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
-import { priceHandle, calcTotalBagFee, orderTotalNeedPay, diffModuleJump } from '@utils'
+import { priceHandle, diffModuleJump } from '@utils'
+import { calcTotalBagFee, orderTotalNeedPay } from '@utils/calcGoodsPrice'
 
 const route = useRoute()
-// 主背景色，使用开启
-// const brandMain = 'rgb(2, 182, 253)'
 const { shop_id } = route.query
 
 /* 商铺详情部分 */
@@ -136,13 +143,11 @@ const totalBagFee = computed(() => {
 // 本次共选择需要支付金额
 const totalNeedPay = computed(() => {
   const choseGoodsArr = Object.values(choseGoods)[0] || []
-  return choseGoodsArr.length
-    ? orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
-    : 0
+  return orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
 })
 // 是否达到最低配送价格
 const canDeliver = computed(() => {
-  return totalNeedPay.value >= shopBaseInfo.mini_delivery_price
+  return totalNeedPay.value.goodsPrice >= shopBaseInfo.mini_delivery_price
 })
 // 是否选择了商品
 const hasMoreThanOneGoods = computed(() => {
@@ -151,7 +156,7 @@ const hasMoreThanOneGoods = computed(() => {
 // 结算按钮文案
 const deliverText = computed(() => {
   const { mini_delivery_price = 0 } = shopBaseInfo
-  const nowPrice = totalNeedPay.value
+  const nowPrice = totalNeedPay.value.goodsPrice
   if (nowPrice === 0) {
     return `¥${mini_delivery_price}起送`
   }
@@ -248,18 +253,6 @@ const submitChose = async () => {
       z-index: 2010;
       width: 100%;
       background-color: @fill-1;
-      .spec-tips {
-        padding: 3px 0;
-        text-align: center;
-        background-color: @yellow-1;
-        color: @error-6;
-        border-bottom: 1px solid @line-0;
-        .text {
-          display: inline-block;
-          font-size: 12px;
-          transform: scale(0.9);
-        }
-      }
       .shopping-bag {
         min-height: 40px;
         padding: 5px 15px;

@@ -8,7 +8,9 @@
     v-model:show="show"
     :style="{ minHeight: '30%' }">
     <!--  modal内容  -->
-    <p class="spec-tips"><span class="text">满30减10</span></p>
+
+    <!-- 满减tooltips -->
+    <DiscountToolTip :choseGoods="choseGoods" :shopBaseInfo="shopBaseInfo" />
     <section class="modal-title">
       <p class="align-left font-bold-weight">
         已选商品
@@ -49,10 +51,15 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { getShowPrice } from '@utils'
+import { getShowPrice } from '@utils/calcGoodsPrice'
+import DiscountToolTip from '../components/discount_tooltip.vue'
 
 const show = ref(false)
 const props = defineProps({
+  shopBaseInfo: {
+    type: Object,
+    default: () => {}
+  },
   choseGoods: {
     type: Object,
     default: () => {}
@@ -129,13 +136,6 @@ defineExpose({
     color: @error-6;
   }
   .info-modal {
-    .spec-tips {
-      padding: 5px 0;
-      text-align: center;
-      background-color: @yellow-1;
-      color: @error-6;
-      border-bottom: 1px solid @line-0;
-    }
     .modal-title {
       padding: 20px;
       display: flex;
