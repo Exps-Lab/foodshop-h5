@@ -7,13 +7,17 @@
         <van-icon name="ecard-pay" class="blue-text pay" />
         餐币支付
       </span>
-      <van-icon class="blue-text" name="checked" />
+      <van-radio-group v-model="checkedVal">
+        <van-radio name="1" />
+      </van-radio-group>
+
     </section>
   </section>
 </template>
 
 <script setup>
-
+  import { ref } from 'vue'
+  const checkedVal = ref('1')
 </script>
 
 <style lang="less" scoped>

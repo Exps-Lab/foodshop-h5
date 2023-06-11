@@ -5,14 +5,16 @@
     <ChoseAddress :shopPos="shopData.pos" :shoppingBagId="shoppingBagId"/>
     <GoodsCard :shopData="shopData" :choseGoodsData="choseGoodsData" :price="getPayPrice" :shopDiscount="shopDiscount"/>
     <ChosePayChannel />
-
+    <OrderExtra :submitForm="submitForm" />
     <van-submit-bar
       class="submit-btn"
       :price="getPayPrice.payPrice * 100"
       button-text="提交订单"
       button-color="#02B6FD"
       @submit="submitOrder">
-      <span>已优惠￥{{shopDiscount}}</span>
+        <section class="info-text">
+          已优惠<span class="red font-bold-weight">￥{{shopDiscount}}</span>
+        </section>
     </van-submit-bar>
   </div>
 </template>
@@ -28,13 +30,9 @@
   import ChoseAddress from './components/Chose_Address.vue'
   import ChosePayChannel from './components/Chose_Pay_Channel.vue'
   import GoodsCard from './components/Goods_Card.vue'
+  import OrderExtra from './components/Order_Extra.vue'
 
   const route = useRoute()
-  const shoppingBagId = ref('')
-  const getShoppingBagId = () => {
-    const { tempShoppingBagId } = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
-    shoppingBagId.value = route.query.shoppingBagId || tempShoppingBagId
-  }
 
   // 获取确认订单页详情
   const shopData = reactive({})
@@ -48,7 +46,21 @@
     return getDiscountInfo(shopData, getPayPrice.value.goodsPrice).price
   })
 
-  // 获取详情
+  // 处理表单相关
+  const submitForm = reactive({
+    order_remarks: '',
+    order_ware: true
+  })
+  const submitOrder = () => {
+    console.log(submitForm)
+  }
+
+  // 初始化数据
+  const shoppingBagId = ref('')
+  const getShoppingBagId = () => {
+    const { tempShoppingBagId } = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
+    shoppingBagId.value = route.query.shoppingBagId || tempShoppingBagId
+  }
   const preGetConfirmDetail = async () => {
     try {
       const { data: { shopInfo, choseGoods } } = await getConfirmDetail({
@@ -70,11 +82,6 @@
       }
     }
   }
-
-  const submitOrder = () => {
-    console.log('订单总价' + getPayPrice.value)
-  }
-
   const init = () => {
     getShoppingBagId()
     preGetConfirmDetail()
@@ -95,6 +102,11 @@
         height: 35px;
         .van-button__text {
           font-weight: bold;
+        }
+      }
+      .info-text {
+        .red {
+          color: @error-6;
         }
       }
     }
