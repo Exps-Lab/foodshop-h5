@@ -2,7 +2,7 @@
 
 <template>
   <div class="main-content">
-    <ChoseAddress :shopPos="shopData.pos" :shoppingBagId="shoppingBagId"/>
+    <ChoseAddress ref="addressRef" :shopPos="shopData.pos" :shoppingBagId="shoppingBagId"/>
     <GoodsCard :shopData="shopData" :choseGoodsData="choseGoodsData" :price="getPayPrice" :shopDiscount="shopDiscount"/>
     <ChosePayChannel />
     <OrderExtra :submitForm="submitForm" />
@@ -20,10 +20,10 @@
 </template>
 
 <script setup>
-  import { Dialog } from 'vant'
+  import { Toast, Dialog } from 'vant'
   import { ref, reactive, computed } from 'vue'
   import { useRoute } from 'vue-router'
-  import { getConfirmDetail } from '@/api/order'
+  import { getConfirmDetail, createOrder } from '@/api/order'
   import { diffModuleJump } from '@utils'
   import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
   import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
@@ -48,11 +48,24 @@
 
   // 处理表单相关
   const submitForm = reactive({
-    order_remarks: '',
-    order_ware: true
+    orderRemarks: '',
+    orderWare: true
   })
-  const submitOrder = () => {
-    console.log(submitForm)
+  const addressRef = ref(null)
+  const submitOrder = async () => {
+    const { id: addressId } = addressRef.value.choseAddress
+    const form = {
+      addressId,
+      ...submitForm,
+      shoppingBagId: shoppingBagId.value
+    }
+    try {
+      const data = await createOrder(form)
+      console.log(data.order_num)
+      Toast.success('订单创建成功')
+    } catch (err) {
+      handleErr(err)
+    }
   }
 
   // 初始化数据
@@ -71,15 +84,19 @@
       Object.assign(shopData, shopInfo)
       Object.assign(choseGoodsData, choseGoods)
     } catch (err) {
-      const { code, msg } = err.data
-      // 购物袋15分钟redis缓存已失效，跳转首页
-      if (code === 20003) {
-        Dialog.alert({
-          message: msg
-        }).then(() => {
-          diffModuleJump('/home', '', 'home')
-        })
-      }
+      handleErr(err)
+    }
+  }
+  // 统一处理err
+  const handleErr = (err) => {
+    const { code, msg } = err.data
+    // 购物袋15分钟redis缓存已失效，跳转首页
+    if (code === 20003) {
+      Dialog.alert({
+        message: msg
+      }).then(() => {
+        diffModuleJump('/home', '', 'home')
+      })
     }
   }
   const init = () => {

@@ -120,6 +120,10 @@
     setChoseAddress()
   }
   init()
+
+  defineExpose({
+    choseAddress
+  })
 </script>
 
 <style lang="less" scoped>

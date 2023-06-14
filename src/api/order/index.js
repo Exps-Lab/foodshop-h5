@@ -15,3 +15,11 @@ export function getConfirmDetail (params) {
     params
   })
 }
+
+export function createOrder (data) {
+  return request({
+    url: '/h5/order/auth/order/create',
+    method: 'post',
+    data
+  })
+}

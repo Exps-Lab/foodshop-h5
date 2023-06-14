@@ -11,7 +11,7 @@
     </section>
     <section class="com-inner-box font-bold-weight">
       <span class="font-bold-weight">是否需要餐具</span>
-      <van-checkbox v-model="props.submitForm.order_ware" />
+      <van-checkbox v-model="props.submitForm.orderWare" />
     </section>
   </section>
 
@@ -44,7 +44,7 @@
     resetShowRemark()
   }
   const clickRemarkConfirm = () => {
-    props.submitForm.order_remarks = showOrderRemarks.value
+    props.submitForm.orderRemarks = showOrderRemarks.value
   }
   const showRemarkPopup = () => {
     remarkPopupRef.value.showPopup()
