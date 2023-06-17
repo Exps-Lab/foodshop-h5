@@ -39,10 +39,8 @@
   // 处理备注相关数据
   const remarkPopupRef = ref(null)
   const showOrderRemarks = ref('')
-  const resetShowRemark = () => { showOrderRemarks.value = '' }
-  const clickRemarkCancel = () => {
-    resetShowRemark()
-  }
+  // const resetShowRemark = () => { showOrderRemarks.value = '' }
+  const clickRemarkCancel = () => {}
   const clickRemarkConfirm = () => {
     props.submitForm.orderRemarks = showOrderRemarks.value
   }

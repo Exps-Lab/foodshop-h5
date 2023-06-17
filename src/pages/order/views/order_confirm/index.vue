@@ -12,18 +12,19 @@
       button-text="提交订单"
       button-color="#02B6FD"
       @submit="submitOrder">
-        <section class="info-text">
-          已优惠<span class="red font-bold-weight">￥{{shopDiscount}}</span>
-        </section>
+      <section class="info-text">
+        已优惠<span class="red font-bold-weight">￥{{shopDiscount}}</span>
+      </section>
     </van-submit-bar>
   </div>
 </template>
 
 <script setup>
-  import { Toast, Dialog } from 'vant'
+  import { Dialog } from 'vant'
   import { ref, reactive, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { getConfirmDetail, createOrder } from '@/api/order'
+  import { payOrder } from '@/api/pay'
   import { diffModuleJump } from '@utils'
   import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
   import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
@@ -60,12 +61,21 @@
       shoppingBagId: shoppingBagId.value
     }
     try {
-      const data = await createOrder(form)
-      console.log(data.order_num)
-      Toast.success('订单创建成功')
+      const { data } = await createOrder(form)
+      const { order_num } = data
+      await prePayOrder(order_num)
     } catch (err) {
       handleErr(err)
     }
+  }
+
+  const prePayOrder = async (orderNum) => {
+    const { msg, data } = await payOrder({ orderNum })
+    Dialog.alert({
+      message: msg + `${data.orderNum}`
+    }).then(() => {
+      // todo
+    })
   }
 
   // 初始化数据
@@ -89,15 +99,24 @@
   }
   // 统一处理err
   const handleErr = (err) => {
-    const { code, msg } = err.data
-    // 购物袋15分钟redis缓存已失效，跳转首页
-    if (code === 20003) {
-      Dialog.alert({
-        message: msg
-      }).then(() => {
-        diffModuleJump('/home', '', 'home')
-      })
+    const { code, msg, data } = err.data
+    const errMap = {
+      // 购物袋15分钟redis缓存已失效，跳转首页
+      20003: {
+        jumpParams: ['/home', '', 'home']
+      },
+      // 支付余额不足，跳转订单详情页
+      20004: {
+        jumpParams: ['/order/orderConfirm', `orderNum=${data.order_num}`, 'order']
+      }
     }
+
+    Dialog.alert({
+      message: msg
+    }).then(() => {
+      const [path, params, pathModule] = errMap[code]
+      diffModuleJump(path, params, pathModule)
+    })
   }
   const init = () => {
     getShoppingBagId()
@@ -112,6 +131,9 @@
     padding: 15px 15px 60px;
     background-color: rgb(245, 245, 246);
     :deep(.submit-btn) {
+      max-width: 750px;
+      left: 50%;
+      transform: translateX(-50%);
       .van-submit-bar__bar {
         border-top: 1px solid @line-1;
       }

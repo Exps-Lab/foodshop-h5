@@ -89,7 +89,7 @@ defineExpose({
       }
     }
     .modal-mes-box {
-      padding: 10px 20px;
+      padding: 10px 20px 70px;
       .modal-list {
         margin-bottom: 20px;
         .mes-title {
