@@ -13,7 +13,7 @@
       <span class="align-left">{{props.shopInfo.name}}</span>
     </section>
     <div class="modal-mes-box">
-      <template  v-for="(item, index) in modalContentMap" :key="index">
+      <template v-for="(item, index) in modalContentMap" :key="index">
         <section class="modal-list" v-if="item.isShow">
           <p class="mes-title font-bold-weight">{{item.title}}</p>
           <section class="mes-content">

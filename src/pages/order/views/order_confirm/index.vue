@@ -17,6 +17,7 @@
       </section>
     </van-submit-bar>
   </div>
+  <PayOrderModal ref="PayOrderModalRef" :orderInfo="orderInfo" />
 </template>
 
 <script setup>
@@ -24,12 +25,12 @@
   import { ref, reactive, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { getConfirmDetail, createOrder } from '@/api/order'
-  import { payOrder } from '@/api/pay'
   import { diffModuleJump } from '@utils'
   import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
   import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
+  import PayOrderModal from '@components/Pay_Order_Modal/index.vue'
+  import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
   import ChoseAddress from './components/Chose_Address.vue'
-  import ChosePayChannel from './components/Chose_Pay_Channel.vue'
   import GoodsCard from './components/Goods_Card.vue'
   import OrderExtra from './components/Order_Extra.vue'
 
@@ -53,6 +54,8 @@
     orderWare: true
   })
   const addressRef = ref(null)
+  const orderInfo = ref({})
+  const PayOrderModalRef = ref(null)
   const submitOrder = async () => {
     const { id: addressId } = addressRef.value.choseAddress
     const form = {
@@ -62,20 +65,12 @@
     }
     try {
       const { data } = await createOrder(form)
-      const { order_num } = data
-      await prePayOrder(order_num)
+      orderInfo.value = data
+      // [note] 创建订单成功拉起支付弹窗
+      PayOrderModalRef.value.showModal()
     } catch (err) {
       handleErr(err)
     }
-  }
-
-  const prePayOrder = async (orderNum) => {
-    const { msg, data } = await payOrder({ orderNum })
-    Dialog.alert({
-      message: msg + `${data.orderNum}`
-    }).then(() => {
-      // todo
-    })
   }
 
   // 初始化数据
@@ -99,23 +94,14 @@
   }
   // 统一处理err
   const handleErr = (err) => {
-    const { code, msg, data } = err.data
-    const errMap = {
-      // 购物袋15分钟redis缓存已失效，跳转首页
-      20003: {
-        jumpParams: ['/home', '', 'home']
-      },
-      // 支付余额不足，跳转订单详情页
-      20004: {
-        jumpParams: ['/order/orderConfirm', `orderNum=${data.order_num}`, 'order']
-      }
-    }
-
+    const { code, msg } = err.data
     Dialog.alert({
       message: msg
     }).then(() => {
-      const [path, params, pathModule] = errMap[code]
-      diffModuleJump(path, params, pathModule)
+      // 购物袋15分钟redis缓存已失效，跳转首页
+      if (code === 20003) {
+        diffModuleJump('/home', '', 'home')
+      }
     })
   }
   const init = () => {
