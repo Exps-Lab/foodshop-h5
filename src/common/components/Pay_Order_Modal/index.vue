@@ -68,8 +68,8 @@ const handleErr = (err) => {
 }
 
 const jumpOrderDetail = () => {
-  // 支付成功跳转订单详情
-  diffModuleJump('/order/orderConfirm', `orderNum=${orderNum.value}`, 'order')
+  // 支付成功跳转replace订单详情
+  diffModuleJump('/order/orderConfirm', `orderNum=${orderNum.value}`, 'order', true)
 }
 
 // 控制modal显隐

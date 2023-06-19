@@ -32,6 +32,9 @@
     shoppingBagId: {
       type: String,
       default: ''
+    },
+    isUseStorageData: {
+      type: Boolean
     }
   })
 
@@ -41,8 +44,7 @@
   // [note] 跳转选择地址
   const jumpChoseAddress = () => {
     const tempData = {
-      changingAddress: true,
-      tempShoppingBagId: tempShoppingBagId.value
+      changingAddress: true
     }
     sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
     diffModuleJump('/ucenter/address_list', '', 'ucenter')
@@ -60,12 +62,12 @@
   // [note]包括首次进入最近地址 以及 切换之后的地址展示
   const setChoseAddress = async () => {
     const tempData = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
+    // [note] 缓存里取地址缓存数据。只要用户主动选了地址，之后订单默认优先展示用户选择
     if (tempData.address) {
       Object.assign(choseAddress, tempData.address)
 
       // [note] 只用来传递跨页数据，接到后只更改状态不删除数据防止刷新页面购物袋id丢失
       tempData.changingAddress = false
-      delete tempData.address
       sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(tempData))
     } else {
       const tempAddress = await getRecentAddressRequest()

@@ -7,7 +7,7 @@
   <section class="address-com-box">
     <section class="com-inner-box font-bold-weight">
       <span class="font-bold-weight">备注</span>
-      <span class="tips-text" @click="showRemarkPopup">点击输入备注信息﹥</span>
+      <span class="tips-text van-multi-ellipsis--l2" @click="showRemarkPopup">{{showMarksText}}</span>
     </section>
     <section class="com-inner-box font-bold-weight">
       <span class="font-bold-weight">是否需要餐具</span>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import SlidePopup from '@common/components/Slide_Popup/index.vue'
 
   const props = defineProps({
@@ -34,6 +34,9 @@
       type: Object,
       default: () => {}
     }
+  })
+  const showMarksText = computed(() => {
+    return props.submitForm.orderRemarks || '点击输入备注信息﹥'
   })
 
   // 处理备注相关数据
@@ -67,6 +70,9 @@
       }
       .tips-text {
         color: @text-3;
+        line-height: 1.3;
+        max-width: 170px;
+        word-wrap: break-word;
       }
     }
   }

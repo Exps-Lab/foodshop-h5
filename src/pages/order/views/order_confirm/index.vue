@@ -2,7 +2,7 @@
 
 <template>
   <div class="main-content">
-    <ChoseAddress ref="addressRef" :shopPos="shopData.pos" :shoppingBagId="shoppingBagId"/>
+    <ChoseAddress ref="addressRef" :shopPos="shopData.pos" :shoppingBagId="shoppingBagId" />
     <GoodsCard :shopData="shopData" :choseGoodsData="choseGoodsData" :price="getPayPrice" :shopDiscount="shopDiscount"/>
     <ChosePayChannel />
     <OrderExtra :submitForm="submitForm" />
@@ -75,9 +75,36 @@
 
   // 初始化数据
   const shoppingBagId = ref('')
-  const getShoppingBagId = () => {
-    const { tempShoppingBagId } = JSON.parse(sessionStorage.getItem(ORDERCONFIRMTEMPDATA) || '{}')
-    shoppingBagId.value = route.query.shoppingBagId || tempShoppingBagId
+  // 统一获取缓存数据
+  const orderConfirmStorageData = () => {
+    const tempData = sessionStorage.getItem(ORDERCONFIRMTEMPDATA)
+    return tempData !== null ? JSON.parse(tempData) : null
+  }
+  // [note] 是否使用缓存数据
+  const isUseStorageData = computed(() => {
+    const orderConfTemp = orderConfirmStorageData()
+    if (orderConfTemp === null) {
+      return false
+    }
+    const { tempShoppingBagId } = orderConfTemp
+    const queryBagId = route.query.shoppingBagId
+    return (queryBagId === undefined || queryBagId === tempShoppingBagId)
+  })
+  const getStorageData = () => {
+    const queryBagId = route.query.shoppingBagId
+    const orderConfTemp = orderConfirmStorageData()
+    if (orderConfTemp !== null) {
+      const { tempShoppingBagId, orderWare, orderRemarks } = orderConfTemp
+      shoppingBagId.value = queryBagId || tempShoppingBagId
+
+      // [note] 确认是否使用缓存数据
+      if (isUseStorageData.value) {
+        submitForm.orderWare = orderWare
+        submitForm.orderRemarks = orderRemarks
+      }
+    } else {
+      shoppingBagId.value = queryBagId
+    }
   }
   const preGetConfirmDetail = async () => {
     try {
@@ -100,15 +127,33 @@
     }).then(() => {
       // 购物袋15分钟redis缓存已失效，跳转首页
       if (code === 20003) {
-        diffModuleJump('/home', '', 'home')
+        diffModuleJump('/home', '', 'home', true)
       }
     })
   }
   const init = () => {
-    getShoppingBagId()
+    getStorageData()
     preGetConfirmDetail()
   }
   init()
+
+  // 离开页面记录表单
+  window.onbeforeunload = () => {
+    const orderConfTemp = orderConfirmStorageData()
+    // [note] 添加缓存数据：购物袋id，订单备注，订单是否需要餐具
+    const saveDataMap = {
+      ...submitForm,
+      tempShoppingBagId: shoppingBagId.value
+    }
+    if (orderConfTemp !== null) {
+      Object.keys(saveDataMap).forEach(key => {
+        orderConfTemp[key] = saveDataMap[key]
+      })
+      sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(orderConfTemp))
+    } else {
+      sessionStorage.setItem(ORDERCONFIRMTEMPDATA, JSON.stringify(saveDataMap))
+    }
+  }
 </script>
 
 <style lang="less" scoped>
