@@ -24,7 +24,7 @@
 import { Dialog } from 'vant'
 import { ref, computed } from 'vue'
 import { payOrder } from '@/api/pay'
-import { diffModuleJump } from '@utils'
+import { diffModuleJump, padZero } from '@utils'
 import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
 const show = ref(false)
@@ -39,12 +39,22 @@ const props = defineProps({
 const orderNum = computed(() => {
   return props.orderInfo.order_num
 })
+const showSendTimeText = computed(() => {
+  const sendCostTime = props.orderInfo.send_cost_time
+  const targetTime = new Date(Date.now() + sendCostTime * 60 * 1000)
+  const text = `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
+  return sendCostTime
+    ? `预计 ${text} 送达`
+    : '计算中...'
+})
 
 const handlePayOrder = async () => {
   try {
     const { msg } = await payOrder({ orderNum: orderNum.value })
     Dialog.alert({
-      message: msg + `${orderNum.value}`
+      title: '支付成功',
+      message: msg + '\n' + showSendTimeText.value,
+      theme: 'round-button'
     }).then(() => {
       hideModal()
       // jumpOrderDetail()
@@ -58,7 +68,9 @@ const handlePayOrder = async () => {
 const handleErr = (err) => {
   const { code, msg } = err.data
   Dialog.alert({
-    message: msg
+    title: '支付失败',
+    message: msg,
+    theme: 'round-button'
   }).then(() => {
     // 支付余额不足，跳转订单详情页
     if (code === 20004) {

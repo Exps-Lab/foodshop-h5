@@ -23,3 +23,11 @@ export function createOrder (data) {
     data
   })
 }
+
+export function getOrderDetail (params) {
+  return request({
+    url: '/h5/order/auth/order/detail',
+    method: 'get',
+    params
+  })
+}

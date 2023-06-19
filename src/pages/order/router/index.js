@@ -7,6 +7,11 @@ const routes = [
     component: () => import('../views/order_confirm/index.vue')
   },
   {
+    path: '/order/payPlatform',
+    name: 'payPlatform',
+    component: () => import('../views/order_pay_platform/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')

@@ -75,7 +75,9 @@
     }
   }
 
+  // 展示文案
   const sendTime = ref('')
+  const sendCostTime = ref('')
   const showSendTimeText = computed(() => {
     return sendTime.value
       ? `预计${sendTime.value}送达`
@@ -88,6 +90,7 @@
       startPos: nowPos,
       endPosArr: [{ lat: shopLat, lng: shopLng }]
     })
+    sendCostTime.value = timeRes[0]
     const targetTime = new Date(Date.now() + timeRes[0] * 60 * 1000)
     return `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
   }
@@ -124,7 +127,8 @@
   init()
 
   defineExpose({
-    choseAddress
+    choseAddress,
+    sendCostTime
   })
 </script>
 
