@@ -23,7 +23,7 @@
 <script setup>
   import { Dialog } from 'vant'
   import { ref, reactive, computed } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { getConfirmDetail, createOrder } from '@/api/order'
   import { diffModuleJump } from '@utils'
   import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
@@ -35,7 +35,6 @@
   import OrderExtra from './components/Order_Extra.vue'
 
   const route = useRoute()
-  const router = useRouter()
 
   // 获取确认订单页详情
   const shopData = reactive({})

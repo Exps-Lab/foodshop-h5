@@ -25,14 +25,13 @@
 <script setup>
   import { Dialog } from 'vant'
   import { ref, computed } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { diffModuleJump, padZero } from '@utils'
   import { getOrderDetail } from '@/api/order'
   import PayOrderModal from '@components/Pay_Order_Modal/index.vue'
   import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
   const route = useRoute()
-  const router = useRouter()
 
   const PayOrderModalRef = ref(null)
   const prePayOrder = () => {
