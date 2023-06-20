@@ -3,6 +3,11 @@
 <template>
   <div class="main">
     <section class="account-box">
+      <section class="pay-minus-time">
+        支付剩余时间
+        <span class="time-item font-bold-weight">{{payMinusTime.minutes}}: </span>
+        <span class="time-item font-bold-weight">{{payMinusTime.seconds}}</span>
+      </section>
       <p class="com-price">
         <span class="com-symbol font-bold-weight">￥</span>
         <span class="red price font-bold-weight">{{orderInfo.pay_price}}</span>
@@ -18,28 +23,74 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { Dialog } from 'vant'
+  import { ref, computed } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import { diffModuleJump, padZero } from '@utils'
   import { getOrderDetail } from '@/api/order'
   import PayOrderModal from '@components/Pay_Order_Modal/index.vue'
   import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
   const route = useRoute()
+  const router = useRouter()
 
   const PayOrderModalRef = ref(null)
   const prePayOrder = () => {
     PayOrderModalRef.value.showModal()
   }
 
+  const remainTime = ref(0)
+  const payMinusTime = computed(() => {
+    const minutes = padZero(Math.floor(remainTime.value / 1000 / 60 % 60))
+    const seconds = padZero(Math.floor(remainTime.value / 1000 % 60))
+    return {
+      minutes,
+      seconds
+    }
+  })
+  const calcTime = () => {
+    const timer = setInterval(() => {
+      if (remainTime.value < 1000) {
+        clearInterval(timer)
+        location.reload()
+      } else {
+        remainTime.value = remainTime.value - 1000
+      }
+    }, 1000)
+  }
+
   const orderInfo = ref({})
   // 获取订单详情
   const preGetAccountMoney = async () => {
     const orderNum = route.query.orderNum
-    const { data } = await getOrderDetail({ orderNum })
-    orderInfo.value = data
-    console.log(data)
+    try {
+      const { data } = await getOrderDetail({ orderNum })
+      orderInfo.value = data
+      remainTime.value = data.order_expire_time - Date.now()
+    } catch (err) {
+      handleErr(err)
+    }
   }
-  preGetAccountMoney()
+
+  // 统一处理err
+  const handleErr = (err) => {
+    const { code, msg } = err.data
+    Dialog.alert({
+      message: msg,
+      theme: 'round-button'
+    }).then(() => {
+      // 订单15分钟内未支付已取消失效
+      if (code === 20005) {
+        diffModuleJump('/home', '', 'home', true)
+      }
+    })
+  }
+
+  const init = async () => {
+    await preGetAccountMoney()
+    calcTime()
+  }
+  init()
 </script>
 
 <style lang="less" scoped>
@@ -52,11 +103,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      .pay-minus-time {
+        font-size: 13px;
+        .time-item {
+          color: @error-6;
+          font-size: 14px;
+        }
+      }
       .com-price {
         display: flex;
         align-items: baseline;
         justify-content: center;
-        margin-bottom: 30px;
+        margin: 15px 0 30px;
         .com-symbol {
           font-size: 18px;
           line-height: 1;

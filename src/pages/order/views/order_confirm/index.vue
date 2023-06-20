@@ -69,14 +69,7 @@
       const { data } = await createOrder(form)
       orderInfo.value = data
       // [note] 创建订单成功拉起支付弹窗
-      // PayOrderModalRef.value.showModal()
-      // todo test
-      await router.push({
-        path: '/order/payPlatform',
-        query: {
-          orderNum: data.order_num
-        }
-      })
+      PayOrderModalRef.value.showModal()
     } catch (err) {
       handleErr(err)
     }
