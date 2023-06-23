@@ -39,6 +39,16 @@ export function useOrderInfo () {
     }
   }
 
+  /**
+   * 计算送达时间
+   * @param sendCostTime 配送预计花费时间
+   * @returns {string}
+   */
+  const calcSendTime = (sendCostTime = 0) => {
+    const targetTime = new Date(Date.now() + sendCostTime * 60 * 1000)
+    return `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
+  }
+
   // 统一处理err
   const handleErr = (err) => {
     if (!err) return new Error('请传入错误信息')
@@ -71,6 +81,7 @@ export function useOrderInfo () {
   return {
     handleErr,
     minusTime,
+    calcSendTime,
     countRemainTime,
     jumpOrderDetail
   }

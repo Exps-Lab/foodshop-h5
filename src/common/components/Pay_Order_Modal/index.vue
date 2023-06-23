@@ -26,12 +26,11 @@
 import { Dialog } from 'vant'
 import { ref, computed } from 'vue'
 import { payOrder } from '@/api/pay'
-import { padZero } from '@utils'
 import { useOrderInfo } from '@pages/order/hooks/orderInfo'
 import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
 const show = ref(false)
-const { handleErr, jumpOrderDetail } = useOrderInfo()
+const { handleErr, jumpOrderDetail, calcSendTime } = useOrderInfo()
 const props = defineProps({
   orderInfo: {
     type: Object,
@@ -45,10 +44,8 @@ const orderNum = computed(() => {
 })
 const showSendTimeText = computed(() => {
   const sendCostTime = props.orderInfo.send_cost_time
-  const targetTime = new Date(Date.now() + sendCostTime * 60 * 1000)
-  const text = `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
   return sendCostTime
-    ? `预计 ${text} 送达`
+    ? `预计 ${calcSendTime(sendCostTime)} 送达`
     : '计算中...'
 })
 
