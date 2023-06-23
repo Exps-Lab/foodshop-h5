@@ -7,7 +7,9 @@
     position="bottom"
     class="info-modal"
     v-model:show="show"
-    :style="{ minHeight: '30%' }">
+    :before-close="handleCloseModal"
+    :style="{ minHeight: '30%' }"
+    :close-on-click-overlay="false">
     <!--  modal内容  -->
     <section class="modal-main">
       <p class="com-price">
@@ -24,10 +26,12 @@
 import { Dialog } from 'vant'
 import { ref, computed } from 'vue'
 import { payOrder } from '@/api/pay'
-import { diffModuleJump, padZero } from '@utils'
+import { padZero } from '@utils'
+import { useOrderInfo } from '@pages/order/hooks/orderInfo'
 import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
 const show = ref(false)
+const { handleErr, jumpOrderDetail } = useOrderInfo()
 const props = defineProps({
   orderInfo: {
     type: Object,
@@ -48,6 +52,17 @@ const showSendTimeText = computed(() => {
     : '计算中...'
 })
 
+const handleCloseModal = () => {
+  Dialog.confirm({
+    title: '支付提示',
+    message: '您是否放弃本次支付?'
+  })
+    .then(() => {
+      jumpOrderDetail(orderNum.value)
+    })
+    .catch(() => {})
+}
+
 const handlePayOrder = async () => {
   try {
     const { msg } = await payOrder({ orderNum: orderNum.value })
@@ -57,31 +72,11 @@ const handlePayOrder = async () => {
       theme: 'round-button'
     }).then(() => {
       hideModal()
-      // jumpOrderDetail()
+      jumpOrderDetail(orderNum.value)
     })
   } catch (err) {
     handleErr(err)
   }
-}
-
-// 统一处理err
-const handleErr = (err) => {
-  const { code, msg } = err.data
-  Dialog.alert({
-    title: '支付失败',
-    message: msg,
-    theme: 'round-button'
-  }).then(() => {
-    // 支付余额不足，跳转订单详情页
-    if (code === 20004) {
-      jumpOrderDetail()
-    }
-  })
-}
-
-const jumpOrderDetail = () => {
-  // 支付成功跳转replace订单详情
-  diffModuleJump('/order/orderConfirm', `orderNum=${orderNum.value}`, 'order', true)
 }
 
 // 控制modal显隐

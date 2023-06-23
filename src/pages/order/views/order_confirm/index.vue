@@ -21,11 +21,10 @@
 </template>
 
 <script setup>
-  import { Dialog } from 'vant'
   import { ref, reactive, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { getConfirmDetail, createOrder } from '@/api/order'
-  import { diffModuleJump } from '@utils'
+  import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import { orderTotalNeedPay, getDiscountInfo } from '@utils/calcGoodsPrice'
   import { ORDERCONFIRMTEMPDATA } from '@utils/sessionStorage_keys'
   import PayOrderModal from '@components/Pay_Order_Modal/index.vue'
@@ -35,6 +34,7 @@
   import OrderExtra from './components/Order_Extra.vue'
 
   const route = useRoute()
+  const { handleErr } = useOrderInfo()
 
   // 获取确认订单页详情
   const shopData = reactive({})
@@ -119,19 +119,6 @@
     } catch (err) {
       handleErr(err)
     }
-  }
-  // 统一处理err
-  const handleErr = (err) => {
-    const { code, msg } = err.data
-    Dialog.alert({
-      message: msg,
-      theme: 'round-button'
-    }).then(() => {
-      // 购物袋15分钟redis缓存已失效，跳转首页
-      if (code === 20003) {
-        diffModuleJump('/home', '', 'home', true)
-      }
-    })
   }
   const init = () => {
     getStorageData()

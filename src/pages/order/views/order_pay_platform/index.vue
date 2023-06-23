@@ -5,8 +5,11 @@
     <section class="account-box">
       <section class="pay-minus-time">
         支付剩余时间
-        <span class="time-item font-bold-weight">{{payMinusTime.minutes}}: </span>
-        <span class="time-item font-bold-weight">{{payMinusTime.seconds}}</span>
+        <section v-if="minusTime.showTime">
+          <span class="time-item font-bold-weight">{{minusTime.minutes}}: </span>
+          <span class="time-item font-bold-weight">{{minusTime.seconds}}</span>
+        </section>
+        <span v-else class="time-item">计算中...</span>
       </section>
       <p class="com-price">
         <span class="com-symbol font-bold-weight">￥</span>
@@ -23,39 +26,19 @@
 </template>
 
 <script setup>
-  import { Dialog } from 'vant'
-  import { ref, computed } from 'vue'
+  import { ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import { diffModuleJump, padZero } from '@utils'
   import { getOrderDetail } from '@/api/order'
+  import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import PayOrderModal from '@components/Pay_Order_Modal/index.vue'
   import ChosePayChannel from '@components/Chose_Pay_Channel/index.vue'
 
   const route = useRoute()
+  const { minusTime, countRemainTime, handleErr } = useOrderInfo()
 
   const PayOrderModalRef = ref(null)
   const prePayOrder = () => {
     PayOrderModalRef.value.showModal()
-  }
-
-  const remainTime = ref(0)
-  const payMinusTime = computed(() => {
-    const minutes = padZero(Math.floor(remainTime.value / 1000 / 60 % 60))
-    const seconds = padZero(Math.floor(remainTime.value / 1000 % 60))
-    return {
-      minutes,
-      seconds
-    }
-  })
-  const calcTime = () => {
-    const timer = setInterval(() => {
-      if (remainTime.value < 1000) {
-        clearInterval(timer)
-        location.reload()
-      } else {
-        remainTime.value = remainTime.value - 1000
-      }
-    }, 1000)
   }
 
   const orderInfo = ref({})
@@ -64,30 +47,19 @@
     const orderNum = route.query.orderNum
     try {
       const { data } = await getOrderDetail({ orderNum })
+      const { order_expire_time, order_status } = data
       orderInfo.value = data
-      remainTime.value = data.order_expire_time - Date.now()
+      // 未支付
+      if (order_status === 0) {
+        countRemainTime(order_expire_time)
+      }
     } catch (err) {
       handleErr(err)
     }
   }
 
-  // 统一处理err
-  const handleErr = (err) => {
-    const { code, msg } = err.data
-    Dialog.alert({
-      message: msg,
-      theme: 'round-button'
-    }).then(() => {
-      // 订单15分钟内未支付已取消失效
-      if (code === 20005) {
-        diffModuleJump('/home', '', 'home', true)
-      }
-    })
-  }
-
   const init = async () => {
     await preGetAccountMoney()
-    calcTime()
   }
   init()
 </script>
@@ -104,9 +76,14 @@
       align-items: center;
       .pay-minus-time {
         font-size: 13px;
+        display: flex;
+        align-items: center;
         .time-item {
           color: @error-6;
           font-size: 14px;
+          &:first-child {
+            margin-left: 6px;
+          }
         }
       }
       .com-price {
