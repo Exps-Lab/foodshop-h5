@@ -495,6 +495,12 @@ export function padZero (num) {
   return numTemp < 10 ? '0' + numTemp : String(num)
 }
 
+export function clearObj (obj) {
+  Object.keys(obj).forEach(key => {
+    delete obj[key]
+  })
+}
+
 export default {
   getQuery,
   delQuery,
@@ -523,5 +529,6 @@ export default {
   roundNum,
   priceHandle,
   diffModuleJump,
-  padZero
+  padZero,
+  clearObj
 }

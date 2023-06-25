@@ -43,9 +43,9 @@ const orderNum = computed(() => {
   return props.orderInfo.order_num
 })
 const showSendTimeText = computed(() => {
-  const sendCostTime = props.orderInfo.send_cost_time
-  return sendCostTime
-    ? `预计 ${calcSendTime(sendCostTime)} 送达`
+  const { create_time, send_cost_time } = props.orderInfo
+  return (send_cost_time && create_time)
+    ? `预计 ${calcSendTime(send_cost_time, create_time)} 送达`
     : '计算中...'
 })
 

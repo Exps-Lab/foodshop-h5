@@ -31,3 +31,11 @@ export function getOrderDetail (params) {
     params
   })
 }
+
+export function cancelOrder (data) {
+  return request({
+    url: '/h5/order/auth/order/cancel',
+    method: 'post',
+    data
+  })
+}

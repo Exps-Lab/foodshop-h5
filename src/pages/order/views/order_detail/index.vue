@@ -12,7 +12,7 @@
         <span class="subtitle font-bold-weight">{{statusTitle.subtitle}}</span>
         <van-divider />
         <section class="btn-box">
-          <section class="btn-item" v-for="(btn, index) in showButton" :key="index">
+          <section class="btn-item" v-for="(btn, index) in showButton" :key="index" @click="btn.handler(orderInfo)">
             <van-icon class="btn-icon" :name="btn.icon" />
             <span class="btn-text">{{btn.text}}</span>
           </section>
@@ -27,9 +27,11 @@
   import { useRoute } from 'vue-router'
   import { getOrderDetail } from '@/api/order'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
+  import { useOrderBtns } from '@pages/order/hooks/orderBtns'
 
   const route = useRoute()
   const { minusTime, countRemainTime, handleErr, calcSendTime } = useOrderInfo()
+  const { getStatusBtns } = useOrderBtns()
 
   const statusTitle = computed(() => {
     const { order_status = 'default' } = orderInfo.value
@@ -57,51 +59,15 @@
     }
     return textMap[order_status]
   })
-  const orderOperatorBtnEnums = {
-    pay: {
-      icon: 'after-sale',
-      text: '去支付',
-      handler: () => {}
-    },
-    cancel: {
-      icon: 'stop-circle-o',
-      text: '取消订单',
-      handler: () => {}
-    },
-    oneMore: {
-      icon: 'todo-list-o',
-      text: '再来一单',
-      handler: () => {}
-    },
-    comment: {
-      icon: 'notes-o',
-      text: '去评价',
-      handler: () => {}
-    },
-    telShop: {
-      icon: 'phone-o',
-      text: '电话商家',
-      handler: () => {}
-    }
-  }
-  const statusShowBtn = {
-    0: ['pay', 'cancel'],
-    2: ['telShop', 'oneMore'],
-    3: ['telShop', 'cancel'],
-    4: ['comment', 'telShop', 'oneMore'],
-    default: []
-  }
+
   const showButton = computed(() => {
     const { order_status = 'default' } = orderInfo.value
-    return statusShowBtn[order_status].reduce((btns, item) => {
-      btns.push(orderOperatorBtnEnums[item])
-      return btns
-    }, [])
+    return getStatusBtns(order_status)
   })
   // 展示送达时间
   const showSendTimeText = computed(() => {
-    const { send_cost_time } = orderInfo.value
-    return calcSendTime(send_cost_time)
+    const { pay_time, send_cost_time } = orderInfo.value
+    return calcSendTime(send_cost_time, pay_time)
   })
 
   // 初始化数据

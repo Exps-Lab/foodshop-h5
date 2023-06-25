@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+import { Toast } from 'vant'
 import { ref, reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import InfoDetailModal from './components/info_detail_modal.vue'
@@ -72,7 +73,8 @@ import ShopMenu from './components/menu_info.vue'
 
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
-import { priceHandle, diffModuleJump } from '@utils'
+import { getOrderDetail } from '@/api/order'
+import { priceHandle, diffModuleJump, clearObj } from '@utils'
 import { calcTotalBagFee, orderTotalNeedPay } from '@utils/calcGoodsPrice'
 
 const route = useRoute()
@@ -90,7 +92,6 @@ const shopBgUrl = computed(() => {
   const avatar = shopBaseInfo.shop_image?.avatar || ''
   return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), url(${avatar}) center top / cover`
 })
-getShopInfo()
 
 /* 控制店铺详情modal */
 const infoModal = ref()
@@ -101,7 +102,9 @@ const showDetailInfo = () => {
 const shoppingListModal = ref()
 const showShoppingCartModal = () => {
   if (hasMoreThanOneGoods.value) {
-    shoppingListModal.value.showModal()
+    shoppingListModal.value.show
+      ? shoppingListModal.value.hideModal()
+      : shoppingListModal.value.showModal()
   }
 }
 // 删除购物车列表
@@ -119,7 +122,7 @@ const menuTabClick = ({ title, name }) => {
 }
 
 /* 用户选择商品和计算金额部分 */
-const choseGoods = reactive({})
+let choseGoods = reactive({})
 // 选择的商品总数
 const totalChoseCount = computed(() => {
   const count = Object.values(choseGoods).reduce((totalCount, category) => {
@@ -138,11 +141,11 @@ const deliveryFeeShow = computed(() => {
 })
 // 所有选择商品包装费用
 const totalBagFee = computed(() => {
-  return calcTotalBagFee(Object.values(choseGoods)[0] || [])
+  return calcTotalBagFee(Object.values(choseGoods).flat(2) || [])
 })
 // 本次共选择需要支付金额
 const totalNeedPay = computed(() => {
-  const choseGoodsArr = Object.values(choseGoods)[0] || []
+  const choseGoodsArr = Object.values(choseGoods).flat(2) || []
   return orderTotalNeedPay(choseGoodsArr, shopBaseInfo)
 })
 // 是否达到最低配送价格
@@ -179,8 +182,37 @@ const submitChose = async () => {
     shop_id,
     chose_goods_list: choseDataArr
   })
+  // [note] 创建购物袋成功清空已选sku
+  clearObj(choseGoods)
   diffModuleJump('/order/orderConfirm', `shoppingBagId=${data}`, 'order')
 }
+
+// 处理再来一单，从订单获取数据
+const getOneMoreData = async (orderNum) => {
+  try {
+    const { data: { goods_list } } = await getOrderDetail({ orderNum })
+    const orderChoseData = goods_list.reduce((map, item) => {
+      const { food_category_id } = item
+      if (map[food_category_id] === undefined) {
+        map[food_category_id] = []
+      }
+      map[food_category_id].push(item)
+      return map
+    }, {})
+    choseGoods = Object.assign(choseGoods, orderChoseData)
+  } catch (err) {
+    Toast('获取订单详情失败，请重新选择商品')
+  }
+}
+
+const init = async () => {
+  const { order_num } = route.query
+  await getShopInfo()
+  if (order_num) {
+    await getOneMoreData(order_num)
+  }
+}
+init()
 </script>
 
 <style lang="less" scoped>

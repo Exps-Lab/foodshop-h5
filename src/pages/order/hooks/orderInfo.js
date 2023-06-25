@@ -42,10 +42,12 @@ export function useOrderInfo () {
   /**
    * 计算送达时间
    * @param sendCostTime 配送预计花费时间
+   * @param pay_time 支付时间
    * @returns {string}
    */
-  const calcSendTime = (sendCostTime = 0) => {
-    const targetTime = new Date(Date.now() + sendCostTime * 60 * 1000)
+  const calcSendTime = (sendCostTime = 0, pay_time) => {
+    const payTimeTemp = new Date(pay_time).getTime()
+    const targetTime = new Date(payTimeTemp + sendCostTime * 60 * 1000)
     return `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
   }
 
@@ -69,6 +71,7 @@ export function useOrderInfo () {
     })
   }
 
+  // 统一跳转订单详情
   const jumpOrderDetail = (orderNum) => {
     router.replace({
       path: '/order/orderDetail',
