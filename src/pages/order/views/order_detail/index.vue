@@ -4,7 +4,7 @@
   <div class="main-content">
     <header class="bg-box"></header>
     <section class="content-box">
-      <p class="status-text">
+      <p class="status-text" @click="showTimeLine">
         <span class="main-title font-bold-weight">{{statusTitle.title}}</span>
         <van-icon class="arrow-icon" name="arrow" />
       </p>
@@ -18,6 +18,7 @@
           </section>
         </section>
       </section>
+      <GoodsCard :orderInfo="orderInfo" />
     </section>
   </div>
 </template>
@@ -28,6 +29,7 @@
   import { getOrderDetail } from '@/api/order'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import { useOrderBtns } from '@pages/order/hooks/orderBtns'
+  import GoodsCard from './components/Goods_Card.vue'
 
   const route = useRoute()
   const { minusTime, countRemainTime, handleErr, calcSendTime } = useOrderInfo()
@@ -70,6 +72,9 @@
     return calcSendTime(send_cost_time, pay_time)
   })
 
+  const showTimeLine = () => {
+  }
+
   // 初始化数据
   const orderInfo = ref({})
   // 获取订单详情
@@ -102,15 +107,22 @@
     margin-top: 10px;
   }
   .main-content {
-    min-height: 100vh;
+    position: relative;
+    height: 100vh;
     background-color: rgb(245, 245, 246);
     .bg-box {
       background-image: linear-gradient(rgba(2,182,253,.9), rgb(245, 245, 246));
-      height: 200px;
+      height: 100%;
     }
     .content-box {
-      padding: 0 15px;
-      transform: translateY(-160px);
+      padding: 40px 15px;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      max-height: 100%;
+      overflow-y: scroll;
       .status-text {
         color: #fff;
         font-size: 20px;

@@ -1,7 +1,7 @@
 
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { diffModuleJump, padZero } from '@utils'
+import { diffModuleJump, padZero, formatTime } from '@utils'
 import { Dialog } from 'vant'
 
 // 按照惯例，组合式函数名以“use”开头
@@ -43,12 +43,15 @@ export function useOrderInfo () {
    * 计算送达时间
    * @param sendCostTime 配送预计花费时间
    * @param pay_time 支付时间
+   * @param isDayTime 是否返回年月日 时分秒
    * @returns {string}
    */
-  const calcSendTime = (sendCostTime = 0, pay_time) => {
+  const calcSendTime = (sendCostTime = 0, pay_time, isDayTime = false) => {
     const payTimeTemp = new Date(pay_time).getTime()
     const targetTime = new Date(payTimeTemp + sendCostTime * 60 * 1000)
-    return `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
+    return isDayTime
+      ? formatTime(targetTime, 'yyyy-MM-dd hh:mm:ss')
+      : `${padZero(targetTime.getHours())}:${padZero(targetTime.getMinutes())}`
   }
 
   // 统一处理err
