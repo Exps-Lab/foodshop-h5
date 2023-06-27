@@ -19,6 +19,7 @@
         </section>
       </section>
       <GoodsCard :orderInfo="orderInfo" />
+      <OrderStep ref="showOrderStep" :orderInfo="orderInfo" />
     </section>
   </div>
 </template>
@@ -30,6 +31,7 @@
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import { useOrderBtns } from '@pages/order/hooks/orderBtns'
   import GoodsCard from './components/Goods_Card.vue'
+  import OrderStep from './components/Order_Step.vue'
 
   const route = useRoute()
   const { minusTime, countRemainTime, handleErr, calcSendTime } = useOrderInfo()
@@ -72,7 +74,9 @@
     return calcSendTime(send_cost_time, pay_time)
   })
 
+  const showOrderStep = ref(null)
   const showTimeLine = () => {
+    showOrderStep.value.showModal()
   }
 
   // 初始化数据
