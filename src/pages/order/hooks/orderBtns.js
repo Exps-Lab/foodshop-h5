@@ -44,6 +44,16 @@ export function useOrderBtns () {
     const { order_num, shop_id } = orderInfo
     diffModuleJump('/shopDetail', `shop_id=${shop_id}&order_num=${order_num}`, 'home')
   }
+  // 跳转订单评论表单
+  const handleComment = (orderInfo) => {
+    const { order_num } = orderInfo
+    router.push({
+      path: '/order/comment',
+      query: {
+        orderNum: order_num
+      }
+    })
+  }
 
   // 所有按钮配置list
   const orderOperatorBtnEnums = {
@@ -65,7 +75,7 @@ export function useOrderBtns () {
     comment: {
       icon: 'notes-o',
       text: '去评价',
-      handler: () => {}
+      handler: handleComment
     },
     telShop: {
       icon: 'phone-o',

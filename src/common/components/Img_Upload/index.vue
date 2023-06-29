@@ -19,7 +19,7 @@
  *  @example // 调用示例
  *
  *    // 引入
-    import ImgUpload from '@components/ImgUpload/index.vue'
+    import ImgUpload from '@components/Img_Upload/index.vue'
  *   //  使用
     <ImgUpload
       accept="image/png,image/jpg"
@@ -34,15 +34,17 @@
     <van-uploader
       ref="uploader"
       v-model="fileList"
-      :class="fileList.length && 'hide-upload'"
       preview-image
-      preview-size="0.55rem"
+      :preview-size="isSingleMode ? '60px': '80px'"
+      upload-text="添加图片"
       :after-read="afterReadFile"
-      :preview-full-image="false"
-      :max-count="2"
+      :preview-full-image="!isSingleMode"
+      :max-count="maxCount"
       :accept="acceptType"
+      :multiple="isMultiple"
       :disabled="disabled"
-      :deletable="false"
+      :deletable="!isSingleMode"
+      :class="isSingleMode && fileList.length && 'hide-upload'"
       @click-preview="handlePreView"
     />
   </section>
@@ -51,7 +53,7 @@
 <script setup>
   import axios from 'axios'
   import { uploadToken } from '@api/common/index'
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
 
   const props = defineProps({
     disabled: {
@@ -67,6 +69,17 @@
     fileData: {
       type: Array,
       default: () => []
+    },
+    // 支持的upload的交互
+    // single：没有另外的上传入口，在upload上传后原处回显，点击回显图片还是拉起上传，无预览
+    // normal: 有已上传展示区域和上传区域，点击图片可预览
+    uploaderMode: {
+      type: String,
+      default: 'normal'
+    },
+    maxCount: {
+      type: Number,
+      default: 1
     }
   })
 
@@ -76,17 +89,33 @@
   const uploader = ref()
   const fileList = ref([])
 
-  // 获取文件流
-  const afterReadFile = (fileObj) => {
-    if (fileList.value.length > 1) {
-      fileList.value.splice(0, 1)
+  const isSingleMode = computed(() => props.uploaderMode === 'single')
+  const isMultiple = computed(() => props.maxCount > 1 && !isSingleMode.value)
+  /**
+   * 获取文件流
+   * @param fileRes 单个文件时为对象，多选时为数组
+   */
+  const afterReadFile = (fileRes) => {
+    // [note] 单独处理single
+    if (isSingleMode.value) {
+      if (fileList.value.length > 1) {
+        fileList.value.splice(0, 1)
+      }
     }
-    qiniuRequest(fileObj.file)
+    if (Array.isArray(fileRes)) {
+      fileRes.forEach(item => {
+        qiniuRequest(item.file)
+      })
+    } else {
+      qiniuRequest(fileRes.file)
+    }
   }
 
   // 点击回显图片拉起文件选择
   const handlePreView = () => {
-    uploader.value.chooseFile()
+    if (isSingleMode.value) {
+      uploader.value.chooseFile()
+    }
   }
 
   // 七牛上传
@@ -143,7 +172,7 @@
 <style lang="less" scoped>
   .van-uploader {
     &:deep(.van-uploader__preview) {
-      margin: 0;
+      margin-right: 10px;
       .van-uploader__preview-image {
       border-radius: 0.1rem;
     }

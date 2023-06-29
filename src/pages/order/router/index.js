@@ -17,6 +17,11 @@ const routes = [
     component: () => import('../views/order_detail/index.vue')
   },
   {
+    path: '/order/comment',
+    name: 'orderComment',
+    component: () => import('../views/comment_form/index.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')
