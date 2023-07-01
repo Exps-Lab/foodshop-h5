@@ -65,8 +65,7 @@
   })
 
   const showButton = computed(() => {
-    const { order_status = 'default' } = orderInfo.value
-    return getStatusBtns(order_status)
+    return getStatusBtns(orderInfo.value)
   })
   // 展示送达时间
   const showSendTimeText = computed(() => {

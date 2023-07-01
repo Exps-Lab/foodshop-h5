@@ -93,11 +93,17 @@ export function useOrderBtns () {
   }
 
   // 获取对应订单状态的按钮
-  const getStatusBtns = (orderStatus) => {
-    return statusShowBtn[orderStatus].reduce((btns, item) => {
+  const getStatusBtns = (orderInfo) => {
+    const { comment_id, order_status = 'default' } = orderInfo
+    const tempBtns = statusShowBtn[order_status].reduce((btns, item) => {
       btns.push(orderOperatorBtnEnums[item])
       return btns
     }, [])
+    // [note] 特殊情况处理：已评价订单不显示去评价按钮
+    if (order_status === 4 && comment_id) {
+      tempBtns.shift()
+    }
+    return tempBtns
   }
 
   return {

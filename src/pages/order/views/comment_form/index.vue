@@ -14,8 +14,8 @@
           :key="index"
           :label="item.name">
           <template #input>
-            <van-rate v-model="item.value" void-icon="star" />
-            <span class="rank-text font-bold-weight">{{rankTextMap[item.value]}}</span>
+            <van-rate v-model="item.ranks" void-icon="star" />
+            <span class="rank-text font-bold-weight">{{rankTextMap[item.ranks]}}</span>
           </template>
         </van-field>
         <van-field
@@ -47,12 +47,12 @@
               <span class="comment-item" @click="toggleComment(item, 'bad')">
                 <van-icon
                   class="com-icon reverse"
-                  :name="commentForm.recommendGoodIds[`${item.id}-${item.choseSpecIndex}`] === 0 ? 'good-job' : 'good-job-o'" />踩
+                  :name="commentForm.commentSkus[`${item.id}-${item.choseSpecIndex}`] === 0 ? 'good-job' : 'good-job-o'" />踩
               </span>
               <span class="comment-item good" @click="toggleComment(item, 'good')">
                 <van-icon
                   class="com-icon"
-                  :name="commentForm.recommendGoodIds[`${item.id}-${item.choseSpecIndex}`] === 1 ? 'good-job' : 'good-job-o'" />赞
+                  :name="commentForm.commentSkus[`${item.id}-${item.choseSpecIndex}`] === 1 ? 'good-job' : 'good-job-o'" />赞
               </span>
             </section>
           </section>
@@ -64,12 +64,19 @@
 </template>
 
 <script setup>
+  import { Dialog, Toast } from 'vant'
   import { ref, reactive, computed } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { getOrderDetail } from '@/api/order'
+  import { submitComment } from '@/api/comment'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import ImageUpload from '@components/Img_Upload/index.vue'
   const route = useRoute()
+  const router = useRouter()
+
+  const orderInfo = ref({})
+  const { handleErr } = useOrderInfo()
+  const orderNum = route.query.orderNum
 
   const choseGoodsData = computed(() => orderInfo.value.goods_list || [])
   const shopData = computed(() => orderInfo.value.shopDetail || {})
@@ -89,7 +96,7 @@
     commentMsg: '',
     commentImg: [],
     // 点赞的商品记录 goodId和specId组合记录'1-2'
-    recommendGoodIds: {}
+    commentSkus: {}
   })
   const imgUploadFinish = (url) => {
     commentForm.commentImg.push(url)
@@ -99,23 +106,53 @@
     const { id, choseSpecIndex } = goods
     const padId = `${id}-${choseSpecIndex}`
     const value = (type === 'good' ? 1 : 0)
-    const tempId = commentForm.recommendGoodIds[padId]
+    const tempId = commentForm.commentSkus[padId]
     if ((tempId === 1 && value === 1) || (tempId === 0 && value === 0)) {
-      delete commentForm.recommendGoodIds[padId]
+      delete commentForm.commentSkus[padId]
     } else {
-      commentForm.recommendGoodIds[padId] = value
+      commentForm.commentSkus[padId] = value
     }
   }
 
-  const onFormSubmit = () => {
-    console.log(commentForm)
+  const validateDate = () => {
+    if (commentForm.ranks.some(item => item.ranks === 0)) {
+      Toast('请给本次购买中的各项体验打分哦~')
+      return false
+    }
+    if (!commentForm.commentMsg) {
+      Toast('亲，可以从菜品口味、环境、服务等方面分享用餐感受哦~')
+      return false
+    }
+    return true
   }
 
-  const orderInfo = ref({})
-  const { handleErr } = useOrderInfo()
+  // 提交评论，成功后跳转订单详情页
+  const onFormSubmit = async () => {
+    if (!validateDate()) return false
+    try {
+      await submitComment({
+        orderNum,
+        shopId: orderInfo.value.shop_id,
+        ...commentForm
+      })
+      Dialog.alert({
+        message: '评论提交成功',
+        theme: 'round-button'
+      }).then(() => {
+        router.replace({
+          path: '/order/orderDetail',
+          query: {
+            orderNum
+          }
+        })
+      })
+    } catch (err) {
+      handleErr(err)
+    }
+  }
+
   // 获取订单详情
   const preGetOrderDetail = async () => {
-    const orderNum = route.query.orderNum
     try {
       const { data } = await getOrderDetail({ orderNum })
       orderInfo.value = data
@@ -182,6 +219,7 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
+          margin-bottom: 10px;
           .goods-info {
             display: flex;
             align-items: center;
