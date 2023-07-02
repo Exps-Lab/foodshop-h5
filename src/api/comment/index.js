@@ -7,3 +7,11 @@ export function submitComment (data) {
     data
   })
 }
+
+export function getCommentByShopId (params) {
+  return request({
+    url: '/h5/order/auth/comment/getByShopId',
+    method: 'get',
+    params
+  })
+}

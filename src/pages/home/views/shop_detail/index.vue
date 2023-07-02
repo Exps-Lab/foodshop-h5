@@ -20,6 +20,9 @@
           <van-tab title="商家" name="store">
             <StoreInfo :shopInfo="shopBaseInfo" />
           </van-tab>
+          <van-tab title="评论" name="comment">
+            <CommentInfo :shopId="shop_id" />
+          </van-tab>
         </van-tabs>
       </section>
     </div>
@@ -68,8 +71,9 @@ import { useRoute } from 'vue-router'
 import InfoDetailModal from './components/info_detail_modal.vue'
 import ShoppingCartModal from './components/shopping_bag_modal.vue'
 import DiscountToolTip from './components/discount_tooltip.vue'
-import StoreInfo from './components/store_info.vue'
-import ShopMenu from './components/menu_info.vue'
+import StoreInfo from './components/tab_store_info.vue'
+import ShopMenu from './components/tab_menu_info.vue'
+import CommentInfo from './components/tab_comment_info.vue'
 
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
