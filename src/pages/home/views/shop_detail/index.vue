@@ -17,11 +17,11 @@
           <van-tab title="点餐" name="order">
             <ShopMenu :shopId="shop_id" :choseGoods="choseGoods" />
           </van-tab>
+          <van-tab :title="commentTitle" name="comment">
+            <CommentInfo :shopId="shop_id" />
+          </van-tab>
           <van-tab title="商家" name="store">
             <StoreInfo :shopInfo="shopBaseInfo" />
-          </van-tab>
-          <van-tab title="评论" name="comment">
-            <CommentInfo :shopId="shop_id" />
           </van-tab>
         </van-tabs>
       </section>
@@ -84,6 +84,13 @@ import { calcTotalBagFee, orderTotalNeedPay } from '@utils/calcGoodsPrice'
 const route = useRoute()
 const { shop_id } = route.query
 
+// 评论动态标题
+const commentTitle = computed(() => {
+  return shopBaseInfo.comment_count
+    ? `评论(${shopBaseInfo.comment_count})`
+    : '评论'
+})
+
 /* 商铺详情部分 */
 const { lat, lng } = JSON.parse(localStorage.getItem('appPos') || '{}')
 const shopBaseInfo = reactive({})
@@ -122,7 +129,7 @@ const clearShoppingCart = () => {
 /* 控制菜单切换 */
 const activeMenuName = ref('menu')
 const menuTabClick = ({ title, name }) => {
-  console.log(name)
+  activeMenuName.value = name
 }
 
 /* 用户选择商品和计算金额部分 */
