@@ -92,9 +92,16 @@
       router.push('/ucenter/address_list')
     })
   }
+  // 账户信息
   const toAccountInfo = () => {
     preAuthJump(() => {
       router.push('/ucenter/account_info')
+    })
+  }
+  // 评价中心
+  const toCommentCenter = () => {
+    preAuthJump(() => {
+      router.push('/ucenter/comment_center')
     })
   }
 
@@ -139,7 +146,7 @@
         name: '我的评价',
         icon: 'star-o',
         needLogin: true,
-        clickEvent: () => {}
+        clickEvent: toCommentCenter
       }]
     },
     // 系统功能

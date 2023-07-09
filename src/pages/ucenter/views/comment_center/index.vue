@@ -1,105 +1,98 @@
 <template>
   <div class="main">
-    <section class="account-box">
-      <p class="box-title">账户餐币余额(币)</p>
-      <p class="money-text font-bold-weight">{{accountMoney}}</p>
+    <section class="com-box">
+      <img class="user-avatar" :src="userInfo.avatar" alt="shopImg" />
+      <section class="user-detail-box">
+        <p class="user-name">{{userInfo.username}}</p>
+        <p class="comment-tips">查看您所有的订单评价</p>
+      </section>
     </section>
-    <div class="submit-box">
-      <van-button round block type="primary" recharge-btn @click="rechargeMoney">充餐币</van-button>
-    </div>
-  </div>
 
-  <!-- 更改用户名dialog -->
-  <van-dialog v-model:show="showMoneyDialog" title="餐币充值"
-    :showConfirmButton="false" :closeOnClickOverlay="true" theme="round-button">
-    <van-form @submit="onModifySubmit" class="dialog-box">
-      <van-cell-group inset>
-        <van-field colon center type="digit" label-width="4em" maxlength="4"
-          v-model="modifyMoney" label="餐币数" placeholder="请填写要充值的餐币数"
-          :rules="[{ required: true, message: '请填写要充值的餐币数' }]"/>
-      </van-cell-group>
-      <div class="submit-box">
-        <van-button round block type="primary" native-type="submit">确 认</van-button>
-      </div>
-    </van-form>
-  </van-dialog>
+    <van-tabs v-model:active="tabActive" @click-tab="tabChange">
+      <van-tab title="待评价" :name="0">
+        <ComListPagination :filter="filter" :reqApiFun="reqFun">
+          <template v-slot="slotProps">
+            <CommentOrderCard :cardData="slotProps.listData" />
+          </template>
+        </ComListPagination>
+      </van-tab>
+      <van-tab title="已评价" :name="1">
+        <ComListPagination :filter="filter" :reqApiFun="reqFun">
+          <template v-slot="slotProps">
+            <CommentCard :cardData="slotProps.listData" />
+          </template>
+        </ComListPagination>
+      </van-tab>
+    </van-tabs>
+  </div>
 </template>
 
 <script setup>
-  import { Dialog, Toast } from 'vant'
-  import { ref } from 'vue'
-  import Loading from '@common/components/Loading'
-  import { getAccountMoney, updateAccountMoney } from '@api/user/account'
+  import { ref, reactive, computed } from 'vue'
+  import ComListPagination from '@common/components/Com_List_Pagination/index.vue'
+  import CommentCard from '@common/components/Comment_Card/index.vue'
+  import CommentOrderCard from './components/Comment_Order_Card.vue'
+  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import { getCommentCenterList } from '@api/user/commentCenter'
 
-  const VanDialog = Dialog.Component
-  const accountMoney = ref('...')
-  const showMoneyDialog = ref(false)
-  const rechargeMoney = () => {
-    showMoneyDialog.value = true
+  const { userData } = useUserInfo()
+  const userInfo = reactive(userData)
+
+  const reqFun = computed(() => {
+    return getCommentCenterList
+  })
+
+  const tabActive = ref(0)
+  const tabChange = ({ name }) => {
+    if (name !== filter.type) {
+      tabActive.value = name
+      filter.type = name
+    }
   }
 
-  // 获取账户余额
-  const preGetAccountMoney = async () => {
-    const res = await getAccountMoney()
-    const { money } = res.data
-    accountMoney.value = money
-  }
-
-  const modifyMoney = ref('')
-  // 账户餐币充值
-  const onModifySubmit = () => {
-    showMoneyDialog.value = false
-    Loading.show()
-    updateAccountMoney({
-      money: Number(modifyMoney.value)
-    }).then(res => {
-      const { money } = res.data
-      accountMoney.value = money
-      modifyMoney.value = ''
-      Toast.success('餐币充值成功')
-    }).catch(e => {
-      console.error(e)
-      Toast.fail(e)
-    }).finally(() => {
-      Loading.hide()
-    })
-  }
-
-  preGetAccountMoney()
+  const filter = reactive({
+    type: tabActive.value
+  })
 </script>
 
 <style lang="less" scoped>
-  .dialog-box {
-    padding: 30px 0 0 0;
-    &:deep(.van-field) {
-      background-color: rgba(238, 238, 238, 0.3);
-    }
-    .submit-box {
-      padding: 35px 20px 0;
-      background-color: #fff;
-    }
+  img {
+    object-fit: cover;
+    max-width: 100%;
+    display: block;
   }
   .main {
     min-height: 100vh;
     background: var(--van-gray-1);
     padding: 15px;
-    .account-box {
-      padding: 50px 0;
-      background-color: @fill-6;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      color: @text-2;
+    .com-box {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 5px @line-2;
-      .box-title {
-        font-size: 16px;
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
       }
-      .money-text {
-        margin-top: 15px;
-        font-size: 36px;
+      .user-detail-box {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        .user-name {
+          font-size: 16px;
+        }
+        .comment-tips {
+          margin-top: 6px;
+          color: @text-3;
+        }
+      }
+    }
+    :deep(.van-tabs__wrap) {
+      height: 55px;
+      .van-tabs__nav {
+        background-color: transparent;
       }
     }
   }

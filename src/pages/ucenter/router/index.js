@@ -29,6 +29,10 @@ const routes = [
     name: 'addressDetail',
     component: () => import('../views/address_detail/index.vue')
   }, {
+    path: '/ucenter/comment_center',
+    name: 'commentCenter',
+    component: () => import('../views/comment_center/index.vue')
+  }, {
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')

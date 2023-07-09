@@ -1,17 +1,9 @@
 import request from '@utils/request.js'
 
-export function getAccountMoney (params) {
+export function getCommentCenterList (params) {
   return request({
-    url: '/h5/user/auth/account/money/get',
+    url: '/h5/user/auth/commentCenter/list',
     method: 'get',
     params
-  })
-}
-
-export function updateAccountMoney (data) {
-  return request({
-    url: '/h5/user/auth/account/money/update',
-    method: 'post',
-    data
   })
 }
