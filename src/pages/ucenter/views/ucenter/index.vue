@@ -104,6 +104,12 @@
       router.push('/ucenter/comment_center')
     })
   }
+  // 我的收藏
+  const toCollectList = () => {
+    preAuthJump(() => {
+      router.push('/ucenter/collect_list')
+    })
+  }
 
   // [note] 菜单配置数据
   const menuMap = [
@@ -141,7 +147,7 @@
         name: '我的收藏',
         icon: 'like-o',
         needLogin: true,
-        clickEvent: () => {}
+        clickEvent: toCollectList
       }, {
         name: '我的评价',
         icon: 'star-o',

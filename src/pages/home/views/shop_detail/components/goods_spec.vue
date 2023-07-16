@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="add-btn font-bold-weight" @click="addShoppingCart">加入购物车</button>
+      <button class="add-btn font-bold-weight" @click="addShoppingCart($event)">加入购物车</button>
     </div>
   </van-popup>
 </template>
@@ -75,9 +75,9 @@ const choseSpecAttr = computed(() => {
 })
 
 // 触发父组件添加事件
-const emit = defineEmits(['addGoods'])
-const addShoppingCart = () => {
-  emit('addGoods', {
+const emit = defineEmits(['preAddGoods'])
+const addShoppingCart = (e) => {
+  emit('preAddGoods', e, {
     ...props.activeGoods,
     choseSpecIndex: choseSpecIndex.value
   })

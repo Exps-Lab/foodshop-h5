@@ -40,7 +40,7 @@
             <div class=" count-box">
               <span class="count-item border font-bold-weight" @click="deleteGoods(goods)">-</span>
               <span class="count-num">{{goods.count}}</span>
-              <p class="count-item bg font-bold-weight" @click="addGoods(goods)">+</p>
+              <p class="count-item bg font-bold-weight" @click="preAddGoods($event, goods)">+</p>
             </div>
           </div>
         </div>
@@ -51,9 +51,11 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useShopDetail } from '../hooks/shopDetail'
 import { getShowPrice } from '@utils/calcGoodsPrice'
 import DiscountToolTip from '../components/discount_tooltip.vue'
 
+const { handleBuyAnimate } = useShopDetail()
 const show = ref(false)
 const props = defineProps({
   shopBaseInfo: {
@@ -87,6 +89,12 @@ const clearChoseGoods = () => {
   emit('clearShoppingCart')
 }
 
+// 添加商品前 处理
+const preAddGoods = (e, goods) => {
+  handleBuyAnimate(e, () => {
+    addGoods(goods)
+  })
+}
 // 添加商品
 const addGoods = (goods) => {
   goods.count++

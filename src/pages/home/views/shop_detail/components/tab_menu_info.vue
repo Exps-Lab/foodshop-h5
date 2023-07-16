@@ -58,7 +58,7 @@
                   <span class="count-item border font-bold-weight" @click="preDeleteGoods(food)">-</span>
                   <span class="count-num">{{getGoodsCount(food)}}</span>
                 </div>
-                <p class="count-item bg font-bold-weight" @click="preAddGoods(food)">
+                <p class="count-item bg font-bold-weight" @click="handleDiffTypeGoods($event, food)">
                   {{food.specfoods.length === 1 ? '+' : '选规格'}}
                 </p>
               </div>
@@ -68,148 +68,157 @@
       </section>
     </div>
 
-    <GoodsSpec ref="goodsSpecModal" :activeGoods="activeGoods" @addGoods="addGoods"/>
+    <GoodsSpec ref="goodsSpecModal" :activeGoods="activeGoods" @preAddGoods="preAddGoods"/>
   </div>
   <van-empty description="暂无菜单" v-else />
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
-import { getShopGoods } from '@api/shop'
-import { getShowPrice } from '@utils/calcGoodsPrice'
-import GoodsSpec from './goods_spec.vue'
-import { Toast } from 'vant'
+  import { Toast } from 'vant'
+  import { ref, reactive, computed } from 'vue'
+  import { getShopGoods } from '@api/shop'
+  import { getShowPrice } from '@utils/calcGoodsPrice'
+  import GoodsSpec from './goods_spec.vue'
+  import { useShopDetail } from '../hooks/shopDetail'
 
-const props = defineProps({
-  // 当前商铺id
-  shopId: {
-    type: String,
-    default: ''
-  },
-  // 当前购物袋选择商品
-  choseGoods: {
-    type: Object,
-    default: () => {}
-  }
-})
-
-// 菜单数据
-const menuData = reactive([])
-const getMenuData = async () => {
-  const { data } = await getShopGoods({ shop_id: props.shopId })
-  Object.assign(menuData, data)
-}
-getMenuData()
-// 选中菜单种类
-const activeIndex = ref(0)
-const activeCategoryData = computed(() => {
-  return menuData[activeIndex.value] || {}
-})
-// 左侧菜单change
-const activeChange = () => {
-  window.scrollTo(0, 0)
-}
-// 获取当前 菜单分类 的点餐count
-const getMenuCount = (id) => {
-  const count = props.choseGoods[id]?.reduce((count, goods) => {
-    count += goods.count
-    return count
-  }, 0)
-  return count > 0 ? count : undefined
-}
-
-// 获取当前 商品 的点餐count
-const getGoodsCount = (goods) => {
-  const { food_category_id: c_id, id } = goods
-  return props.choseGoods[c_id].reduce((count, goodsItem) => {
-    // [note] 计算当前商品的 选择数
-    if (goodsItem.id === id) {
-      count += goodsItem.count
+  const { handleBuyAnimate } = useShopDetail()
+  const props = defineProps({
+    // 当前商铺id
+    shopId: {
+      type: String,
+      default: ''
+    },
+    // 当前购物袋选择商品
+    choseGoods: {
+      type: Object,
+      default: () => {}
     }
-    return count
-  }, 0)
-}
+  })
 
-// 当前选中商品
-const activeGoods = ref({})
-const goodsSpecModal = ref()
-// 展示选择规格弹窗
-const showGoodsModal = (nowGoods) => {
-  activeGoods.value = nowGoods
-  goodsSpecModal.value.showModal()
-}
-// 添加商品前 处理
-const preAddGoods = (food) => {
-  const { specfoods } = food
-  if (specfoods.length > 1) {
-    showGoodsModal(createGoodsData(food))
-  } else {
-    addGoods(createGoodsData(food))
+  // 菜单数据
+  const menuData = reactive([])
+  const getMenuData = async () => {
+    const { data } = await getShopGoods({ shop_id: props.shopId })
+    Object.assign(menuData, data)
   }
-}
-// 删除商品前 处理
-const preDeleteGoods = (food) => {
-  const { specfoods } = food
-  if (specfoods.length > 1) {
-    Toast('多规格商品只能去购物车删除哦')
-  } else {
-    deleteGoods(food)
+  getMenuData()
+  // 选中菜单种类
+  const activeIndex = ref(0)
+  const activeCategoryData = computed(() => {
+    return menuData[activeIndex.value] || {}
+  })
+  // 左侧菜单change
+  const activeChange = () => {
+    window.scrollTo(0, 0)
   }
-}
-// 初始化新增商品数据
-const createGoodsData = (food) => {
-  return {
-    ...food,
-    count: 1,
-    // 选择的商品规格，默认的是 “默认规格”
-    choseSpecIndex: food.choseSpecIndex || 0
+  // 获取当前 菜单分类 的点餐count
+  const getMenuCount = (id) => {
+    const count = props.choseGoods[id]?.reduce((count, goods) => {
+      count += goods.count
+      return count
+    }, 0)
+    return count > 0 ? count : undefined
   }
-}
-// 处理商品新增
-const addGoods = (food) => {
-  const { food_category_id: c_id, id, choseSpecIndex } = food
-  // 初始化
-  if (props.choseGoods[c_id] === undefined) {
-    props.choseGoods[c_id] = []
+
+  // 获取当前 商品 的点餐count
+  const getGoodsCount = (goods) => {
+    const { food_category_id: c_id, id } = goods
+    return props.choseGoods[c_id].reduce((count, goodsItem) => {
+      // [note] 计算当前商品的 选择数
+      if (goodsItem.id === id) {
+        count += goodsItem.count
+      }
+      return count
+    }, 0)
   }
-  // 更新数量
-  const hasNowCategoryGoods = props.choseGoods[c_id].filter(item => item.id === id)
-  if (hasNowCategoryGoods.length) {
-    // 是否有相同的规格 spec
-    const sameSpec = hasNowCategoryGoods.find(item => {
-      return item.id === id && item.choseSpecIndex === choseSpecIndex
+
+  // 当前选中商品
+  const activeGoods = ref({})
+  const goodsSpecModal = ref()
+  // 展示选择规格弹窗
+  const showGoodsModal = (nowGoods) => {
+    activeGoods.value = nowGoods
+    goodsSpecModal.value.showModal()
+  }
+
+  // 处理不同类型添加
+  const handleDiffTypeGoods = (e, food) => {
+    const { specfoods } = food
+    if (specfoods.length > 1) {
+      showGoodsModal(createGoodsData(food))
+    } else {
+      preAddGoods(e, food)
+    }
+  }
+  // 删除商品前 处理
+  const preDeleteGoods = (food) => {
+    const { specfoods } = food
+    if (specfoods.length > 1) {
+      Toast('多规格商品只能去购物车删除哦')
+    } else {
+      deleteGoods(food)
+    }
+  }
+  // 初始化新增商品数据
+  const createGoodsData = (food) => {
+    return {
+      ...food,
+      count: 1,
+      // 选择的商品规格，默认的是 “默认规格”
+      choseSpecIndex: food.choseSpecIndex || 0
+    }
+  }
+  // 添加商品前 处理
+  const preAddGoods = (e, food) => {
+    handleBuyAnimate(e, () => {
+      addGoods(food)
     })
-    if (sameSpec !== undefined) {
-      sameSpec.count++
+  }
+  // 处理商品新增
+  const addGoods = (food) => {
+    const { food_category_id: c_id, id, choseSpecIndex } = food
+    // 初始化
+    if (props.choseGoods[c_id] === undefined) {
+      props.choseGoods[c_id] = []
+    }
+    // 更新数量
+    const hasNowCategoryGoods = props.choseGoods[c_id].filter(item => item.id === id)
+    if (hasNowCategoryGoods.length) {
+      // 是否有相同的规格 spec
+      const sameSpec = hasNowCategoryGoods.find(item => {
+        return item.id === id && item.choseSpecIndex === choseSpecIndex
+      })
+      if (sameSpec !== undefined) {
+        sameSpec.count++
+      } else {
+        const tempGoods = createGoodsData(food)
+        props.choseGoods[c_id].push(tempGoods)
+      }
     } else {
       const tempGoods = createGoodsData(food)
       props.choseGoods[c_id].push(tempGoods)
     }
-  } else {
-    const tempGoods = createGoodsData(food)
-    props.choseGoods[c_id].push(tempGoods)
   }
-}
-// 处理商品删除
-const deleteGoods = (food) => {
-  const { food_category_id: c_id, id } = food
-  // 更新数量
-  for (let choseIndex = 0; choseIndex < props.choseGoods[c_id].length; choseIndex++) {
-    const choseItem = props.choseGoods[c_id][choseIndex]
-    if (choseItem.id === id) {
-      if (choseItem.count > 1) {
-        choseItem.count--
-      } else {
-        props.choseGoods[c_id].splice(choseIndex, 1)
-        // [note] 删除完当前分类的最后一个时，也要删除当前分类
-        if (!props.choseGoods[c_id].length) {
-          delete props.choseGoods[c_id]
+  // 处理商品删除
+  const deleteGoods = (food) => {
+    const { food_category_id: c_id, id } = food
+    // 更新数量
+    for (let choseIndex = 0; choseIndex < props.choseGoods[c_id].length; choseIndex++) {
+      const choseItem = props.choseGoods[c_id][choseIndex]
+      if (choseItem.id === id) {
+        if (choseItem.count > 1) {
+          choseItem.count--
+        } else {
+          props.choseGoods[c_id].splice(choseIndex, 1)
+          // [note] 删除完当前分类的最后一个时，也要删除当前分类
+          if (!props.choseGoods[c_id].length) {
+            delete props.choseGoods[c_id]
+          }
         }
+        break
       }
-      break
     }
   }
-}
 </script>
 
 <style lang="less" scoped>

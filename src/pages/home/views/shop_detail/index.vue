@@ -1,6 +1,14 @@
 <template>
   <div class="detail-content">
     <div class="avatar-bg" :style="{ background: shopBgUrl }"></div>
+    <section class="shop-operator-box">
+      <p class="op-right phone" @click="phoneShop">
+        <van-icon class="icon-item" name="phone" />
+      </p>
+      <p class="op-right collect" @click="collectShop">
+        <van-icon :class="['icon-item', isCollectShop && 'red']" :name="isCollectShop ? 'like' : 'like-o'" />
+      </p>
+    </section>
     <div class="shop-container">
       <section class="shop-main-info" @click="showDetailInfo">
         <p class="shop-name text-ellipsis">{{shopBaseInfo.name}}</p>
@@ -77,6 +85,7 @@ import CommentInfo from './components/tab_comment_info.vue'
 
 // searchShopGoods 搜索具体商品接口
 import { getShopDetail, addShoppingBag } from '@api/shop'
+import { addCollect, removeCollect } from '@api/collect'
 import { getOrderDetail } from '@/api/order'
 import { priceHandle, diffModuleJump, clearObj } from '@utils'
 import { calcTotalBagFee, orderTotalNeedPay } from '@utils/calcGoodsPrice'
@@ -97,12 +106,30 @@ const shopBaseInfo = reactive({})
 const getShopInfo = async () => {
   const { data } = await getShopDetail({ shop_id, current_pos: `${lat},${lng}` })
   Object.assign(shopBaseInfo, data)
+  isCollectShop.value = shopBaseInfo.shopCollected
 }
 // 商铺顶部背景
 const shopBgUrl = computed(() => {
   const avatar = shopBaseInfo.shop_image?.avatar || ''
   return `linear-gradient(rgba(34, 36, 38, 0.5), rgba(34, 36, 38, 0.5)), url(${avatar}) center top / cover`
 })
+
+const isCollectShop = ref(false)
+// 拨打商家电话
+const phoneShop = () => {
+  window.location.href = `tel:${shopBaseInfo.phone}`
+}
+// 处理收藏
+const collectShop = async () => {
+  try {
+    const API = isCollectShop.value ? removeCollect : addCollect
+    await API({ shop_id })
+    await Toast(`${isCollectShop.value ? '取消收藏' : '收藏'}成功`)
+    isCollectShop.value = !isCollectShop.value
+  } catch (err) {
+    Toast.fail(err.data.msg)
+  }
+}
 
 /* 控制店铺详情modal */
 const infoModal = ref()
@@ -228,10 +255,33 @@ init()
 
 <style lang="less" scoped>
   .detail-content {
+    position: relative;
     min-height: 100vh;
     .avatar-bg {
       height: 112px;
       position: relative;
+    }
+    .shop-operator-box {
+      position: absolute;
+      z-index: 999;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      .op-right {
+        margin-right: 15px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+      .icon-item {
+        font-size: 22px;
+        font-weight: bold;
+        color: #fff;
+        &.red {
+          color: @error-6;
+        }
+      }
     }
     .shop-container {
       position: relative;

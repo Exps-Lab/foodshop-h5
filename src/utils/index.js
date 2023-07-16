@@ -524,6 +524,41 @@ export function formatTime (data, fmt) {
   return fmt
 }
 
+// 处理从a到b抛物线动画
+export function createFallAnimate (startPoint, endPoint, animateEndFn) {
+  const bar = document.createElement('div')
+  bar.className = 'buy-animate'
+  bar.style.position = 'fixed'
+  bar.style.zIndex = '3000'
+  bar.style.left = startPoint.left
+  bar.style.top = startPoint.top
+  bar.style.width = '10px'
+  bar.style.height = '10px'
+  bar.style.borderRadius = '50%'
+  bar.style.backgroundColor = '#02b6fd'
+  bar.style.transition = 'left .4s linear, top .4s cubic-bezier(0.5, -0.5, 1, 1)'
+  bar.transitionFlag = true
+
+  document.body.appendChild(bar)
+  // 添加动画属性
+  const timer = setTimeout(() => {
+    bar.style.left = endPoint.left
+    bar.style.top = endPoint.top
+  }, 0)
+
+  bar.ontransitionend = function (e) {
+    // [note] 优化多个属性变换时间一致时会触发end事件多次的现象
+    if (bar.transitionFlag) {
+      bar.transitionFlag = false
+      return false
+    }
+    clearTimeout(timer)
+    const barEle = document.querySelector('.buy-animate')
+    barEle && document.body.removeChild(barEle)
+    animateEndFn && animateEndFn.constructor === Function && animateEndFn()
+  }
+}
+
 export default {
   getQuery,
   delQuery,
@@ -554,5 +589,6 @@ export default {
   diffModuleJump,
   padZero,
   clearObj,
-  formatTime
+  formatTime,
+  createFallAnimate
 }
