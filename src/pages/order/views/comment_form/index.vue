@@ -78,7 +78,19 @@
   const { handleErr } = useOrderInfo()
   const orderNum = route.query.orderNum
 
-  const choseGoodsData = computed(() => orderInfo.value.goods_list || [])
+  const choseGoodsData = computed(() => {
+    const map = {}
+    // [note] 过滤一样的商品
+    return orderInfo.value.goods_list?.reduce((filterArr, goods) => {
+      const { id, choseSpecIndex } = goods
+      const padId = `${id}-${choseSpecIndex}`
+      if (map[padId] === undefined) {
+        filterArr.push(goods)
+        map[padId] = goods
+      }
+      return filterArr
+    }, [])
+  })
   const shopData = computed(() => orderInfo.value.shopDetail || {})
 
   const rankTextMap = ['', '非常差', '较差', '一般', '比较满意', '非常满意']

@@ -4,7 +4,7 @@
   <section class="comment-box">
     <section class="comment-list" v-for="(comment, index) in cardData" :key="index">
       <section class="header">
-        <img class="user-avatar" :src="comment.user_avatar" alt="userAvatar" />
+        <img class="user-avatar" :src="comment.user_avatar || userInfo.avatar" alt="userAvatar" />
         <section class="comment-mes">
           <p class="user-name font-bold-weight">{{comment.user_name}}</p>
           <p class="comment-time">{{comment.comment_time}}</p>
@@ -52,7 +52,9 @@
 </template>
 
 <script setup>
+  import { useUserInfo } from '@common/hooks/userInfo'
   import ImgPreview from '@/common/components/Img_Preview/index.vue'
+  import { reactive } from 'vue'
 
   defineProps({
     cardData: {
@@ -60,6 +62,9 @@
       default: () => {}
     }
   })
+
+  const { userData } = useUserInfo()
+  const userInfo = reactive(userData)
 
   const getCommentSku = (comment) => {
     const resObj = {
@@ -74,7 +79,9 @@
         Object.keys(comment_skus[0]).forEach(obj => {
           if (obj === key) {
             const showName = `${name}-${specfoods[choseSpecIndex].name}`
-            comment_skus[0][key] === 1 ? resObj.good.push(showName) : resObj.bad.push(showName)
+            comment_skus[0][key] === 1
+              ? !resObj.good.includes(showName) && resObj.good.push(showName)
+              : !resObj.bad.includes(showName) && resObj.bad.push(showName)
           }
         })
       })

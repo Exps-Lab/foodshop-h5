@@ -32,7 +32,7 @@
   import { useRouter } from 'vue-router'
   import { computed, ref, reactive } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
-  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import { useUserInfo } from '@common/hooks/userInfo'
 
   const router = useRouter()
   const { userInfoLoading, userData } = useUserInfo()

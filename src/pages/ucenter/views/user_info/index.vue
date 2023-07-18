@@ -45,7 +45,7 @@
   import Loading from '@common/components/Loading'
   import { updateUserAvatar, updateUserName } from '@api/user'
   import ImageUpload from '@components/Img_Upload/index.vue'
-  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import { useUserInfo } from '@common/hooks/userInfo'
 
   const { userData, setUserStorage } = useUserInfo()
   const userInfo = reactive(userData)

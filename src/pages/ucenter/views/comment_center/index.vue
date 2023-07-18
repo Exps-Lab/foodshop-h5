@@ -9,20 +9,14 @@
     </section>
 
     <van-tabs v-model:active="tabActive" @click-tab="tabChange">
-      <van-tab title="待评价" :name="0">
-        <ComListPagination :filter="filter" :reqApiFun="reqFun">
-          <template v-slot="slotProps">
-            <CommentOrderCard :cardData="slotProps.listData" />
-          </template>
-        </ComListPagination>
-      </van-tab>
-      <van-tab title="已评价" :name="1">
-        <ComListPagination :filter="filter" :reqApiFun="reqFun">
-          <template v-slot="slotProps">
-            <CommentCard :cardData="slotProps.listData" />
-          </template>
-        </ComListPagination>
-      </van-tab>
+      <van-tab title="待评价" :name="0"></van-tab>
+      <van-tab title="已评价" :name="1"></van-tab>
+      <ComListPagination :filter="filter" :reqApiFun="reqFun">
+        <template v-slot="slotProps">
+          <CommentOrderCard v-if="tabActive === 0" :cardData="slotProps.listData" />
+          <CommentCard v-if="tabActive === 1" :cardData="slotProps.listData" />
+        </template>
+      </ComListPagination>
     </van-tabs>
   </div>
 </template>
@@ -32,7 +26,7 @@
   import ComListPagination from '@common/components/Com_List_Pagination/index.vue'
   import CommentCard from '@common/components/Comment_Card/index.vue'
   import CommentOrderCard from './components/Comment_Order_Card.vue'
-  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import { useUserInfo } from '@common/hooks/userInfo'
   import { getCommentCenterList } from '@api/user/commentCenter'
 
   const { userData } = useUserInfo()
