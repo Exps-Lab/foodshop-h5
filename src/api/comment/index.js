@@ -10,7 +10,7 @@ export function submitComment (data) {
 
 export function getCommentByShopId (params) {
   return request({
-    url: '/h5/order/auth/comment/getByShopId',
+    url: '/h5/order/noauth/comment/getByShopId',
     method: 'get',
     params
   })

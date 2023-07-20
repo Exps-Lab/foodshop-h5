@@ -8,9 +8,10 @@ export function useShopDetail () {
    * @param afterFn 动画之后逻辑
    */
   const handleBuyAnimate = (e, afterFn) => {
+    const clickEle = e.target.getBoundingClientRect()
     const startPoint = {
-      left: e.clientX - e.width / 2 + 'px',
-      top: e.clientY - e.height / 2 + 'px'
+      left: e.clientX - clickEle.width / 2 + 'px',
+      top: e.clientY - clickEle.height / 2 + 'px'
     }
     const endPoint = {
       left: '',
