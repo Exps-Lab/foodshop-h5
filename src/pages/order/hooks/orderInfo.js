@@ -60,7 +60,8 @@ export function useOrderInfo () {
     const { code, msg, data } = err.data
     Dialog.alert({
       message: msg,
-      theme: 'round-button'
+      theme: 'round-button',
+      confirmButtonColor: '#02B6FD'
     }).then(() => {
       // 20003 购物袋15分钟redis缓存已失效
       // 20004 余额不足，支付失败

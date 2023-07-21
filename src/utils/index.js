@@ -544,6 +544,7 @@ export function createFallAnimate (startPoint, endPoint, animateEndFn) {
   const timer = setTimeout(() => {
     bar.style.left = endPoint.left
     bar.style.top = endPoint.top
+    clearTimeout(timer)
   }, 0)
 
   bar.ontransitionend = function (e) {
@@ -552,7 +553,6 @@ export function createFallAnimate (startPoint, endPoint, animateEndFn) {
       bar.transitionFlag = false
       return false
     }
-    clearTimeout(timer)
     const barEle = document.querySelector('.buy-animate')
     barEle && document.body.removeChild(barEle)
     animateEndFn && animateEndFn.constructor === Function && animateEndFn()

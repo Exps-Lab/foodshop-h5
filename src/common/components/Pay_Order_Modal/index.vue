@@ -66,7 +66,8 @@ const handlePayOrder = async () => {
     Dialog.alert({
       title: '支付成功',
       message: msg + '\n' + showSendTimeText.value,
-      theme: 'round-button'
+      theme: 'round-button',
+      confirmButtonColor: '#02B6FD'
     }).then(() => {
       hideModal()
       jumpOrderDetail(orderNum.value)

@@ -80,8 +80,8 @@
           if (obj === key) {
             const showName = `${name}-${specfoods[choseSpecIndex].name}`
             comment_skus[0][key] === 1
-              ? !resObj.good.includes(showName) && resObj.good.push(showName)
-              : !resObj.bad.includes(showName) && resObj.bad.push(showName)
+              ? resObj.good.push(showName)
+              : resObj.bad.push(showName)
           }
         })
       })

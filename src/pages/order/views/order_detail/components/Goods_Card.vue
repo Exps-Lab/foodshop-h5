@@ -85,6 +85,7 @@
 
 <script setup>
   import { computed } from 'vue'
+  import { formatTime } from '@utils'
   import { getShowPrice } from '@utils/calcGoodsPrice'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
 
@@ -101,7 +102,12 @@
   const addressDetail = computed(() => props.orderInfo.addressDetail || {})
   // 展示送达时间
   const showSendTimeText = computed(() => {
-    const { pay_time, send_cost_time } = props.orderInfo
+    const nowTime = formatTime(new Date(), 'yyyy-MM-dd hh:mm:ss')
+    let { pay_time, send_cost_time, order_status } = props.orderInfo
+    // [note] 未支付订单没有支付时间，用当前时间代替
+    if (order_status === 0) {
+      pay_time = nowTime
+    }
     return calcSendTime(send_cost_time, pay_time, true)
   })
   const orderShowInfo = computed(() => {
@@ -124,8 +130,8 @@
       title: '支付方式',
       value: props.orderInfo.pay_origin
     }, {
-      title: '下单时间',
-      value: props.orderInfo.pay_time
+      title: '支付时间',
+      value: props.orderInfo.pay_time || '支付后显示'
     }]
   })
 </script>

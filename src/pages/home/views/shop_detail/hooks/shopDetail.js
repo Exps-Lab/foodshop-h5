@@ -19,7 +19,7 @@ export function useShopDetail () {
     }
     const target = document.querySelector('.icon-box')
     endPoint.left = target.offsetLeft - target.getBoundingClientRect().width / 2 + 'px'
-    endPoint.top = document.documentElement.clientHeight - 52 + 'px'
+    endPoint.top = document.documentElement.clientHeight - 15 + 'px'
     createFallAnimate(startPoint, endPoint, afterFn)
   }
 

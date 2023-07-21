@@ -21,18 +21,26 @@ export function useOrderBtns () {
   }
   // 取消订单
   const handleCancelOrder = async (orderInfo) => {
-    const { order_num } = orderInfo
-    try {
-      const { msg } = await cancelOrder({ orderNum: order_num })
-      await Dialog.alert({
-        message: msg,
-        theme: 'round-button'
-      }).then(() => {
-        location.reload()
+    Dialog.confirm({
+      title: '取消确认',
+      message: '您是否确认取消本次订单?'
+    })
+      .then(async () => {
+        const { order_num } = orderInfo
+        try {
+          const { msg } = await cancelOrder({ orderNum: order_num })
+          await Dialog.alert({
+            message: msg,
+            theme: 'round-button',
+            confirmButtonColor: '#02B6FD'
+          }).then(() => {
+            location.reload()
+          })
+        } catch (err) {
+          handleErr(err)
+        }
       })
-    } catch (err) {
-      handleErr(err)
-    }
+      .catch(() => {})
   }
   // 联系商家
   const handleTelShop = (orderInfo) => {

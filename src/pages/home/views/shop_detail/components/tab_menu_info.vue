@@ -144,10 +144,11 @@
   // 处理不同类型添加
   const handleDiffTypeGoods = (e, food) => {
     const { specfoods } = food
+    const wrapFood = createGoodsData(food)
     if (specfoods.length > 1) {
-      showGoodsModal(createGoodsData(food))
+      showGoodsModal(wrapFood)
     } else {
-      preAddGoods(e, food)
+      preAddGoods(e, wrapFood)
     }
   }
   // 删除商品前 处理
@@ -188,15 +189,11 @@
       const sameSpec = hasNowCategoryGoods.find(item => {
         return item.id === id && item.choseSpecIndex === choseSpecIndex
       })
-      if (sameSpec !== undefined) {
-        sameSpec.count++
-      } else {
-        const tempGoods = createGoodsData(food)
-        props.choseGoods[c_id].push(tempGoods)
-      }
+      sameSpec !== undefined
+        ? sameSpec.count++
+        : props.choseGoods[c_id].push(food)
     } else {
-      const tempGoods = createGoodsData(food)
-      props.choseGoods[c_id].push(tempGoods)
+      props.choseGoods[c_id].push(food)
     }
   }
   // 处理商品删除
