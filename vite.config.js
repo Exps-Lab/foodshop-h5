@@ -5,6 +5,7 @@ import { cssConf, bundleConf } from './viteConf'
 import Components from "unplugin-vue-components/vite";
 import { VantResolver } from "unplugin-vue-components/resolvers";
 import eslint from 'vite-plugin-eslint'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 export default (params => {
   // 配置文件中加载环境变量
@@ -22,6 +23,7 @@ export default (params => {
         '@common': path.resolve(__dirname, 'src/common'),
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@pages': path.resolve(__dirname, 'src/pages'),
+        '@viteConf': path.resolve(__dirname, 'viteConf'),
         '@components': path.resolve(__dirname, 'src/common/components'),
       }
     },
@@ -37,6 +39,11 @@ export default (params => {
         cache: false,
         // fix: true,
         include: ['src/**/*.js', 'src/**/*.vue']
+      }),
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "foodshop-ts",
+        project: "javascript-vue",
       }),
     ],
     server: {

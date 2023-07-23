@@ -28,3 +28,6 @@ dist-ssr
 
 # 项目自动生成
 index.html
+
+# Sentry Auth Token
+.env.sentry-build-plugin
