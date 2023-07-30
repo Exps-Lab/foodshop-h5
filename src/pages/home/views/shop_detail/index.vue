@@ -127,7 +127,8 @@ const collectShop = async () => {
     await Toast(`${isCollectShop.value ? '取消收藏' : '收藏'}成功`)
     isCollectShop.value = !isCollectShop.value
   } catch (err) {
-    Toast.fail(err.data.msg)
+    console.log(err)
+    // Toast.fail(err.data.msg)
   }
 }
 

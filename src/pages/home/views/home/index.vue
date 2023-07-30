@@ -1,6 +1,5 @@
 <template>
   <div class="main-content">
-    <button @click="throwError">Throw error</button>
     <MainHeader />
     <KingKongSuggest />
     <ComList :filter="ComListFilter" />
@@ -18,9 +17,6 @@ import ComList from '@common/components/Com_List/index.vue'
 
 const ComListFilter = {
   distance: 1
-}
-const throwError = () => {
-  throw new Error('sentry catch test')
 }
 </script>
 
