@@ -39,7 +39,7 @@
     </section>
     <section class="order-button-group">
       <van-button
-        class="common-btn order-btn"
+        class="order-btn"
         v-for="(btn, index) in showButton(orderItem)"
         :key="index"
         :type="btn.type"
