@@ -2,6 +2,11 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 
 const routes = [
   {
+    path: '/order/orderList',
+    name: 'orderList',
+    component: () => import('../views/order_list/index.vue')
+  },
+  {
     path: '/order/orderConfirm',
     name: 'orderConfirm',
     component: () => import('../views/order_confirm/index.vue')

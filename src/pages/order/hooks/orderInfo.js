@@ -6,6 +6,13 @@ import { Dialog } from 'vant'
 
 // 按照惯例，组合式函数名以“use”开头
 export function useOrderInfo () {
+  const orderStatusTextMap = {
+    0: '待支付',
+    1: '已支付',
+    2: '已取消',
+    3: '配送中',
+    4: '已送达'
+  }
   const router = useRouter()
   const remainTime = ref(0)
   const minusTime = reactive({
@@ -76,8 +83,8 @@ export function useOrderInfo () {
   }
 
   // 统一跳转订单详情
-  const jumpOrderDetail = (orderNum) => {
-    router.replace({
+  const jumpOrderDetail = (orderNum, type = 'replace') => {
+    router[type]({
       path: '/order/orderDetail',
       query: {
         orderNum
@@ -90,6 +97,7 @@ export function useOrderInfo () {
     minusTime,
     calcSendTime,
     countRemainTime,
-    jumpOrderDetail
+    jumpOrderDetail,
+    orderStatusTextMap
   }
 }

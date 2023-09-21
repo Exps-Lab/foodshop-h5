@@ -32,6 +32,14 @@ export function getOrderDetail (params) {
   })
 }
 
+export function getOrderList (params) {
+  return request({
+    url: '/h5/order/auth/order/list',
+    method: 'get',
+    params
+  })
+}
+
 export function cancelOrder (data) {
   return request({
     url: '/h5/order/auth/order/cancel',

@@ -44,7 +44,7 @@ export function useOrderBtns () {
   }
   // 联系商家
   const handleTelShop = (orderInfo) => {
-    const { phone } = orderInfo.shopDetail
+    const { phone } = orderInfo.shopDetail || orderInfo.shop
     window.location.href = `tel:${phone}`
   }
   // 再来一单
@@ -66,26 +66,31 @@ export function useOrderBtns () {
   // 所有按钮配置list
   const orderOperatorBtnEnums = {
     pay: {
+      type: 'primary',
       icon: 'after-sale',
       text: '去支付',
       handler: handlePayOrder
     },
     cancel: {
+      type: 'default',
       icon: 'stop-circle-o',
       text: '取消订单',
       handler: handleCancelOrder
     },
     oneMore: {
+      type: 'primary',
       icon: 'todo-list-o',
       text: '再来一单',
       handler: handleOneMore
     },
     comment: {
+      type: 'warning',
       icon: 'notes-o',
       text: '去评价',
       handler: handleComment
     },
     telShop: {
+      type: 'default',
       icon: 'phone-o',
       text: '电话商家',
       handler: handleTelShop
