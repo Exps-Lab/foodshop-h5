@@ -24,7 +24,12 @@
       :immediate-check="false"
       @load="onLoad"
     >
-      <ShopCard v-for="item in data.shopShowList" :key="item.id" :shopData="item" />
+      <GoodsCard
+        v-for="item in data.shopShowList"
+        :key="item.id"
+        :goods-data="item"
+        :costTime="item.costTime"
+      />
     </van-list>
   </div>
 </template>
@@ -32,7 +37,7 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import SearchHistory from './components/search_history.vue'
-import ShopCard from './components/shop_card.vue'
+import GoodsCard from '@common/components/Goods_Card/index.vue'
 import { posStore } from '@pages/home/store/pos'
 import { getGlobalSearch, getPosCostTime } from '@/api/home'
 import { Storage, debounce } from '@/utils/index.js'
