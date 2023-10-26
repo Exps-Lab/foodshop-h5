@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import { Toast } from 'vant'
 import { diffModuleJump } from '@utils/index'
 import { logoutSubmit } from '@api/login'
-import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+import { useUserInfo } from '@common/hooks/userInfo'
 
 class User {
   constructor () {

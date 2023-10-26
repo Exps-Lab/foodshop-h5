@@ -68,8 +68,8 @@
 import { ref, reactive, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { searchWithRange, searchWithoutKeyword } from '@api/pos'
-import { diffModuleJump } from '@utils'
 import { posStore } from '@pages/home/store/pos'
+import { diffModuleJump } from '@utils'
 import { HOMECHOSEPOS, ADDRESSCHOSEPOS } from '@utils/sessionStorage_keys'
 
 const store = posStore()
@@ -83,7 +83,7 @@ const pageMode = ref('pos')
 const cityNow = route.query.city_name
 // 来源页面 (home首页，address地址详情页)
 const fromPage = route.query.from
-// 地址详情id (从address地址详情页带过来)
+// // 地址详情id (从address地址详情页带过来)
 const addressId = route.query.addressId
 
 // 定位
@@ -189,13 +189,14 @@ const setChoseAddress = (choseAddress) => {
     }
   }
   const { storageName, goRouter, module } = pageConfMap[fromPage]
+  const needReplace = (fromPage === 'address')
   sessionStorage.setItem(storageName, JSON.stringify({ lat, lng, address, title }))
-  linkPage(goRouter, module)
+  linkPage(goRouter, module, needReplace)
 }
 
-const linkPage = (page, module) => {
+const linkPage = (page, module, needReplace) => {
   const query = addressId !== undefined ? `addressId=${addressId}` : ''
-  diffModuleJump(page, query, module)
+  diffModuleJump(page, query, module, needReplace)
 }
 
 watch(

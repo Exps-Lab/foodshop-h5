@@ -91,6 +91,7 @@ function padFileAndWrite (template, sliceIndex, padHtml, filePath) {
 export default {
   outDir: resolve(__dirname, '../hi-user'),
   cssCodeSplit: false,
+  sourcemap: mode === 'production',
   rollupOptions: {
     input: {
       ...generateInput(),

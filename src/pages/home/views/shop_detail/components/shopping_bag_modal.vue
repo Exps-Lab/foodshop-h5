@@ -8,7 +8,9 @@
     v-model:show="show"
     :style="{ minHeight: '30%' }">
     <!--  modal内容  -->
-    <p class="spec-tips"><span class="text">满30减10</span></p>
+
+    <!-- 满减tooltips -->
+    <DiscountToolTip :choseGoods="choseGoods" :shopBaseInfo="shopBaseInfo" />
     <section class="modal-title">
       <p class="align-left font-bold-weight">
         已选商品
@@ -28,7 +30,7 @@
             <div class="price">
               <p class="price-item red">
                 <i class="symbol">¥</i>
-                <span class="discount-price">{{getShowPrice('showPrice', goods)}}</span>
+                <span class="discount-price">{{getShowPrice('showPriceTotal', goods)}}</span>
               </p>
               <p class="price-item del gray" v-if="goods.is_discount">
                 <i class="symbol">¥</i>
@@ -38,7 +40,7 @@
             <div class=" count-box">
               <span class="count-item border font-bold-weight" @click="deleteGoods(goods)">-</span>
               <span class="count-num">{{goods.count}}</span>
-              <p class="count-item bg font-bold-weight" @click="addGoods(goods)">+</p>
+              <p class="count-item bg font-bold-weight" @click="preAddGoods($event, goods)">+</p>
             </div>
           </div>
         </div>
@@ -49,10 +51,17 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { priceHandle } from '@utils'
+import { useShopDetail } from '../hooks/shopDetail'
+import { getShowPrice } from '@utils/calcGoodsPrice'
+import DiscountToolTip from '../components/discount_tooltip.vue'
 
+const { handleBuyAnimate } = useShopDetail()
 const show = ref(false)
 const props = defineProps({
+  shopBaseInfo: {
+    type: Object,
+    default: () => {}
+  },
   choseGoods: {
     type: Object,
     default: () => {}
@@ -74,27 +83,18 @@ const choseGoodsList = computed(() => {
   return resArr
 })
 
-// 处理商品卡片的价格展示
-const getShowPrice = (type, food) => {
-  const { discount_val, is_discount, choseSpecIndex, specfoods } = food
-  const { price } = specfoods[choseSpecIndex]
-  let resPrice = 0
-  if (type === 'showPrice') {
-    resPrice = is_discount
-      ? discount_val > 0 ? priceHandle(price * (discount_val / 10)) : '0'
-      : priceHandle(price)
-  } else if (type === 'originPrice') {
-    resPrice = priceHandle(price)
-  }
-  return resPrice
-}
-
 // 删除所有选择
 const emit = defineEmits(['clearShoppingCart'])
 const clearChoseGoods = () => {
   emit('clearShoppingCart')
 }
 
+// 添加商品前 处理
+const preAddGoods = (e, goods) => {
+  handleBuyAnimate(e, () => {
+    addGoods(goods)
+  })
+}
 // 添加商品
 const addGoods = (goods) => {
   goods.count++
@@ -144,13 +144,6 @@ defineExpose({
     color: @error-6;
   }
   .info-modal {
-    .spec-tips {
-      padding: 5px 0;
-      text-align: center;
-      background-color: @yellow-1;
-      color: @error-6;
-      border-bottom: 1px solid @line-0;
-    }
     .modal-title {
       padding: 20px;
       display: flex;

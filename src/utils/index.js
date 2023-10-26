@@ -1,3 +1,4 @@
+
 /**
  * 获取url中参数
  * @param  {String} query 要获取的参数，对大小写敏感
@@ -472,13 +473,90 @@ export function priceHandle (price) {
  * @param path        跳转的具体路径
  * @param query       跳转带的参数
  * @param moduleName  跳转所在多页moduleName (开发场景hash模式下可传)
+ * @param jumpReplace 跳转是否replace
  */
-export function diffModuleJump (path, query = '', moduleName) {
+export function diffModuleJump (path, query = '', moduleName, jumpReplace = false) {
   const host = window.location.host
   const devUrl = `//${host}/src/pages/${moduleName}/index.html#${path}`
   const prodUrl = `//${host}${path}`
   const baseUrl = import.meta.env.DEV ? devUrl : prodUrl
-  location.href = baseUrl + (query ? '?' + query : '')
+  const jumpUrl = baseUrl + (query ? '?' + query : '')
+
+  if (jumpReplace) {
+    location.replace(jumpUrl)
+  } else {
+    location.href = jumpUrl
+  }
+}
+
+// 传进来10以下的字符，就返回前面带一个'0'
+export function padZero (num) {
+  const numTemp = Number(num)
+  return numTemp < 10 ? '0' + numTemp : String(num)
+}
+
+export function clearObj (obj) {
+  Object.keys(obj).forEach(key => {
+    delete obj[key]
+  })
+}
+
+export function formatTime (data, fmt) {
+  const o = {
+    'M+': data.getMonth() + 1,
+    'd+': data.getDate(),
+    'h+': data.getHours(),
+    'm+': data.getMinutes(),
+    's+': data.getSeconds(),
+    'q+': Math.floor((data.getMonth() + 3) / 3),
+    S: data.getMilliseconds()
+  }
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (data.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  for (const k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1)
+        ? (o[k])
+        : (('00' + o[k]).substr(('' + o[k]).length)))
+    }
+  }
+  return fmt
+}
+
+// 处理从a到b抛物线动画
+export function createFallAnimate (startPoint, endPoint, animateEndFn) {
+  const bar = document.createElement('div')
+  bar.className = 'buy-animate'
+  bar.style.position = 'fixed'
+  bar.style.zIndex = '3000'
+  bar.style.left = startPoint.left
+  bar.style.top = startPoint.top
+  bar.style.width = '10px'
+  bar.style.height = '10px'
+  bar.style.borderRadius = '50%'
+  bar.style.backgroundColor = '#02b6fd'
+  bar.style.transition = 'left .4s linear, top .4s cubic-bezier(0.5, -0.5, 1, 1)'
+  bar.transitionFlag = true
+
+  document.body.appendChild(bar)
+  // 添加动画属性
+  const timer = setTimeout(() => {
+    bar.style.left = endPoint.left
+    bar.style.top = endPoint.top
+    clearTimeout(timer)
+  }, 0)
+
+  bar.ontransitionend = function (e) {
+    // [note] 优化多个属性变换时间一致时会触发end事件多次的现象
+    if (bar.transitionFlag) {
+      bar.transitionFlag = false
+      return false
+    }
+    const barEle = document.querySelector('.buy-animate')
+    barEle && document.body.removeChild(barEle)
+    animateEndFn && animateEndFn.constructor === Function && animateEndFn()
+  }
 }
 
 export default {
@@ -508,5 +586,9 @@ export default {
   flatten,
   roundNum,
   priceHandle,
-  diffModuleJump
+  diffModuleJump,
+  padZero,
+  clearObj,
+  formatTime,
+  createFallAnimate
 }

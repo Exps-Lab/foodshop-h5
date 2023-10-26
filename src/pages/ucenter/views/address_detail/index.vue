@@ -229,7 +229,7 @@
   }
 
   // 获取sessionStorage里用户选择的地址
-  const setChoseAddress = () => {
+  const setChoseAddress = async () => {
      const storageData = JSON.parse(sessionStorage.getItem(ADDRESSCHOSEPOS)) || null
      if (storageData) {
        const { title, address, lat, lng } = storageData
@@ -242,7 +242,7 @@
   }
 
   // 获取sessionStorage里缓存的form表单并回显
-  const setTempForm = () => {
+  const setTempForm = async () => {
     const storageData = JSON.parse(sessionStorage.getItem(TEMPCHOSEPOS)) || null
     if (storageData) {
       Object.assign(form, storageData)
@@ -263,8 +263,8 @@
 
   const init = async () => {
     await preGetAddressDetail()
-    setTempForm()
-    setChoseAddress()
+    await setTempForm()
+    await setChoseAddress()
   }
   init()
 </script>

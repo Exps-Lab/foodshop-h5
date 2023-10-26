@@ -9,10 +9,12 @@
     "build:prod": "vite build --mode production",
     "preview": "vite preview",
     "deploy": "upload-remote -r ./hi-user -n hi-user",
-    "remote_build": "npm run build:prod && npm run deploy",
+    "remote_build": "npm run build:prod && node ./build/pre_upload.js && npm run deploy",
     "lint": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
+    "@sentry/vite-plugin": "^2.4.0",
+    "@sentry/vue": "^7.60.0",
     "axios": "^0.26.1",
     "chalk": "^2.4.2",
     "js-cookie": "^3.0.1",

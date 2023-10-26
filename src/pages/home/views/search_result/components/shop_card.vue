@@ -18,8 +18,6 @@ const props = defineProps({
   }
 })
 
-console.log(props.shopData)
-
 const shopAvatar = computed(() => {
   const { avatar } = props.shopData.shop_image
   return (avatar && avatar.includes('static'))

@@ -1,62 +1,93 @@
 <!-- 订单卡片 -->
 <template>
-  <div class="order-card" @click="toOrderDetail">
+  <div
+    class="order-card"
+    @click="toOrderDetail(orderItem)"
+    v-for="orderItem in cardData"
+    :key="orderItem.order_num">
     <section class="card-header">
-      <section class="header-left">
-        <img class="shop-avatar" src="http://static.foodshop.fun/GyBChipG87P8eA4.png" alt="shopAvatar">
-        <p class="shop-title font-bold-weight text-ellipsis">测试title测试title</p>
+      <section class="header-left" @click.stop="toShopDetail(orderItem)">
+        <img class="shop-avatar" :src="orderItem.shop.shop_image.avatar" alt="shopAvatar">
+        <p class="shop-title font-bold-weight text-ellipsis">{{ orderItem.shop.name }}</p>
         <i class="arrow">›</i>
       </section>
-      <p class="order-status-text font-bold-weight gray">未支付</p>
+      <p class="order-status-text font-bold-weight gray">{{ orderStatusText(orderItem.order_status) }}</p>
     </section>
     <section class="shop-discount-box">
-      <van-tag class="tag-list" plain type="danger">标签1</van-tag>
-      <van-tag class="tag-list" plain type="danger">标签2</van-tag>
-      <van-tag class="tag-list" plain type="danger">标签3</van-tag>
+      <van-tag
+        plain
+        type="danger"
+        class="tag-list"
+        v-for="(tag, index) in shopDiscountTagArr(orderItem.shop)"
+        :key="index">{{ tag }}
+      </van-tag>
     </section>
     <section class="card-sku-container">
       <section class="sku-left">
-        <div class="sku-avatar-box">
-          <img class="sku-avatar-list" src="http://static.foodshop.fun/GyBChipG87P8eA4.png" alt="skuAvatar">
+        <div class="sku-avatar-box" v-for="(goods, index) in orderItem.goods_list" :key="index">
+          <img class="sku-avatar-list" :src="goods.image_path" alt="skuAvatar" />
         </div>
         <!-- [note] 只有一件商品时展示 -->
-        <p class="sku-name">测试sku名称</p>
+        <p class="sku-name" v-if="orderItem.goods_list.length === 1">测试sku名称</p>
       </section>
       <div class="order-price-box">
         <p class="order-price">
-          <i class="money-symbol">￥</i>20.2
+          <i class="money-symbol">￥</i>{{ orderItem.pay_price }}
         </p>
-        <p class="order-sku-count">共2件</p>
+        <p class="order-sku-count">共{{orderItem.goods_list.length}}件</p>
       </div>
     </section>
     <section class="order-button-group">
-      <button class="common-btn order-btn blue">再来一单</button>
-      <button class="common-btn order-btn green">去评价</button>
-      <button class="common-btn order-btn normal">联系商家</button>
+      <van-button
+        class="order-btn"
+        v-for="(btn, index) in showButton(orderItem)"
+        :key="index"
+        :type="btn.type"
+        @click.stop="btn.handler(orderItem)">
+        {{ btn.text }}
+      </van-button>
     </section>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useOrderInfo } from '@pages/order/hooks/orderInfo'
+import { useOrderBtns } from '@pages/order/hooks/orderBtns'
+import { diffModuleJump } from '@utils'
 
-const router = useRouter()
-// const props = defineProps({
-//   goodsData: {
-//     type: Object,
-//     default: () => {}
-//   }
-// })
+defineProps({
+  cardData: {
+    type: Object,
+    default: () => {}
+  }
+})
+
+const { jumpOrderDetail, orderStatusTextMap } = useOrderInfo()
+// 订单状态
+const orderStatusText = (status) => {
+  return orderStatusTextMap[status]
+}
+// 满减数组
+const shopDiscountTagArr = ({ discount_Arr = [] }) => {
+  return discount_Arr.reduce((res, now) => {
+    const { discount_val, total_val } = now
+    res.push(`${total_val}减${discount_val}`)
+    return res
+  }, [])
+}
+
+const { getStatusBtns } = useOrderBtns()
+const showButton = (orderInfo) => {
+  return getStatusBtns(orderInfo)
+}
 
 const toOrderDetail = (data) => {
-  const { id: shop_id, pos } = data
-  router.push({
-    path: '/shopDetail',
-    query: {
-      shop_id,
-      current_pos: `${pos.lat},${pos.lng}`
-    }
-  })
+  const { order_num } = data
+  jumpOrderDetail(order_num, 'push')
+}
+const toShopDetail = (data) => {
+  const { shop: { id } } = data
+  diffModuleJump('/shopDetail', `shop_id=${id}`, 'home')
 }
 </script>
 
@@ -187,28 +218,14 @@ const toOrderDetail = (data) => {
       justify-content: flex-end;
       margin-top: 25px;
       .order-btn {
-        width: 75px;
+        width: 80px;
         height: 25px;
-        background-color: #fff;
         margin-right: 10px;
         border-radius: 6px;
         font-size: 12px;
         font-weight: bold;
         &:last-child {
           margin-right: 0;
-        }
-        &.normal {
-          color: @text-5;
-          border: 1px solid @text-2;
-        }
-        &.blue {
-          color: @brand1-6;
-          border: 1px solid @brand1-6;
-        }
-        &.green {
-          color: #fff;
-          background-color: @success-5;
-          border: 1px solid @success-5;
         }
       }
     }

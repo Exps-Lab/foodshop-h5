@@ -4,7 +4,11 @@
       <section class="from-item">
         <span class="item-label avatar">头像</span>
         <div class="item-right">
-          <ImageUpload :fileData="fileData" @imgUploadFinish="imgUploadFinish" />
+          <ImageUpload
+            uploaderMode="single"
+            :maxCount="2"
+            :fileData="fileData"
+            @imgUploadFinish="imgUploadFinish" />
           <van-icon class="icon" name="arrow" />
         </div>
       </section>
@@ -40,8 +44,8 @@
   import { ref, reactive } from 'vue'
   import Loading from '@common/components/Loading'
   import { updateUserAvatar, updateUserName } from '@api/user'
-  import ImageUpload from '@components/ImgUpload/index.vue'
-  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import ImageUpload from '@components/Img_Upload/index.vue'
+  import { useUserInfo } from '@common/hooks/userInfo'
 
   const { userData, setUserStorage } = useUserInfo()
   const userInfo = reactive(userData)

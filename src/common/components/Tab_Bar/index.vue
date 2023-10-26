@@ -31,7 +31,7 @@ const tabChange = (index) => {
       diffModuleJump('/home', '', 'home')
       break
     case 1:
-      console.log('my order')
+      diffModuleJump('/order/orderList', '', 'order')
       break
     case 2:
       diffModuleJump('/ucenter', '', 'ucenter')

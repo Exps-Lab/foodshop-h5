@@ -32,7 +32,7 @@
   import { useRouter } from 'vue-router'
   import { computed, ref, reactive } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
-  import { useUserInfo } from '@pages/ucenter/hooks/userInfo'
+  import { useUserInfo } from '@common/hooks/userInfo'
 
   const router = useRouter()
   const { userInfoLoading, userData } = useUserInfo()
@@ -92,9 +92,22 @@
       router.push('/ucenter/address_list')
     })
   }
+  // 账户信息
   const toAccountInfo = () => {
     preAuthJump(() => {
       router.push('/ucenter/account_info')
+    })
+  }
+  // 评价中心
+  const toCommentCenter = () => {
+    preAuthJump(() => {
+      router.push('/ucenter/comment_center')
+    })
+  }
+  // 我的收藏
+  const toCollectList = () => {
+    preAuthJump(() => {
+      router.push('/ucenter/collect_list')
     })
   }
 
@@ -134,12 +147,12 @@
         name: '我的收藏',
         icon: 'like-o',
         needLogin: true,
-        clickEvent: () => {}
+        clickEvent: toCollectList
       }, {
         name: '我的评价',
         icon: 'star-o',
         needLogin: true,
-        clickEvent: () => {}
+        clickEvent: toCommentCenter
       }]
     },
     // 系统功能

@@ -13,9 +13,9 @@
           <span class="info-text right-6">起送 ¥{{props.goodsData.mini_delivery_price}}</span>
           <span class="info-text">配送 ¥{{props.goodsData.delivery_fee}}</span>
         </p>
-        <p class="inner-info-box">
+        <p class="inner-info-box" v-if="props.costTime !== false">
           <span class="info-text right-6">{{costTime}}</span>
-          <span class="info-text">{{posInfo}}</span>
+          <span class="info-text" v-if="posInfo">{{posInfo}}</span>
         </p>
       </section>
     </template>
@@ -24,16 +24,15 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { diffModuleJump } from '@utils'
 
-const router = useRouter()
 const props = defineProps({
   goodsData: {
     type: Object,
     default: () => {}
   },
   costTime: {
-    type: [String, Number],
+    type: [String, Number, Boolean],
     default: '...'
   }
 })
@@ -46,7 +45,11 @@ const shopAvatar = computed(() => {
 })
 const posInfo = computed(() => {
   const { distance } = props.goodsData
-  return distance < 1 ? `${Math.floor(distance * 100)}m` : `${distance}km`
+  return distance !== undefined
+    ? distance < 1
+      ? `${Math.floor(distance * 100)}m`
+      : `${distance}km`
+    : ''
 })
 const costTime = computed(() => {
   const { costTime } = props
@@ -57,13 +60,11 @@ const costTime = computed(() => {
 
 const toDetail = (data) => {
   const { id: shop_id, pos } = data
-  router.push({
-    path: '/shopDetail',
-    query: {
-      shop_id,
-      current_pos: `${pos.lat},${pos.lng}`
-    }
-  })
+  diffModuleJump(
+    '/shopDetail',
+    `shop_id=${shop_id}&current_pos=${pos.lat},${pos.lng}`,
+    'home'
+  )
 }
 </script>
 

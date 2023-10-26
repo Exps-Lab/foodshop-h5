@@ -15,7 +15,7 @@
         </div>
       </section>
     </div>
-    <ComList :needTitle="false" :filter="ComListFilter" cardType="order" />
+    <ComList :needTitle="false" :filter="ComListFilter" cardType="suggest" />
   </div>
 </template>
 
