@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "deploy": "upload-remote -r ./hi-user -n hi-user",
     "remote_build": "npm run build:prod && node ./build/pre_upload.js && npm run deploy",
-    "lint": "eslint --ext .js,.vue src --fix"
+    "lint": "eslint --ext .js,.vue src --fix",
+    "tag": "bash build/new_tag.sh"
   },
   "dependencies": {
     "@sentry/vite-plugin": "^2.4.0",
