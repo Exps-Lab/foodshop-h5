@@ -1,4 +1,3 @@
-
 /**
  * 获取url中参数
  * @param  {String} query 要获取的参数，对大小写敏感

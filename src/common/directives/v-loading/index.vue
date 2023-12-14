@@ -1,4 +1,3 @@
-
 <template>
   <section
     :class="['loading__box', props.needBg && 'need-bg']">

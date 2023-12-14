@@ -1,4 +1,3 @@
-
 // home模块-用户选择当前位置
 const HOMECHOSEPOS = 'HOMECHOSEPOS'
 // home模块-确认订单页缓存数据和状态

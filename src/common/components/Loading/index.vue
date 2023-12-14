@@ -1,4 +1,3 @@
-
 <template>
   <Teleport :to="props.teleport">
     <section
