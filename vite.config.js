@@ -40,11 +40,11 @@ export default (params => {
         // fix: true,
         include: ['src/**/*.js', 'src/**/*.vue']
       }),
-      sentryVitePlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: "foodshop-ts",
-        project: "javascript-vue",
-      }),
+      // sentryVitePlugin({
+      //   authToken: process.env.SENTRY_AUTH_TOKEN,
+      //   org: "foodshop-ts",
+      //   project: "javascript-vue",
+      // }),
     ],
     server: {
       host: '0.0.0.0',
