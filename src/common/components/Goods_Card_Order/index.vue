@@ -34,7 +34,7 @@
         <p class="order-price">
           <i class="money-symbol">￥</i>{{ orderItem.pay_price }}
         </p>
-        <p class="order-sku-count">共{{orderItem.goods_list.length}}件</p>
+        <p class="order-sku-count">共{{ goodsTotalCount(orderItem.goods_list) }}件</p>
       </div>
     </section>
     <section class="order-button-group">
@@ -74,6 +74,13 @@ const shopDiscountTagArr = ({ discount_Arr = [] }) => {
     res.push(`${total_val}减${discount_val}`)
     return res
   }, [])
+}
+// 计算订单总件数
+const goodsTotalCount = (orderItem = []) => {
+  return orderItem.reduce((total, now) => {
+    total += now.count
+    return total
+  }, 0)
 }
 
 const { getStatusBtns } = useOrderBtns()
