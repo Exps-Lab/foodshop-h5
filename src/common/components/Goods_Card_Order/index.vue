@@ -28,7 +28,7 @@
           <img class="sku-avatar-list" :src="goods.image_path" alt="skuAvatar" />
         </div>
         <!-- [note] 只有一件商品时展示 -->
-        <p class="sku-name" v-if="orderItem.goods_list.length === 1">测试sku名称</p>
+        <p class="sku-name van-multi-ellipsis--l2" v-if="orderItem.goods_list.length === 1">{{ orderItem.goods_list[0].name }}</p>
       </section>
       <div class="order-price-box">
         <p class="order-price">
@@ -119,7 +119,7 @@ const toShopDetail = (data) => {
           margin-right: 6px;
         }
         .shop-title {
-          max-width: 245px;
+          max-width: 228px;
           position: relative;
           font-size: 15px;
         }
@@ -170,14 +170,15 @@ const toShopDetail = (data) => {
         flex: 1;
         display: flex;
         align-items: center;
+        margin-right: 10px;
+        overflow-x: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
         .sku-avatar-box {
           white-space: nowrap;
           max-width: 240px;
-          overflow-x: scroll;
           font-size: 0;
-          &::-webkit-scrollbar {
-            display: none;
-          }
           .sku-avatar-list {
             display: inline-block;
             width: 60px;
