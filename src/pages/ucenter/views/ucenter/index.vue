@@ -121,7 +121,14 @@
         name: '我的红包',
         icon: 'point-gift',
         needLogin: true,
-        clickEvent: () => {}
+        clickEvent: () => {
+          Dialog.alert({
+            title: '',
+            message: '暂未开放',
+            theme: 'round-button',
+            confirmButtonColor: '#02B6FD'
+          })
+        }
       }]
     },
     // 常规功能

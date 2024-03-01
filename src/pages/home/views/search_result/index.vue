@@ -67,13 +67,15 @@ const isSearching = computed(() => {
 
 // 输入框查询
 const onSearch = () => {
-  // 更新历史记录storage数据
-  const historyList = Storage.get('shopHistory') || []
-  historyList.unshift(data.searchVal)
-  historyList.splice(maxHistoryNum)
-  Storage.set('shopHistory', [...new Set(historyList)])
-  // 搜索
-  getResultList()
+  if (data.searchVal) {
+    // 更新历史记录storage数据
+    const historyList = Storage.get('shopHistory') || []
+    historyList.unshift(data.searchVal)
+    historyList.splice(maxHistoryNum)
+    Storage.set('shopHistory', [...new Set(historyList)])
+    // 搜索
+    getResultList()
+  }
 }
 
 // 点击历史搜索项

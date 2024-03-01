@@ -9,10 +9,10 @@ import '@common/styles/btn_style.less'
 import '@common/vantFunctionComponentsCss'
 import { installDirectives } from '@common/directives'
 import { createPinia } from 'pinia'
-// import { initSentry } from '@viteConf/sentryConf'
+import { initSentry } from '@viteConf/sentryConf'
 
 const app = createApp(App)
-// initSentry(app, router)
+initSentry(app, router)
 
 app.use(Toast)
 app.use(router)

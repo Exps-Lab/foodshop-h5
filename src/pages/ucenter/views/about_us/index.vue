@@ -2,7 +2,7 @@
   <div class="main">
     <img class="logo" src="./imgs/logoko.png" alt="logo">
     <p class="info font-bold-weight">吃的开心~</p>
-    <p class="info gray">2022 ~ 2023</p>
+    <p class="info gray">2022 ~ 2024</p>
   </div>
 </template>
 

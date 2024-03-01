@@ -81,23 +81,21 @@
   // 提交用户名更改
   const onModifyNameSubmit = () => {
     showModifyNameDialog.value = false
+    if (modifyName.value === userInfo.username) return false
+    // 上传
     Loading.show()
-    if (modifyName.value === userInfo.username) {
-      return false
-    } else {
-      userInfo.username = modifyName.value
-      updateUserName({
-        username: modifyName.value
-      }).then(res => {
-        setUserStorage(res.data)
-        Toast.success('用户名修改成功')
-      }).catch(e => {
-        console.error(e)
-        Toast.fail(e)
-      }).finally(() => {
-        Loading.hide()
-      })
-    }
+    userInfo.username = modifyName.value
+    updateUserName({
+      username: modifyName.value
+    }).then(res => {
+      setUserStorage(res.data)
+      Toast.success('用户名修改成功')
+    }).catch(e => {
+      console.error(e)
+      Toast.fail(e)
+    }).finally(() => {
+      Loading.hide()
+    })
   }
 </script>
 

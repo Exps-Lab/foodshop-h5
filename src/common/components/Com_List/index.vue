@@ -84,6 +84,15 @@ const pagination = reactive({
   endText: '没有更多了'
 })
 
+const resetPagination = () => {
+  listShop.showData = []
+  listShop.sliceData = []
+  listShop.costTime = []
+  pagination.pageNume = 1
+  pagination.total = 0
+  pagination.hasNext = false
+}
+
 const handleFilterParams = () => {
   const propFilter = Object.keys(props.filter).reduce((params, key) => {
     const value = props.filter[key]
@@ -142,6 +151,7 @@ const onLoad = async () => {
 }
 
 const getData = async () => {
+  resetPagination()
   await preGetShopList()
 }
 

@@ -13,9 +13,7 @@ export default (params => {
   // const { mode } = params
   return defineConfig({
     root: './',
-    // [note] 生成环境部署Nginx时需要改成nginx对应路由的base
     base: '/',
-    // base: mode === 'production' ? path.resolve(__dirname, '/hi-user') + '/' : './',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
@@ -40,11 +38,11 @@ export default (params => {
         // fix: true,
         include: ['src/**/*.js', 'src/**/*.vue']
       }),
-      // sentryVitePlugin({
-      //   authToken: process.env.SENTRY_AUTH_TOKEN,
-      //   org: "foodshop-ts",
-      //   project: "javascript-vue",
-      // }),
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "foodshop-ts",
+        project: "javascript-vue",
+      }),
     ],
     server: {
       host: '0.0.0.0',
