@@ -196,7 +196,9 @@ const setChoseAddress = (choseAddress) => {
 
 const linkPage = (page, module, needReplace) => {
   const query = addressId !== undefined ? `addressId=${addressId}` : ''
-  diffModuleJump(page, query, module, needReplace)
+  fromPage === 'home'
+    ? router.push({ path: '/home' })
+    : diffModuleJump(page, query, module, needReplace)
 }
 
 watch(

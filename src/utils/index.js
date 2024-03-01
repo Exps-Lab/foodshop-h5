@@ -546,7 +546,7 @@ export function createFallAnimate (startPoint, endPoint, animateEndFn) {
     clearTimeout(timer)
   }, 0)
 
-  bar.ontransitionend = function (e) {
+  bar.addEventListener('transitionEnd', () => {
     // [note] 优化多个属性变换时间一致时会触发end事件多次的现象
     if (bar.transitionFlag) {
       bar.transitionFlag = false
@@ -555,7 +555,18 @@ export function createFallAnimate (startPoint, endPoint, animateEndFn) {
     const barEle = document.querySelector('.buy-animate')
     barEle && document.body.removeChild(barEle)
     animateEndFn && animateEndFn.constructor === Function && animateEndFn()
-  }
+  })
+
+  bar.addEventListener('webkitTransitionEnd', () => {
+    // [note] 优化多个属性变换时间一致时会触发end事件多次的现象
+    if (bar.transitionFlag) {
+      bar.transitionFlag = false
+      return false
+    }
+    const barEle = document.querySelector('.buy-animate')
+    barEle && document.body.removeChild(barEle)
+    animateEndFn && animateEndFn.constructor === Function && animateEndFn()
+  })
 }
 
 export default {
