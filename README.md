@@ -19,9 +19,19 @@ npm install
 
 npm run dev
 
-访问: http://localhost:8000（可依照需要自行更改配置）
+访问:
+>1. http://localhost:8000（可依照需要自行更改配置）
+>2. 选择对应列表页访问即可（方便本地调试）
+
+# 所有资源列表，点击跳转到对应页面 #
+home：/src/pages/home/index.html
+login：/src/pages/login/index.html
+order：/src/pages/order/index.html
+ucenter：/src/pages/ucenter/index.html
 
 ```
+>*  Tips：最好同时启动foodshop-node端server的项目。目前foodshop-h5项目数据都是从接口获取的真实数据！
+
 ## 效果演示
 
 ## 关联项目列表
@@ -94,80 +104,80 @@ npm run dev
 ## 项目结构简介
 ```
 .
-├──.husky                                                      git拦截脚本
+├──.husky                                                git拦截脚本
 │   └── pre-commit                                       提交前拦截
-├── build                                                      build脚本
+├── build                                                build脚本
 │   └── new_tag.sh                                       线上部署tag脚本
-├── package.json                                               依赖文件
-├── public                                                     公共文件夹
+├── package.json                                         依赖文件
+├── public                                               公共文件夹
 │   ├── favicon.ico
 │   └── index.html                                       index模板
 ├── src
 │   ├── api                                              异步请求部分
-│   │   ├── collect                                收藏
-│   │   ├── comment                                评论
-│   │   ├── common                                 公共
-│   │   ├── home                                   首页
-│   │   ├── login                                  登录
-│   │   ├── order                                  订单
-│   │   ├── pay                                    支付
-│   │   ├── pos                                    定位
-│   │   ├── shop                                   店铺
-│   │   └── user                                   用户相关
-│   │       ├── account.js                         账户
-│   │       ├── address.js                         地址
-│   │       ├── commentCenter.js                   用户中心
-│   │       └── index.js                           用户入口
+│   │   ├── collect                                      收藏
+│   │   ├── comment                                      评论
+│   │   ├── common                                       公共
+│   │   ├── home                                         首页
+│   │   ├── login                                        登录
+│   │   ├── order                                        订单
+│   │   ├── pay                                          支付
+│   │   ├── pos                                          定位
+│   │   ├── shop                                         店铺
+│   │   └── user                                         用户相关
+│   │       ├── account.js                               账户
+│   │       ├── address.js                               地址
+│   │       ├── commentCenter.js                         用户中心
+│   │       └── index.js                                 用户入口
 │   ├── assets                                           静态资源
-│   │   └── logo.png                               logo
+│   │   └── logo.png                                     logo
 │   ├── common                                           公共文件夹
-│   │   ├── components                             公共组件
-│   │   │   ├── Address_Mes_Block            地址信息展示
-│   │   │   ├── Chose_Pay_Channel            选择支付方式
-│   │   │   ├── Com_List                     列表
-│   │   │   ├── Com_List_Pagination          分页列表
-│   │   │   ├── Comment_Card                 评论卡片
-│   │   │   ├── Goods_Card                   商品卡片
-│   │   │   ├── Goods_Card_Order             订单卡片
-│   │   │   ├── Img_Preview                  图片预览
-│   │   │   ├── Img_Upload                   图片上传
-│   │   │   ├── Loading                      Loading
-│   │   │   ├── Pay_Order_Modal              支付方式弹窗
-│   │   │   ├── Show_Pos_In_Map              详细地址地图展示
-│   │   │   ├── Slide_Popup                  滑动弹窗
-│   │   │   └── Tab_Bar                      bar组件
-│   │   ├── directives                             全局自定义指令
+│   │   ├── components                                   公共组件
+│   │   │   ├── Address_Mes_Block                        地址信息展示
+│   │   │   ├── Chose_Pay_Channel                        选择支付方式
+│   │   │   ├── Com_List                                 列表
+│   │   │   ├── Com_List_Pagination                      分页列表
+│   │   │   ├── Comment_Card                             评论卡片
+│   │   │   ├── Goods_Card                               商品卡片
+│   │   │   ├── Goods_Card_Order                         订单卡片
+│   │   │   ├── Img_Preview                              图片预览
+│   │   │   ├── Img_Upload                               图片上传
+│   │   │   ├── Loading                                  Loading
+│   │   │   ├── Pay_Order_Modal                          支付方式弹窗
+│   │   │   ├── Show_Pos_In_Map                          详细地址地图展示
+│   │   │   ├── Slide_Popup                              滑动弹窗
+│   │   │   └── Tab_Bar                                  bar组件
+│   │   ├── directives                                   全局自定义指令
 │   │   │   ├── index.js
-│   │   │   └── v-loading                    全局loading指令
-│   │   ├── hooks                                  自定义钩子函数
-│   │   │   └── userInfo.js                  控制用户相关
-│   │   ├── styles                                 全局样式
-│   │   │   ├── btn_style.less               按钮相关
-│   │   │   ├── common-style.less            公共样式
-│   │   │   ├── reset.less                   reset默认样式重置
-│   │   │   └── variables.less               全局样式变量
-│   │   └── vantFunctionComponentsCss              vant部分组件样式引入
+│   │   │   └── v-loading                                全局loading指令
+│   │   ├── hooks                                        自定义钩子函数
+│   │   │   └── userInfo.js                              控制用户相关
+│   │   ├── styles                                       全局样式
+│   │   │   ├── btn_style.less                           按钮相关
+│   │   │   ├── common-style.less                        公共样式
+│   │   │   ├── reset.less                               reset默认样式重置
+│   │   │   └── variables.less                           全局样式变量
+│   │   └── vantFunctionComponentsCss                    vant部分组件样式引入
 │   ├── pages                                            页面
-│   │   ├── 404.vue                                404
-│   │   ├── home                                   home业务模块
+│   │   ├── 404.vue                                      404
+│   │   ├── home                                         home业务模块
 │   │   │   ├── App.vue
 │   │   │   ├── index.html
 │   │   │   ├── main.js
 │   │   │   ├── router
 │   │   │   ├── store
 │   │   │   └── views
-│   │   ├── login                                  login业务模块
+│   │   ├── login                                        login业务模块
 │   │   │   ├── App.vue
 │   │   │   ├── index.html
 │   │   │   └── main.js
-│   │   ├── order                                  订单业务模块
+│   │   ├── order                                        订单业务模块
 │   │   │   ├── App.vue
 │   │   │   ├── hooks
 │   │   │   ├── index.html
 │   │   │   ├── main.js
 │   │   │   ├── router
 │   │   │   └── views
-│   │   └── ucenter                                用户中心业务模块
+│   │   └── ucenter                                      用户中心业务模块
 │   │       ├── App.vue
 │   │       ├── hooks
 │   │       ├── index.html
@@ -175,7 +185,7 @@ npm run dev
 │   │       ├── router
 │   │       └── views
 │   ├── plugins                                          全局插件
-│   │   ├── Toast                                  Toast插件
+│   │   ├── Toast                                        Toast插件
 │   │   │   ├── index.js
 │   │   │   └── toast.vue
 │   │   └── static
@@ -188,11 +198,11 @@ npm run dev
 │       ├── index.js
 │       ├── request.js                                   ajax请求封装
 │       └── sessionStorage_keys.js                       session相关Key维护
-├── vite.config.js                                             vite配置
+├── vite.config.js                                       vite配置
 ├── README.md
-└── viteConf                                                   拆分vite各个项，方便维护
-├── bundle.js                                              vite打包配置
-├── cssConf.js                                             vite Css相关配置
+└── viteConf                                             拆分vite各个项，方便维护
+├── bundle.js                                            vite打包配置
+├── cssConf.js                                           vite Css相关配置
 ├── index.js
 
 56 directories, 57 files
