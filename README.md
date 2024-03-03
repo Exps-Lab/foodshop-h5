@@ -92,6 +92,7 @@ npm run dev
 >* IP模糊定位：https://lbs.qq.com/service/webService/webServiceGuide/webServiceIp
 
 ## 项目结构简介
+```
 .
 ├──.husky                                                      git拦截脚本
 │   └── pre-commit                                       提交前拦截
@@ -195,6 +196,7 @@ npm run dev
 ├── index.js
 
 56 directories, 57 files
+```
 
 ## License
-[GPL](https://github.com/Exps-Lab/foodshop-h5/LICENSE)
+[GPL](https://github.com/Exps-Lab/foodshop-h5/blob/master/LICENSE)
