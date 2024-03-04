@@ -1,5 +1,21 @@
+<p align="center">
+  <img width="120" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/logo.png" alt="logo">
+</p>
+
+# FoodShop
+一个有完整全流程(商品列表，定位，下单，支付，订单，个人中心)业务场景的C端外卖项目!
 
 ## 项目介绍
+在2024年花时间梳理并开发一个全业务流程包含前后端的项目还有没有意义❓我自己的答案是肯定的。
+为啥这么说，好处：
+
+理解完整的C端外卖业务场景
+全面技术提升
+自己从0到1开发一套系统
+
+对自己有帮助，希望也能帮助到其他人开源小伙伴
+
+致敬：部分业务场景和逻辑参考bailicangdu的 [vue2-elm](https://github.com/bailicangdu/vue2-elm) 项目，向大佬致谢。
 
 ## 技术栈
 Vue3 + Vue-router +Vite + Pinia + Vant3 + MPA
