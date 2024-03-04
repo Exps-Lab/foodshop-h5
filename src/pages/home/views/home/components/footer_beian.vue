@@ -1,8 +1,8 @@
 <template>
   <section class="beian-box">
     <p class="list">
-      <span class="name">FoodShop.Fun </span>
-      <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备2023000026号-1</a>
+      <span class="name">FoodShops.Fun </span>
+      <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备2024050864号-1</a>
     </p>
     <!--  公安备案 -->
     <p class="list">
