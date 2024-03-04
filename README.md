@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="180" src="blob:http://foodshops.fun/d5ad5b3a-eed2-4ad8-af9d-1625d646dd98" alt="logo">
+  <img width="180" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/logo.png" alt="logo">
 </p>
 
 # FoodShop
