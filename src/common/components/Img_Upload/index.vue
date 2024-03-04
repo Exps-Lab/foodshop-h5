@@ -84,7 +84,7 @@
   })
 
   const domain = 'https://upload-z1.qiniup.com'
-  const qiniuAddr = 'static.foodshop.fun'
+  const qiniuAddr = 'static.foodshops.fun'
   const emits = defineEmits(['imgUploadFinish'])
   const uploader = ref()
   const fileList = ref([])

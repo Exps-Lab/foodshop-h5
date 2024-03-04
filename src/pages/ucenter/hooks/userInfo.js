@@ -5,7 +5,7 @@ import { getUserInfo } from '@api/user'
 export function useUserInfo () {
   const storageKey = 'userInfo'
   const loading = ref(false)
-  const defaultAvatar = 'http://static.foodshop.fun/WzEaxHRQsmA2rea.png'
+  const defaultAvatar = 'http://static.foodshops.fun/WzEaxHRQsmA2rea.png'
   let userInfo = reactive({
     avatar: defaultAvatar,
     username: '',
