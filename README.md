@@ -1,9 +1,9 @@
 <p align="center">
-  <img width="180" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/logo.png" alt="logo">
+  <img width="180" src="blob:http://foodshops.fun/d5ad5b3a-eed2-4ad8-af9d-1625d646dd98" alt="logo">
 </p>
 
 # FoodShop
-一个有完整全流程(商品列表，定位，下单，支付，订单，个人中心)业务场景的C端外卖项目!
+一个有完整全流程(商品列表，定位，下单，支付，订单，个人中心)业务场景的C端外卖项目，由20多个的页面承载实现!
 
 ## 絮叨的话
 在2024年花时间梳理并开发一个全业务流程包含前后端的项目还有没有意义❓ 我自己的答案是肯定的 ✋🏻
@@ -17,7 +17,7 @@
 
     技术上，FoodShop包含了用户端和server端常用技术，整体一套流程写下来能够对前后端技术都有一定的理解。
 * 用户端使用了常见的vue3全家桶搭配流行的组件库框架（h5：vant，admin:Arco.design）实现
-* server端用node + express + MVC + mongodb实现基本存储逻辑；redis处理数据缓存；rabbitmq处理异步数据队列功能；nginx处理接口的转发。
+* server端用node + express + MVC + mongodb实现基本存储逻辑；pm2部署node应用；nginx处理接口的转发；redis处理数据缓存；rabbitmq处理异步数据队列功能。
 
 3. 项目统筹能力的提升：
 * 从0到1开发一套系统还是有一定的挑战的，不管是时间成本还是技术挑战以及服务器自动部署和机器安全维护等等。当自己都体验一遍之后，感觉
@@ -64,10 +64,10 @@ ucenter：/src/pages/ucenter/index.html
 #### 线上效果演示,可以直接操作体验：
 <img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/qrcode.png" alt="qrcode">
 
-***
+---
 h5端截图：
 
-***
+---
 admin端截图：
 
 ## 关联项目列表

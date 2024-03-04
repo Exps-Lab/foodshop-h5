@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <img class="no-data" src="http://static.foodshop.fun/j6fAf8P8XeWjeYR.png" alt="404">
+    <img class="no-data" src="http://static.foodshops.fun/j6fAf8P8XeWjeYR.png" alt="404">
   </div>
 </template>
 
