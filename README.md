@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="180" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/logo.png" alt="logo">
+  <img width="180" src="http://static.foodshops.fun/G5jFHRBPy8RwPhM.png" alt="logo">
 </p>
 
 # FoodShop
@@ -62,7 +62,7 @@ ucenter：/src/pages/ucenter/index.html
 
 ## 效果演示
 #### 线上效果演示,可以直接操作体验：
-<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/qrcode.png" alt="qrcode">
+<img width="200" src="http://static.foodshops.fun/ns6dBb2iJWbteQi.png" alt="qrcode">
 
 ---
 h5端截图：

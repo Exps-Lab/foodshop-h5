@@ -18,6 +18,14 @@
           <span class="info-text" v-if="posInfo">{{posInfo}}</span>
         </p>
       </section>
+      <section class="info-box discount-box flex-box top-6" v-if="goodsData.has_discount">
+        <span
+          class="discount-item"
+          v-for="(discount, index) in goodsData.discount_Arr"
+          :key="index">
+          满{{discount.total_val}}减{{discount.discount_val}}
+      </span>
+      </section>
     </template>
   </van-card>
 </template>
@@ -101,6 +109,20 @@ const toDetail = (data) => {
       }
       .rank {
         color: #ff8000;
+      }
+      &.discount-box {
+        justify-content: flex-start;
+        transform: translateX(-2px);
+        .discount-item {
+          border: 1px solid rgba(255, 0, 0, 0.6);
+          color: #f00;
+          margin-right: 2px;
+          border-radius: 4px;
+          padding: 1px 3px;
+          font-size: 12px;
+          line-height: 1;
+          transform: scale(0.9);
+        }
       }
     }
   }
