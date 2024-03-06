@@ -3,7 +3,7 @@
 </p>
 
 # FoodShop
-一个有完整全流程(商品列表，定位，下单，支付，订单，个人中心)业务场景的C端外卖项目，由20多个的页面承载实现!
+一个有完整全流程(商品列表，定位推荐，下单，支付，配送(定时任务)，订单，个人中心)业务场景的C端外卖项目，由20多个的页面承载实现!
 
 ## 絮叨的话
 在2024年花时间梳理并开发一个全业务流程包含前后端的项目还有没有意义❓ 我自己的答案是肯定的 ✋🏻
@@ -61,14 +61,27 @@ ucenter：/src/pages/ucenter/index.html
 > Tips：最好同时启动foodshop-node端server的项目。目前foodshop-h5项目数据都是从接口获取的真实数据！
 
 ## 效果演示
-#### 线上效果演示,可以直接操作体验：
+#### h5端线上效果演示，直接扫码体验：
 <img width="200" src="http://static.foodshops.fun/ns6dBb2iJWbteQi.png" alt="qrcode">
 
 ---
-h5端截图：
+#### 商品列表展示 以及 根据定位切换推荐：
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/list.gif">
 
----
-admin端截图：
+#### 选择商品下单展示：
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/goods.gif">
+
+#### 订单支付展示：
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/pay.gif">
+
+#### 订单详情展示：
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/orderDetail.gif">
+
+#### 订单列表：
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/orderList.gif">
+
+#### 订单评价 和 回显展示:
+<img width="200" src="https://github.com/Exps-Lab/foodshop-h5/blob/master/screenshot/comment.gif">
 
 ## 关联项目列表
 | 项目             | 项目描述       | 技术栈                                                                    | 项目链接          |
