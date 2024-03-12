@@ -15,12 +15,13 @@ export function useUserInfo () {
 
   // 统一抽离获取用户信息入口
   const getUserData = () => {
-    const storageUserInfo = JSON.parse(localStorage.getItem(storageKey) || '{}')
-    if (!storageUserInfo.username) {
-      reqUserInfo()
-    } else {
-      userInfo = Object.assign(userInfo, storageUserInfo)
-    }
+    reqUserInfo()
+    // const storageUserInfo = JSON.parse(localStorage.getItem(storageKey) || '{}')
+    // if (!storageUserInfo.username) {
+    //   reqUserInfo()
+    // } else {
+    //   userInfo = Object.assign(userInfo, storageUserInfo)
+    // }
     loading.value = false
   }
 

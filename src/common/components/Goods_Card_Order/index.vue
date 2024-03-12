@@ -13,7 +13,7 @@
       </section>
       <p class="order-status-text font-bold-weight gray">{{ orderStatusText(orderItem.order_status) }}</p>
     </section>
-    <section class="shop-discount-box">
+    <section class="shop-discount-box" v-if="orderItem.shop.has_discount">
       <van-tag
         plain
         type="danger"

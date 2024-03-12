@@ -58,7 +58,7 @@ order：/src/pages/order/index.html
 ucenter：/src/pages/ucenter/index.html
 
 ```
-> **Tips：项目运行前 请先安装并启动 mongoDB，redis以及rabbitmq，保证数据和缓存的正常存取和所有功能正常使用。目前foodshop-h5项目数据都是从接口获取的真实数据！**
+> **Tips：项目运行前 请先安装并启动 mongoDB(port:28017，启动服务时注意)，redis以及rabbitmq，保证数据和缓存的正常存取和所有功能正常使用。目前foodshop-h5项目数据都是从接口获取的真实数据！**
 
 ## 效果演示
 #### h5端线上效果演示，直接扫码体验：

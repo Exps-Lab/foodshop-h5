@@ -3,7 +3,7 @@
 <template>
   <section class="address-com-box">
     <!-- 商铺信息 -->
-    <section class="shop-box">
+    <section class="shop-box" @click="toShopDetail">
       <img class="shop-avatar" :src="shopData.shop_image?.avatar" alt="shopImg">
       <span class="shop-title van-ellipsis">{{shopData.name}}</span>
     </section>
@@ -85,7 +85,7 @@
 
 <script setup>
   import { computed } from 'vue'
-  import { formatTime } from '@utils'
+  import { diffModuleJump, formatTime } from '@utils'
   import { getShowPrice } from '@utils/calcGoodsPrice'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
 
@@ -134,6 +134,10 @@
       value: props.orderInfo.pay_time || '支付后显示'
     }]
   })
+  const toShopDetail = () => {
+    const { id } = shopData.value
+    diffModuleJump('/shopDetail', `shop_id=${id}`, 'home')
+  }
 </script>
 
 <style lang="less" scoped>
