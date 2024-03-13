@@ -22,15 +22,20 @@
 </template>
 
 <script setup>
-  import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
   import ComListPagination from '@common/components/Com_List_Pagination/index.vue'
   import CommentCard from '@common/components/Comment_Card/index.vue'
   import CommentOrderCard from './components/Comment_Order_Card.vue'
   import { useUserInfo } from '@common/hooks/userInfo'
   import { getCommentCenterList } from '@api/user/commentCenter'
 
-  const { userData } = useUserInfo()
-  const userInfo = reactive(userData)
+  const { getUserData } = useUserInfo()
+  let userInfo = reactive({})
+
+  onMounted(async () => {
+    const userData = await getUserData()
+    userInfo = Object.assign(userInfo, userData)
+  })
 
   const reqFun = computed(() => {
     return getCommentCenterList

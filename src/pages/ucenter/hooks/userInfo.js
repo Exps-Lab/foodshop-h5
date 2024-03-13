@@ -29,7 +29,7 @@ export function useUserInfo () {
     getUserInfo().then(res => {
       res.data.avatar = res.data.avatar || defaultAvatar
       userInfo = Object.assign(userInfo, res.data)
-      setUserStorage(userInfo)
+      // setUserStorage(userInfo)
     }).catch(e => {
     }).finally(() => {
       loading.value = false

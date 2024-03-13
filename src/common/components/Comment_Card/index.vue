@@ -54,7 +54,7 @@
 <script setup>
   import { useUserInfo } from '@common/hooks/userInfo'
   import ImgPreview from '@/common/components/Img_Preview/index.vue'
-  import { reactive } from 'vue'
+  import { onMounted, reactive } from 'vue'
 
   defineProps({
     cardData: {
@@ -63,8 +63,13 @@
     }
   })
 
-  const { userData } = useUserInfo()
-  const userInfo = reactive(userData)
+  const { getUserData } = useUserInfo()
+  let userInfo = reactive({})
+
+  onMounted(async () => {
+    const userData = await getUserData()
+    userInfo = Object.assign(userInfo, userData)
+  })
 
   const getCommentSku = (comment) => {
     const resObj = {

@@ -41,27 +41,31 @@
 
 <script setup>
   import { Dialog, Toast } from 'vant'
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onMounted } from 'vue'
   import Loading from '@common/components/Loading'
   import { updateUserAvatar, updateUserName } from '@api/user'
   import ImageUpload from '@components/Img_Upload/index.vue'
   import { useUserInfo } from '@common/hooks/userInfo'
 
-  const { userData, setUserStorage } = useUserInfo()
-  const userInfo = reactive(userData)
+  const { getUserData } = useUserInfo()
+  let userInfo = reactive({})
+  onMounted(async () => {
+    const userData = await getUserData()
+    userInfo = Object.assign(userInfo, userData)
+    fileData.value = [{
+      url: userInfo.avatar
+    }]
+  })
 
   // ******
   // 处理头像
   // ******
-  const fileData = ref([{
-    url: userInfo.avatar
-  }])
+  const fileData = ref([])
   const imgUploadFinish = (url) => {
     userInfo.avatar = url
     updateUserAvatar({
       avatar: url
     }).then(res => {
-      setUserStorage(res.data)
       Toast.success('头像修改成功')
     }).catch(e => {
       console.error(e)
@@ -88,7 +92,6 @@
     updateUserName({
       username: modifyName.value
     }).then(res => {
-      setUserStorage(res.data)
       Toast.success('用户名修改成功')
     }).catch(e => {
       console.error(e)

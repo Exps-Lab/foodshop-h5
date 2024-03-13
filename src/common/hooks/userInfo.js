@@ -3,7 +3,6 @@ import { getUserInfo } from '@api/user'
 
 // 按照惯例，组合式函数名以“use”开头
 export function useUserInfo () {
-  const storageKey = 'userInfo'
   const loading = ref(false)
   const defaultAvatar = 'http://static.foodshops.fun/WzEaxHRQsmA2rea.png'
   let userInfo = reactive({
@@ -14,47 +13,18 @@ export function useUserInfo () {
   })
 
   // 统一抽离获取用户信息入口
-  const getUserData = () => {
-    reqUserInfo()
-    // const storageUserInfo = JSON.parse(localStorage.getItem(storageKey) || '{}')
-    // if (!storageUserInfo.username) {
-    //   reqUserInfo()
-    // } else {
-    //   userInfo = Object.assign(userInfo, storageUserInfo)
-    // }
-    loading.value = false
-  }
-
-  const reqUserInfo = () => {
+  const getUserData = async () => {
     loading.value = true
-    getUserInfo().then(res => {
-      res.data.avatar = res.data.avatar || defaultAvatar
-      userInfo = Object.assign(userInfo, res.data)
-      setUserStorage(userInfo)
-    }).catch(e => {
-    }).finally(() => {
-      loading.value = false
-    })
-  }
+    const { data } = await getUserInfo()
+    data.avatar = data.avatar || defaultAvatar
+    userInfo = Object.assign(userInfo, data)
 
-  // 用户信息数据分别单独更新，所有不统一抽离更新请求函数，只抽出增删storage相关方法
-  // 更新用户storage
-  const setUserStorage = (data) => {
-    localStorage.removeItem(storageKey)
-    localStorage.setItem(storageKey, JSON.stringify(data))
+    loading.value = false
+    return userInfo
   }
-
-  // 删除用户storage
-  const removeUserStorage = () => {
-    localStorage.removeItem(storageKey)
-  }
-
-  getUserData()
 
   return {
     userInfoLoading: loading.value,
-    userData: userInfo,
-    setUserStorage,
-    removeUserStorage
+    getUserData: getUserData
   }
 }

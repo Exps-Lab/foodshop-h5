@@ -30,14 +30,18 @@
   import User from '@utils/User'
   import { Dialog } from 'vant'
   import { useRouter } from 'vue-router'
-  import { computed, ref, reactive } from 'vue'
+  import { computed, ref, reactive, onMounted } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
   import { useUserInfo } from '@common/hooks/userInfo'
 
   const router = useRouter()
-  const { userInfoLoading, userData } = useUserInfo()
+  const { userInfoLoading, getUserData } = useUserInfo()
   const loading = ref(userInfoLoading)
-  const userInfo = reactive(userData)
+  let userInfo = reactive({})
+  onMounted(async () => {
+    const userData = await getUserData()
+    userInfo = Object.assign(userInfo, userData)
+  })
 
   // 是否登录
   const isLogin = computed(() => {
