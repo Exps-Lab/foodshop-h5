@@ -66,14 +66,13 @@
 <script setup>
   import { Dialog, Toast } from 'vant'
   import { ref, reactive, computed } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { getOrderDetail } from '@/api/order'
   import { submitComment } from '@/api/comment'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import ImageUpload from '@components/Img_Upload/index.vue'
-  import { diffModuleJump } from "@utils";
+  import { diffModuleJump } from '@utils'
   const route = useRoute()
-  const router = useRouter()
 
   const orderInfo = ref({})
   const { handleErr } = useOrderInfo()
