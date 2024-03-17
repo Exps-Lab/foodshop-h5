@@ -71,6 +71,7 @@
   import { submitComment } from '@/api/comment'
   import { useOrderInfo } from '@pages/order/hooks/orderInfo'
   import ImageUpload from '@components/Img_Upload/index.vue'
+  import { diffModuleJump } from "@utils";
   const route = useRoute()
   const router = useRouter()
 
@@ -138,12 +139,7 @@
         theme: 'round-button',
         confirmButtonColor: '#02B6FD'
       }).then(() => {
-        router.replace({
-          path: '/order/orderDetail',
-          query: {
-            orderNum
-          }
-        })
+        diffModuleJump('/home', '', 'home', true)
       })
     } catch (err) {
       handleErr(err)

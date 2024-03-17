@@ -10,6 +10,13 @@
           <p class="comment-time">{{comment.comment_time}}</p>
         </section>
       </section>
+      <section class="card-header" v-if="showShopInfo">
+        <section class="header-left" @click="toShopDetail(comment)">
+          <img class="shop-avatar" :src="comment.shop.shop_image.avatar" alt="shopAvatar">
+          <p class="shop-title font-bold-weight text-ellipsis">{{comment.shop.name}}</p>
+          <i class="arrow">›</i>
+        </section>
+      </section>
       <section class="ranks-box">
         <p class="ranks-item" v-for="(rank, index) in comment.ranks" :key="index">
           <span class="rank-text">{{rank.name}}</span>
@@ -55,11 +62,16 @@
   import { useUserInfo } from '@common/hooks/userInfo'
   import ImgPreview from '@/common/components/Img_Preview/index.vue'
   import { onMounted, reactive } from 'vue'
+  import { diffModuleJump } from '@utils'
 
   defineProps({
     cardData: {
       type: Object,
       default: () => {}
+    },
+    showShopInfo: {
+      type: Boolean,
+      default: false
     }
   })
 
@@ -94,6 +106,11 @@
     return resObj
   }
 
+  const toShopDetail = (cardItem) => {
+    const { shop_id } = cardItem
+    diffModuleJump('/shopDetail', `shop_id=${shop_id}`, 'home')
+  }
+
 </script>
 
 <style lang="less" scoped>
@@ -122,6 +139,35 @@
             color: @text-3;
             font-size: 12px;
             margin-top: 4px;
+          }
+        }
+      }
+      .card-header {
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .header-left {
+          display: flex;
+          align-items: center;
+          .shop-avatar {
+            width: 26px;
+            height: 26px;
+            flex: 0 0 26px;
+            border-radius: 6px;
+            margin-right: 6px;
+          }
+          .shop-title {
+            max-width: 245px;
+            position: relative;
+            font-size: 15px;
+          }
+          .arrow {
+            display: inline-block;
+            transform: translateY(-1px);
+            font-size: 20px;
+            color: @text-2;
+            margin-left: 8px;
           }
         }
       }

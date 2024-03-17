@@ -14,7 +14,7 @@
       <ComListPagination :filter="filter" :reqApiFun="reqFun">
         <template v-slot="slotProps">
           <CommentOrderCard v-if="tabActive === 0" :cardData="slotProps.listData" />
-          <CommentCard v-if="tabActive === 1" :cardData="slotProps.listData" />
+          <CommentCard v-if="tabActive === 1" :cardData="slotProps.listData" :showShopInfo="true" />
         </template>
       </ComListPagination>
     </van-tabs>
