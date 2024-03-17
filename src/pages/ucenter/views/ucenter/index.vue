@@ -16,8 +16,8 @@
           v-for="menuItem in menuBox.data"
           :key="menuItem.name"
           @click="preAuthJump(menuItem.clickEvent, menuItem.needLogin)">
-          <van-icon class="icon" :name="menuItem.icon" />
-          <span class="text">{{menuItem.name}}</span>
+            <van-icon class="icon" :name="menuItem.icon" />
+            <span class="text">{{menuItem.name}}</span>
         </p>
       </section>
     </section>
@@ -30,7 +30,7 @@
   import User from '@utils/User'
   import { Dialog } from 'vant'
   import { useRouter } from 'vue-router'
-  import { computed, ref, reactive, onMounted } from 'vue'
+  import { computed, ref, reactive, onMounted, watch } from 'vue'
   import Tabbar from '@common/components/Tab_Bar/index.vue'
   import { useUserInfo } from '@common/hooks/userInfo'
 
@@ -45,7 +45,7 @@
 
   // 是否登录
   const isLogin = computed(() => {
-    return userInfo.username
+    return !!userInfo.username
   })
 
   // 业务跳转前判断登录态
@@ -116,7 +116,7 @@
   }
 
   // [note] 菜单配置数据
-  const menuMap = [
+  const menuMap = ref([
     // 活动功能
     {
       type: 'activity',
@@ -175,13 +175,21 @@
         icon: 'notes-o',
         needLogin: false,
         clickEvent: toAboutUs
-      }, {
-        name: '退出登录',
-        icon: 'smile-o',
-        needLogin: true,
-        clickEvent: preLogout
       }]
     }]
+  )
+  // 不登录不展示
+  const hasLoginShowMenu = {
+    name: '退出登录',
+    icon: 'smile-o',
+    needLogin: true,
+    clickEvent: preLogout
+  }
+  watch(() => isLogin.value, (val) => {
+    if (val) {
+      menuMap.value.at(-1).data.push(hasLoginShowMenu)
+    }
+  })
 </script>
 
 <style lang="less" scoped>
