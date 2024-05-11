@@ -1,5 +1,6 @@
 <template>
   <div class="main-content">
+    <SlideNotice />
     <MainHeader />
     <KingKongSuggest />
     <ComList :filter="ComListFilter" />
@@ -9,6 +10,7 @@
 </template>
 
 <script setup>
+import SlideNotice from './components/slide_notice.vue'
 import MainHeader from './components/header.vue'
 import Tabbar from '@common/components/Tab_Bar/index.vue'
 import KingKongSuggest from './components/king_kong_suggest.vue'
