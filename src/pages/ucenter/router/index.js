@@ -40,6 +40,11 @@ const routes = [
     path: '/:pathMatch(.*)',
     name: '404',
     component: () => import('../../404.vue')
+  },
+  {
+    path: '/ucenter/coupon',
+    name: 'coupon',
+    component: () => import('../views/coupon/index.vue')
   }
 ]
 

@@ -1,29 +1,31 @@
 <template>
-  <div class="main">
-    <section class="info-box" v-loading="loading" @click="infoBoxClick">
-      <img class="avatar" :src="userInfo.avatar" alt="avatar">
-      <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
-      <p v-else class="username font-bold-weight">点击登录/注册</p>
-    </section>
-
-    <section class="menu-container">
-      <section
-        v-for="(menuBox, index) in menuMap"
-        :key="index"
-        :class="['menu-box', menuBox.isHot && 'hot']">
-        <p
-          class="menu-item"
-          v-for="menuItem in menuBox.data"
-          :key="menuItem.name"
-          @click="preAuthJump(menuItem.clickEvent, menuItem.needLogin)">
-            <van-icon class="icon" :name="menuItem.icon" />
-            <span class="text">{{menuItem.name}}</span>
-        </p>
+  <div>
+    <div class="main">
+      <section class="info-box" v-loading="loading" @click="infoBoxClick">
+        <img class="avatar" :src="userInfo.avatar" alt="avatar">
+        <p v-if="isLogin" class="username text-ellipsis font-bold-weight-4">{{userInfo.username}}</p>
+        <p v-else class="username font-bold-weight">点击登录/注册</p>
       </section>
-    </section>
-  </div>
 
-  <Tabbar :active="2" />
+      <section class="menu-container">
+        <section
+          v-for="(menuBox, index) in menuMap"
+          :key="index"
+          :class="['menu-box', menuBox.isHot && 'hot']">
+          <p
+            class="menu-item"
+            v-for="menuItem in menuBox.data"
+            :key="menuItem.name"
+            @click="preAuthJump(menuItem.clickEvent, menuItem.needLogin)">
+              <van-icon class="icon" :name="menuItem.icon" />
+              <span class="text">{{menuItem.name}}</span>
+          </p>
+        </section>
+      </section>
+    </div>
+
+    <Tabbar :active="2" />
+  </div>
 </template>
 
 <script setup>
@@ -126,12 +128,7 @@
         icon: 'point-gift',
         needLogin: true,
         clickEvent: () => {
-          Dialog.alert({
-            title: '',
-            message: '暂未开放',
-            theme: 'round-button',
-            confirmButtonColor: '#02B6FD'
-          })
+          router.push('/ucenter/coupon')
         }
       }]
     },
