@@ -34,7 +34,7 @@ export default params => {
       // 运行时检查eslint规范
       eslint({
         cache: false,
-        // fix: true,
+        fix: true,
         include: ['src/**/*.js', 'src/**/*.vue']
       })
     ],

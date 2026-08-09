@@ -98,14 +98,15 @@ export default {
       navigation: resolve(__dirname, '../index.html')
     },
     output: {
+      entryFileNames: 'assets/[name]-[hash].js',
       chunkFileNames: (chunkInfo) => {
         // 从文件路径提取路由名称：views/home/index.vue → home
         const match = chunkInfo.facadeModuleId?.match(/views\/([^/]+)\/index\.\w+$/)
         if (match) {
-          return `${match[1]}.[hash].js`
+          return `assets/${match[1]}.[hash].js`
         }
         // 其他 chunk 使用默认命名
-        return '[name]-[hash].js'
+        return 'assets/[name]-[hash].js'
       }
     }
   }
