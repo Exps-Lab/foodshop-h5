@@ -2,11 +2,11 @@ import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { cssConf, bundleConf } from './viteConf'
-import Components from "unplugin-vue-components/vite";
-import { VantResolver } from "unplugin-vue-components/resolvers";
+import Components from 'unplugin-vue-components/vite'
+import { VantResolver } from 'unplugin-vue-components/resolvers'
 import eslint from 'vite-plugin-eslint'
 
-export default (params => {
+export default params => {
   // 配置文件中加载环境变量
   const env = loadEnv(params.mode, __dirname)
   // const { mode } = params
@@ -21,7 +21,7 @@ export default (params => {
         '@utils': path.resolve(__dirname, 'src/utils'),
         '@pages': path.resolve(__dirname, 'src/pages'),
         '@viteConf': path.resolve(__dirname, 'viteConf'),
-        '@components': path.resolve(__dirname, 'src/common/components'),
+        '@components': path.resolve(__dirname, 'src/common/components')
       }
     },
     css: cssConf,
@@ -29,7 +29,7 @@ export default (params => {
     plugins: [
       vue(),
       Components({
-        resolvers: [VantResolver()],
+        resolvers: [VantResolver()]
       }),
       // 运行时检查eslint规范
       eslint({
@@ -66,8 +66,8 @@ export default (params => {
         '/test': {
           target: env.VITE_HOST_URL,
           changeOrigin: true
-        },
+        }
       }
     }
   })
-})
+}
