@@ -76,10 +76,11 @@ getSubCategoryData()
         .slide-box {
           display: flex;
           align-items: center;
+          padding: 8px 12px;
           overflow: auto;
-          padding: 12px 12px 0 12px;
           &::-webkit-scrollbar {
             width: 0;
+            height: 0;
           }
           .slide-item {
             min-width: 72px;
@@ -90,6 +91,8 @@ getSubCategoryData()
               }
               .slide-text {
                 color: @brand1-6;
+                font-weight: bold;
+                font-size: 14px;
               }
             }
             .slide-img {

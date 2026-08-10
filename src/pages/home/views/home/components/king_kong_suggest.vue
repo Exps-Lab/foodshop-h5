@@ -53,19 +53,18 @@ getSuggestData()
 
 <style lang="less" scoped>
   .category-container {
-    padding: 4px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    min-height: 150px;
+    min-height: 110px;
+    padding: 8px 0;
     .box {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 54px;
-      padding: 8px 0;
-      flex-basis: 25%;
+      flex-basis: 20%;
       font-family: PingFangSC-Regular, PingFang SC;
       &.no-data {
         font-size: 14px;
@@ -73,7 +72,7 @@ getSuggestData()
         flex-basis: 100%;
       }
       .img {
-        width: 36px;
+        width: 26px;
         margin-bottom: 4px;
       }
       .name {
