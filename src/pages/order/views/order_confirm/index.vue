@@ -57,7 +57,7 @@
   const orderInfo = ref({})
   const PayOrderModalRef = ref(null)
   const submitOrder = async () => {
-    const { choseAddress: { id: addressId }, sendCostTime } = addressRef.value
+    const { choseAddress: { id: addressId }, sendCostTime = 0 } = addressRef.value
     const form = {
       addressId,
       sendCostTime,

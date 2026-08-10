@@ -115,13 +115,13 @@
     if (!ts) return ''
     const endTime = new Date(ts).getTime()
     const remain = endTime - Date.now()
-    if (remain <= 0) return '已过期'
+    if (remain <= 0) return ''
     const days = Math.floor(remain / (24 * 60 * 60 * 1000))
-    if (days > 0) return `${days}天后到期`
+    if (days > 0) return `优惠券发放时间还剩${days}天，快领取去使用吧！`
     const hours = Math.floor(remain / (60 * 60 * 1000))
-    if (hours > 0) return `${hours}小时后到期`
+    if (hours > 0) return `优惠券发放时间只剩${hours}小时了，快领取去使用吧！`
     const mins = Math.floor(remain / (60 * 1000))
-    return `${mins}分钟后到期`
+    return `优惠券发放时间只剩${mins}分钟了，快领取去使用吧！`
   }
 
   const URGENT_THRESHOLD = 2 * 24 * 60 * 60 * 1000 // 2 天内标记快失效
@@ -339,6 +339,8 @@
         border-radius: 17px;
         font-weight: bold;
         margin: 0;
+        transform: translate(30%, 0) rotate(45deg);
+        transform-origin: center;
       }
     }
   }
