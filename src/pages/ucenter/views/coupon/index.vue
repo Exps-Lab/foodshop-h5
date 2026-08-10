@@ -19,7 +19,6 @@
             </div>
             <div class="right">
               <p class="coupon-title">{{ validCoupon.title }}</p>
-              <p class="coupon-desc">{{ formatExpire(validCoupon.valid_end) }}</p>
               <p
                 v-if="isClaimed"
                 class="coupon-claimed-tag">已领取</p>
@@ -117,11 +116,11 @@
     const remain = endTime - Date.now()
     if (remain <= 0) return ''
     const days = Math.floor(remain / (24 * 60 * 60 * 1000))
-    if (days > 0) return `优惠券发放时间还剩${days}天，快领取去使用吧！`
+    if (days > 0) return `${days}天后失效，快去使用吧！`
     const hours = Math.floor(remain / (60 * 60 * 1000))
-    if (hours > 0) return `优惠券发放时间只剩${hours}小时了，快领取去使用吧！`
+    if (hours > 0) return `有效期仅剩${hours}小时，快去使用吧！`
     const mins = Math.floor(remain / (60 * 1000))
-    return `优惠券发放时间只剩${mins}分钟了，快领取去使用吧！`
+    return `有效期仅剩${mins}分钟，快去使用吧！`
   }
 
   const URGENT_THRESHOLD = 2 * 24 * 60 * 60 * 1000 // 2 天内标记快失效
@@ -248,7 +247,7 @@
     overflow: hidden;
     position: relative;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin: 0 40px;
+    margin: 0 25px;
 
     &.claimed {
       opacity: 0.75;
@@ -309,11 +308,12 @@
 
     .right {
       flex: 1;
-      padding: 14px 18px;
+      padding: 14px 28px 14px 18px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       position: relative;
+      line-height: 1.2;
 
       .coupon-title {
         margin: 0 0 6px;
