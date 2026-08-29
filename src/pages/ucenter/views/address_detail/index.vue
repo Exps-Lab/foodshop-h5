@@ -90,7 +90,7 @@
   import { diffModuleJump } from '@utils'
   import { addAddress, updateAddress, deleteAddress, getAddressDetail } from '@api/user/address'
   import { ADDRESSCHOSEPOS, TEMPCHOSEPOS } from '@utils/sessionStorage_keys'
-  import ShowPosInMap from '@components/Show_Pos_in_Map/index.vue'
+  import ShowPosInMap from '@components/Show_Pos_In_Map/index.vue'
 
   const route = useRoute()
   const router = useRouter()

@@ -11,7 +11,7 @@
 <script setup>
   import { ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import ShowPosInMap from '@components/Show_Pos_in_Map/index.vue'
+  import ShowPosInMap from '@components/Show_Pos_In_Map/index.vue'
 
   const route = useRoute()
   const { shop_pos, shop_name, shop_address } = route.query
